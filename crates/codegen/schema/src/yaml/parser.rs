@@ -1,163 +1,192 @@
 use std::{
     cmp::{max, min},
     path::PathBuf,
+    rc::Rc,
     str::Chars,
 };
 
-use codegen_utils::errors::{CodegenErrors, CodegenResult, Position};
+use codegen_utils::{
+    context::CodegenContext,
+    errors::{CodegenErrors, CodegenResult, Position},
+};
 use indexmap::IndexMap;
+use serde::de::DeserializeOwned;
 use yaml_rust::{
     parser::Parser as YamlParser,
     scanner::{Marker, TScalarStyle},
     Event,
 };
 
-use crate::yaml::cst;
+use super::super::SourceLocation;
 
-pub struct Parser<'a> {
-    file_path: &'a PathBuf,
-    parser: YamlParser<Chars<'a>>,
+use super::cst::{Node, NodeField, NodeFieldRef, NodeRef};
+
+pub trait WithSourceLocation {
+    fn set_source_location(&mut self, location: SourceLocation);
 }
 
-impl<'a> Parser<'a> {
-    pub fn run_parser(file_path: &'a PathBuf, source: &'a str) -> CodegenResult<cst::NodeRef> {
-        let mut instance = Self {
-            file_path,
-            parser: YamlParser::new(source.chars()),
-        };
-
-        assert_eq!(instance.consume()?.event, Event::StreamStart);
-        assert_eq!(instance.consume()?.event, Event::DocumentStart);
-
-        let root = instance.parse_value()?;
-
-        assert_eq!(instance.consume()?.event, Event::DocumentEnd);
-        assert_eq!(instance.consume()?.event, Event::StreamEnd);
-
-        return Ok(root);
+impl<T: WithSourceLocation> WithSourceLocation for Vec<T> {
+    fn set_source_location(&mut self, location: SourceLocation) {
+        for (index, production) in self.iter_mut().enumerate() {
+            let source_location = SourceLocation {
+                path: location.path.clone(),
+                node: location.node.value_at_index(index),
+            };
+            production.set_source_location(source_location);
+        }
     }
+}
 
-    fn parse_value(&mut self) -> CodegenResult<cst::NodeRef> {
-        let Token {
-            event: current,
-            position: start,
-        } = self.consume()?;
+pub fn parse_yaml_file<R: WithSourceLocation + DeserializeOwned>(
+    codegen: &mut CodegenContext,
+    path: &PathBuf,
+) -> CodegenResult<R> {
+    let source = codegen.read_file(&path).unwrap();
 
-        let value = match current {
-            Event::Scalar(value, style, ..) => {
-                let contents = match style {
-                    TScalarStyle::SingleQuoted => format!("'{value}'"),
-                    TScalarStyle::DoubleQuoted => format!("\"{value}\""),
-                    _ => value,
-                };
+    let parser = &mut YamlParser::new(source.chars());
+    assert_eq!(consume(path, parser)?.event, Event::StreamStart);
+    assert_eq!(consume(path, parser)?.event, Event::DocumentStart);
+    let node = parse_value(path, parser)?;
+    assert_eq!(consume(path, parser)?.event, Event::DocumentEnd);
+    assert_eq!(consume(path, parser)?.event, Event::StreamEnd);
 
-                let lines: Vec<&str> = contents.lines().collect();
-                let lines_count = lines.len();
+    match serde_yaml::from_str::<R>(&source) {
+        Ok(mut value) => {
+            value.set_source_location(SourceLocation {
+                path: Rc::new(path.clone()),
+                node,
+            });
+            Ok(value)
+        }
+        Err(error) => {
+            let range = {
+                let location = error.location().unwrap();
+                let position = Position::new(location.index(), location.line(), location.column());
+                node.pinpoint(&position)
+                    .map_or_else(|| position..position, |node| node.range().to_owned())
+            };
+            Err(CodegenErrors::single(&path, &range, Errors::Serde(error)))
+        }
+    }
+}
 
-                let end = if lines_count < 2 {
-                    let line_length = contents.chars().count();
-                    Position::new(
-                        start.offset + line_length,
-                        start.line,
-                        start.column + line_length,
-                    )
-                } else {
-                    let last_line_length = lines.last().unwrap().chars().count();
-                    Position::new(
-                        start.offset + last_line_length,
-                        start.line + lines_count - 1,
-                        last_line_length,
-                    )
-                };
+fn parse_value(path: &PathBuf, parser: &mut YamlParser<Chars>) -> CodegenResult<NodeRef> {
+    let Token {
+        event: current,
+        position: start,
+    } = consume(path, parser)?;
 
-                cst::Node::Value { range: start..end }
+    let value = match current {
+        Event::Scalar(value, style, ..) => {
+            let contents = match style {
+                TScalarStyle::SingleQuoted => format!("'{value}'"),
+                TScalarStyle::DoubleQuoted => format!("\"{value}\""),
+                _ => value,
+            };
+
+            let lines: Vec<&str> = contents.lines().collect();
+            let lines_count = lines.len();
+
+            let end = if lines_count < 2 {
+                let line_length = contents.chars().count();
+                Position::new(
+                    start.offset + line_length,
+                    start.line,
+                    start.column + line_length,
+                )
+            } else {
+                let last_line_length = lines.last().unwrap().chars().count();
+                Position::new(
+                    start.offset + last_line_length,
+                    start.line + lines_count - 1,
+                    last_line_length,
+                )
+            };
+
+            Node::Value { range: start..end }
+        }
+        Event::SequenceStart(_) => {
+            let mut items = Vec::new();
+
+            let mut start = start;
+            let mut end = loop {
+                if peek(path, parser)?.event == Event::SequenceEnd {
+                    break consume(path, parser)?.position;
+                }
+
+                items.push(parse_value(path, parser)?);
+            };
+
+            if !items.is_empty() {
+                start = min(start, items.first().unwrap().range().start);
+                end = max(end, items.last().unwrap().range().end);
             }
-            Event::SequenceStart(_) => {
-                let mut items = Vec::new();
 
-                let mut start = start;
-                let mut end = loop {
-                    if self.peek()?.event == Event::SequenceEnd {
-                        break self.consume()?.position;
+            Node::Array {
+                range: start..end,
+                items,
+            }
+        }
+        Event::MappingStart(_) => {
+            let mut fields = IndexMap::new();
+
+            let mut start = start;
+            let mut end = loop {
+                let property_name = match peek(path, parser)?.event {
+                    Event::MappingEnd => {
+                        break consume(path, parser)?.position;
                     }
-
-                    items.push(self.parse_value()?);
+                    Event::Scalar(value, ..) => value,
+                    _ => unreachable!("Unexpected property name"),
                 };
 
-                if !items.is_empty() {
-                    start = min(start, items.first().unwrap().range().start);
-                    end = max(end, items.last().unwrap().range().end);
-                }
+                let key = parse_value(path, parser)?;
+                let value = parse_value(path, parser)?;
+                fields.insert(property_name, NodeFieldRef::new(NodeField { key, value }));
+            };
 
-                cst::Node::Array {
-                    range: start..end,
-                    items,
-                }
+            if !fields.is_empty() {
+                start = min(start, fields.first().unwrap().1.key.range().start);
+                end = max(end, fields.last().unwrap().1.value.range().end);
             }
-            Event::MappingStart(_) => {
-                let mut fields = IndexMap::new();
 
-                let mut start = start;
-                let mut end = loop {
-                    let property_name = match self.peek()?.event {
-                        Event::MappingEnd => {
-                            break self.consume()?.position;
-                        }
-                        Event::Scalar(value, ..) => value,
-                        _ => unreachable!("Unexpected property name"),
-                    };
-
-                    let key = self.parse_value()?;
-                    let value = self.parse_value()?;
-                    fields.insert(
-                        property_name,
-                        cst::NodeFieldRef::new(cst::NodeField { key, value }),
-                    );
-                };
-
-                if !fields.is_empty() {
-                    start = min(start, fields.first().unwrap().1.key.range().start);
-                    end = max(end, fields.last().unwrap().1.value.range().end);
-                }
-
-                cst::Node::Object {
-                    range: start..end,
-                    fields,
-                }
+            Node::Object {
+                range: start..end,
+                fields,
             }
-            Event::Nothing
-            | Event::Alias(_)
-            | Event::DocumentEnd
-            | Event::DocumentStart
-            | Event::MappingEnd
-            | Event::SequenceEnd
-            | Event::StreamEnd
-            | Event::StreamStart => {
-                unreachable!("Unexpected event '{current:?}' at {start:?}")
-            }
-        };
+        }
+        Event::Nothing
+        | Event::Alias(_)
+        | Event::DocumentEnd
+        | Event::DocumentStart
+        | Event::MappingEnd
+        | Event::SequenceEnd
+        | Event::StreamEnd
+        | Event::StreamStart => {
+            unreachable!("Unexpected event '{current:?}' at {start:?}")
+        }
+    };
 
-        return Ok(cst::NodeRef::new(value));
-    }
+    return Ok(NodeRef::new(value));
+}
 
-    fn consume(&mut self) -> CodegenResult<Token> {
-        let token = self.peek()?;
-        self.parser.next().unwrap(); // advance the iterator
-        return Ok(token);
-    }
+fn consume(path: &PathBuf, parser: &mut YamlParser<Chars>) -> CodegenResult<Token> {
+    let token = peek(path, parser)?;
+    parser.next().unwrap(); // advance the iterator
+    return Ok(token);
+}
 
-    fn peek(&mut self) -> CodegenResult<Token> {
-        let (event, marker) = self.parser.peek().map_err(|error| {
-            let position = marker_to_position(error.marker());
-            let range = position..position;
-
-            return CodegenErrors::single(self.file_path, &range, Errors::Parser(error));
-        })?;
-
-        return Ok(Token {
+fn peek(path: &PathBuf, parser: &mut YamlParser<Chars>) -> CodegenResult<Token> {
+    match parser.peek() {
+        Ok((event, marker)) => Ok(Token {
             event: event.to_owned(),
             position: marker_to_position(marker),
-        });
+        }),
+        Err(error) => {
+            let position = marker_to_position(error.marker());
+            let range = position..position;
+            Err(CodegenErrors::single(path, &range, Errors::Parser(error)))
+        }
     }
 }
 
@@ -178,4 +207,6 @@ fn marker_to_position(marker: &Marker) -> Position {
 enum Errors {
     #[error("{0}")]
     Parser(yaml_rust::ScanError),
+    #[error("{0}")]
+    Serde(serde_yaml::Error),
 }

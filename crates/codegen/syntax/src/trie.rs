@@ -1,4 +1,4 @@
-use codegen_schema::types::{
+use codegen_schema::{
     production::{Production, VersionMap},
     scanner::{ScannerDefinition, ScannerRef},
 };

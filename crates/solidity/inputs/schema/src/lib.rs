@@ -1,18 +1,21 @@
-use std::path::PathBuf;
-
 use anyhow::Result;
-use codegen_schema::types::grammar::Grammar;
+use codegen_schema::manifest::Manifest;
+use codegen_utils::context::CodegenContext;
 
 pub trait SolidityGrammarExtensions {
-    fn load_solidity() -> Result<Grammar>;
+    fn load_solidity(codegen: &mut CodegenContext) -> Result<Manifest>;
 }
 
-impl SolidityGrammarExtensions for Grammar {
-    fn load_solidity() -> Result<Grammar> {
-        let bin_path = PathBuf::from(env!("SLANG_SOLIDITY_INPUT_SCHEMA_BIN"));
-        let buffer = std::fs::read(&bin_path)?;
-        let grammar: Grammar = bson::from_slice(&buffer)?;
+impl SolidityGrammarExtensions for Manifest {
+    fn load_solidity(codegen: &mut CodegenContext) -> Result<Manifest> {
+        let manifest_dir = codegen
+            .repo_root
+            .join("crates/solidity/inputs/schema/grammar");
 
+        // Rebuild if input files are added/removed
+        codegen.track_input_dir(&manifest_dir);
+
+        let grammar = Manifest::load_from_dir(manifest_dir, codegen)?;
         return Ok(grammar);
     }
 }

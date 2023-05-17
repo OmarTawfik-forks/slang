@@ -29,7 +29,31 @@ pub struct NodeField {
 }
 
 impl Node {
-    pub fn range<'a>(&'a self) -> &'a Range {
+    pub fn value_at_index(&self, index: usize) -> NodeRef {
+        return match self {
+            Node::Value { .. } => panic!("Cannot get value at index of a value node"),
+            Node::Array { items, .. } => items[index].clone(),
+            Node::Object { fields, .. } => fields.values().nth(index).unwrap().value.clone(),
+        };
+    }
+
+    pub fn key_of_field(&self, key: &str) -> Option<NodeRef> {
+        return match self {
+            Node::Value { .. } => panic!("Cannot get key of field of a value node"),
+            Node::Array { .. } => panic!("Cannot get key of field of an array node"),
+            Node::Object { fields, .. } => fields.get(key).map(|field| field.key.clone()),
+        };
+    }
+
+    pub fn value_of_field(&self, key: &str) -> Option<NodeRef> {
+        return match self {
+            Node::Value { .. } => panic!("Cannot get value of field of a value node"),
+            Node::Array { .. } => panic!("Cannot get value of field of an array node"),
+            Node::Object { fields, .. } => fields.get(key).map(|field| field.value.clone()),
+        };
+    }
+
+    pub fn range(&self) -> &Range {
         return match self {
             Node::Value { range, .. } | Node::Array { range, .. } | Node::Object { range, .. } => {
                 range
@@ -37,7 +61,7 @@ impl Node {
         };
     }
 
-    pub fn pinpoint<'a>(&'a self, position: &Position) -> Option<&'a Node> {
+    pub fn pinpoint(&self, position: &Position) -> Option<&Node> {
         if !position.inside(&self.range()) {
             return None;
         }

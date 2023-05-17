@@ -4,12 +4,12 @@ use std::{
 };
 
 use anyhow::{bail, Context, Result};
-use codegen_schema::types::grammar::Grammar;
+use codegen_schema::manifest::Manifest;
 use codegen_utils::context::CodegenContext;
 use walkdir::WalkDir;
 
 pub fn generate_cst_output_tests(
-    grammar: &Grammar,
+    grammar: &Manifest,
     codegen: &mut CodegenContext,
     data_dir: &PathBuf,
     output_dir: &PathBuf,
@@ -75,7 +75,7 @@ fn collect_parser_tests(
 }
 
 fn generate_mod_file(
-    grammar: &Grammar,
+    grammar: &Manifest,
     codegen: &mut CodegenContext,
     mod_file_path: &PathBuf,
     parser_tests: &BTreeMap<String, BTreeSet<String>>,

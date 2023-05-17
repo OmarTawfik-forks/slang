@@ -2,18 +2,7 @@ use std::collections::HashSet;
 
 use codegen_utils::errors::CodegenErrors;
 
-use crate::{
-    validation::{
-        ast::{
-            node::Node,
-            parser::ParserDefinition,
-            scanner::ScannerDefinition,
-            visitors::{Reporter, Visitor, VisitorExtensions, VisitorResponse},
-        },
-        Model,
-    },
-    yaml::cst,
-};
+use super::super::yaml::cst;
 
 use super::definitions::Definitions;
 

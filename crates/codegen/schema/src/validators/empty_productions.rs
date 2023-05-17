@@ -1,15 +1,5 @@
 use codegen_utils::errors::CodegenErrors;
 
-use crate::validation::{
-    ast::{
-        parser::{ParserDefinition, ParserRef},
-        precedence_parser::PrecedenceParserRef,
-        scanner::{ScannerDefinition, ScannerRef},
-        visitors::{Reporter, Visitor, VisitorExtensions, VisitorResponse},
-    },
-    Model,
-};
-
 pub fn check(model: &Model, errors: &mut CodegenErrors) {
     let mut visitor = EmptyProductionsVisitor::new(model);
 

@@ -4,7 +4,7 @@ set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/../_common.sh"
 
 (
-  printf "\n\n🧪 Checking Solidity Grammar 🧪\n\n\n"
+  printf "\n\n🧪 Checking Solidity Manifest 🧪\n\n\n"
 
   cargo check --offline --lib \
     --manifest-path "$REPO_ROOT/crates/solidity/inputs/schema/Cargo.toml"

@@ -4,7 +4,8 @@ mod reporting;
 use std::{collections::HashSet, path::PathBuf};
 
 use anyhow::Result;
-use codegen_schema::types::grammar::Grammar;
+use codegen_schema::manifest::Manifest;
+use codegen_utils::context::CodegenContext;
 use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
 use semver::Version;
 use slang_solidity::{syntax::parser::ProductionKind, Language};
@@ -19,13 +20,15 @@ use crate::{
 fn main() {
     // Fail the parent process if a child thread panics:
     std::panic::catch_unwind(|| -> Result<()> {
-        let grammar = &Grammar::load_solidity()?;
+        return CodegenContext::with_context(|codegen| {
+            let grammar = &Manifest::load_solidity(codegen)?;
 
-        for dataset in get_all_datasets()? {
-            process_dataset(&dataset, &grammar.versions)?;
-        }
+            for dataset in get_all_datasets()? {
+                process_dataset(&dataset, &grammar.versions)?;
+            }
 
-        return Ok(());
+            return Ok(());
+        });
     })
     .unwrap()
     .unwrap();

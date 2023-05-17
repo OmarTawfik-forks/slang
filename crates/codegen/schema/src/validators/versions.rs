@@ -3,18 +3,7 @@ use std::collections::HashSet;
 use codegen_utils::errors::CodegenErrors;
 use semver::Version;
 
-use crate::{
-    validation::{
-        ast::{
-            files::ManifestFile,
-            node::Node,
-            production::ProductionRef,
-            visitors::{Reporter, Visitor, VisitorExtensions, VisitorResponse},
-        },
-        Model,
-    },
-    yaml::cst,
-};
+use super::super::yaml::cst;
 
 pub fn check(model: &Model, errors: &mut CodegenErrors) {
     let mut visitor = VersionsChecker::new(model);

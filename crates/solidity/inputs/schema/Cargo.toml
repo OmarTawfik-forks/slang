@@ -13,5 +13,5 @@ codegen_utils = { workspace = true }
 
 [dependencies]
 anyhow = { workspace = true }
-bson = { workspace = true }
 codegen_schema = { workspace = true }
+codegen_utils = { workspace = true }

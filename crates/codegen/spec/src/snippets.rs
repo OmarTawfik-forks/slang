@@ -2,8 +2,8 @@ use std::path::PathBuf;
 
 use anyhow::Result;
 use codegen_ebnf::EbnfSerializer;
-use codegen_schema::types::{
-    grammar::{Grammar, GrammarSection, GrammarTopic},
+use codegen_schema::{
+    manifest::{Manifest, ManifestSection, ManifestTopic},
     production::{Production, ProductionRef, VersionMap},
 };
 use codegen_utils::context::CodegenContext;
@@ -13,12 +13,12 @@ use semver::Version;
 use crate::markdown::MarkdownWriter;
 
 pub struct Snippets<'context> {
-    grammar: &'context Grammar,
+    grammar: &'context Manifest,
     output_dir: &'context PathBuf,
 }
 
 impl<'context> Snippets<'context> {
-    pub fn new(grammar: &'context Grammar, output_dir: &'context PathBuf) -> Self {
+    pub fn new(grammar: &'context Manifest, output_dir: &'context PathBuf) -> Self {
         return Self {
             grammar,
             output_dir,
@@ -103,7 +103,7 @@ impl<'context> Snippets<'context> {
         return Some(snippet.to_string());
     }
 
-    fn locate_production(&self, name: &str) -> (&GrammarSection, &GrammarTopic) {
+    fn locate_production(&self, name: &str) -> (&ManifestSection, &ManifestTopic) {
         for section in &self.grammar.sections {
             for topic in &section.topics {
                 if topic.productions.contains_key(name) {

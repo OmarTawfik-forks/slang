@@ -1,4 +1,4 @@
-use codegen_schema::types::scanner::{ScannerDefinition, ScannerRef};
+use codegen_schema::scanner::{ScannerDefinition, ScannerRef};
 
 use crate::{nodes::EbnfNode, serialization::GenerateEbnf};
 

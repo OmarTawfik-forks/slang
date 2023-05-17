@@ -3,7 +3,7 @@ use std::{
     path::PathBuf,
 };
 
-use codegen_schema::types::grammar::Grammar;
+use codegen_schema::manifest::Manifest;
 use codegen_utils::context::CodegenContext;
 use inflector::Inflector;
 use proc_macro2::{Ident, TokenStream};
@@ -128,9 +128,9 @@ pub struct CodeGenerator {
 }
 
 impl CodeGenerator {
-    pub fn new(grammar: &Grammar) -> Self {
+    pub fn new(manifest: &Manifest) -> Self {
         Self {
-            first_version: grammar.versions.first().unwrap().clone(),
+            first_version: manifest.versions.first().unwrap().clone(),
             token_kinds: Default::default(),
             scanners: Default::default(),
             rule_kinds: Default::default(),

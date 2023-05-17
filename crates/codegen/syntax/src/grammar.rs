@@ -1,4 +1,4 @@
-use codegen_schema::types::grammar::Grammar;
+use codegen_schema::manifest::Manifest;
 use codegen_utils::context::CodegenContext;
 
 use super::code_generator::CodeGenerator;
@@ -22,7 +22,7 @@ trait PrivateGrammarParserGeneratorExtensions {
     fn create_code_generator(&self) -> CodeGenerator;
 }
 
-impl GrammarParserGeneratorExtensions for Grammar {
+impl GrammarParserGeneratorExtensions for Manifest {
     fn generate_rust_lib_sources(
         &self,
         context: &mut CodegenContext,
@@ -42,7 +42,7 @@ impl GrammarParserGeneratorExtensions for Grammar {
     }
 }
 
-impl PrivateGrammarParserGeneratorExtensions for Grammar {
+impl PrivateGrammarParserGeneratorExtensions for Manifest {
     fn create_code_generator(&self) -> CodeGenerator {
         let version_breaks = self.collect_version_breaks();
 

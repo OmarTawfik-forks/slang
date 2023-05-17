@@ -1,7 +1,7 @@
 use std::{collections::VecDeque, mem::discriminant};
 
-use codegen_schema::types::{
-    grammar::Grammar,
+use codegen_schema::{
+    manifest::Manifest,
     production::{Production, ProductionRef},
 };
 use semver::Version;
@@ -13,7 +13,7 @@ pub trait GenerateEbnf {
 }
 
 pub struct EbnfSerializer<'grammar> {
-    grammar: &'grammar Grammar,
+    grammar: &'grammar Manifest,
     base_production: &'grammar str,
 
     buffer: String,
@@ -22,7 +22,7 @@ pub struct EbnfSerializer<'grammar> {
 
 impl<'grammar> EbnfSerializer<'grammar> {
     pub fn serialize_version(
-        grammar: &'grammar Grammar,
+        grammar: &'grammar Manifest,
         production: &'grammar ProductionRef,
         version: &Version,
     ) -> Option<String> {

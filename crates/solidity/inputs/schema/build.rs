@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use anyhow::Result;
-use codegen_schema::types::grammar::Grammar;
+use codegen_schema::manifest::Manifest;
 use codegen_utils::context::CodegenContext;
 
 fn main() -> Result<()> {
@@ -13,7 +13,7 @@ fn main() -> Result<()> {
         // Rebuild if input files are added/removed
         codegen.track_input_dir(&manifest_dir);
 
-        let grammar = Grammar::compile(codegen, manifest_dir)?;
+        let grammar = Manifest::load_from_dir(manifest_dir, codegen)?;
 
         let mut buffer = Vec::new();
         bson::to_document(&grammar)?.to_writer(&mut buffer)?;

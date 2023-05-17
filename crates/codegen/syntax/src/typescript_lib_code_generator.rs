@@ -1,7 +1,7 @@
 use quote::quote;
 use std::path::PathBuf;
 
-use codegen_schema::types::grammar::Grammar;
+use codegen_schema::manifest::Manifest;
 use codegen_utils::context::CodegenContext;
 
 use super::code_generator::CodeGenerator;
@@ -9,7 +9,7 @@ use super::code_generator::CodeGenerator;
 impl CodeGenerator {
     pub fn write_typescript_lib_sources(
         &self,
-        grammar: &Grammar,
+        grammar: &Manifest,
         codegen: &mut CodegenContext,
         output_dir: &PathBuf,
     ) {

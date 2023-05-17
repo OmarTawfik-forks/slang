@@ -2,19 +2,9 @@ use std::collections::{HashMap, HashSet};
 
 use codegen_utils::errors::CodegenErrors;
 
-use crate::{
-    validation::{
-        ast::{
-            files::{PathBufRef, ProductionsFile},
-            node::Node,
-            parser::ParserRef,
-            production::{Production, ProductionRef},
-            visitors::{Reporter, Visitor, VisitorExtensions, VisitorResponse},
-        },
-        Model,
-    },
-    yaml::cst,
-};
+use crate::production::ProductionRef;
+
+use super::super::yaml::cst;
 
 pub struct Definitions {
     pub required: HashSet<String>,

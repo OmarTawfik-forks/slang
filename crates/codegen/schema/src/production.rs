@@ -5,7 +5,10 @@ use schemars::JsonSchema;
 use semver::Version;
 use serde::{Deserialize, Serialize};
 
-use super::{parser::Parser, precedence_parser::PrecedenceParser, scanner::Scanner};
+use super::{
+    parser::Parser, precedence_parser::PrecedenceParser, scanner::Scanner,
+    yaml::parser::WithSourceLocation, SourceLocation,
+};
 
 pub type ProductionRef = Rc<Production>;
 
@@ -14,21 +17,37 @@ pub type ProductionRef = Rc<Production>;
 #[serde(tag = "kind")]
 pub enum Production {
     Scanner {
+        #[schemars(skip)]
+        #[serde(default, skip)]
+        source_location: Option<SourceLocation>,
+
         name: String,
         #[serde(flatten)]
         version_map: VersionMap<Scanner>,
     },
     TriviaParser {
+        #[schemars(skip)]
+        #[serde(default, skip)]
+        source_location: Option<SourceLocation>,
+
         name: String,
         #[serde(flatten)]
         version_map: VersionMap<Parser>,
     },
     Parser {
+        #[schemars(skip)]
+        #[serde(default, skip)]
+        source_location: Option<SourceLocation>,
+
         name: String,
         #[serde(flatten)]
         version_map: VersionMap<Parser>,
     },
     PrecedenceParser {
+        #[schemars(skip)]
+        #[serde(default, skip)]
+        source_location: Option<SourceLocation>,
+
         name: String,
         #[serde(flatten)]
         version_map: VersionMap<PrecedenceParser>,
@@ -36,6 +55,24 @@ pub enum Production {
 }
 
 impl Production {
+    #[allow(dead_code)]
+    pub fn source_location(&self) -> &Option<SourceLocation> {
+        match self {
+            Self::Scanner {
+                source_location, ..
+            }
+            | Self::TriviaParser {
+                source_location, ..
+            }
+            | Self::Parser {
+                source_location, ..
+            }
+            | Self::PrecedenceParser {
+                source_location, ..
+            } => source_location,
+        }
+    }
+
     #[allow(dead_code)]
     pub fn name(&self) -> &String {
         match self {
@@ -65,6 +102,25 @@ impl Production {
                 VersionMap::Unversioned(_) => None,
                 VersionMap::Versioned(ref map) => Some(map.keys().collect()),
             },
+        }
+    }
+}
+
+impl WithSourceLocation for Production {
+    fn set_source_location(&mut self, location: SourceLocation) {
+        match self {
+            Production::Scanner {
+                source_location, ..
+            }
+            | Production::TriviaParser {
+                source_location, ..
+            }
+            | Production::Parser {
+                source_location, ..
+            }
+            | Production::PrecedenceParser {
+                source_location, ..
+            } => *source_location = Some(location),
         }
     }
 }

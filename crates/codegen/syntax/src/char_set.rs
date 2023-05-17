@@ -3,7 +3,7 @@ use std::{
     ops::Range,
 };
 
-use codegen_schema::types::{
+use codegen_schema::{
     production::Production,
     scanner::{ScannerDefinition, ScannerRef},
 };
@@ -172,7 +172,7 @@ impl CharSet {
             ScannerDefinition::Reference(name) => Self::from_scanner(
                 tree,
                 match tree.context.get_tree_by_name(name).production.as_ref() {
-                    Production::Scanner { name, version_map } => {
+                    Production::Scanner { name, version_map, .. } => {
                         version_map.get_for_version(&tree.context.version).expect(
                             &format!("Validation should have ensured: no version of {name} exists for version {version}", version = tree.context.version)
                         ).clone()

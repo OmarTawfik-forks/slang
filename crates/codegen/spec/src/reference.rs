@@ -1,10 +1,10 @@
 use std::path::PathBuf;
 
-use codegen_schema::types::grammar::{Grammar, GrammarSection, GrammarTopic};
+use codegen_schema::manifest::{Manifest, ManifestSection, ManifestTopic};
 
 use crate::{markdown::MarkdownWriter, navigation::NavigationEntry};
 
-pub fn generate_reference_dir(grammar: &Grammar, repo_root: &PathBuf) -> NavigationEntry {
+pub fn generate_reference_dir(grammar: &Manifest, repo_root: &PathBuf) -> NavigationEntry {
     let mut sections = Vec::<NavigationEntry>::new();
 
     for section in &grammar.sections {
@@ -33,9 +33,9 @@ pub fn generate_reference_dir(grammar: &Grammar, repo_root: &PathBuf) -> Navigat
 }
 
 fn generate_topic_page(
-    grammar: &Grammar,
-    section: &GrammarSection,
-    topic: &GrammarTopic,
+    grammar: &Manifest,
+    section: &ManifestSection,
+    topic: &ManifestTopic,
     repo_root: &PathBuf,
 ) -> String {
     let mut page = MarkdownWriter::new();
@@ -46,10 +46,15 @@ fn generate_topic_page(
     page.write_snippet(
         repo_root,
         &grammar
-            .manifest_dir
+            .source_location
+            .clone()
+            .unwrap()
+            .path
+            .parent()
+            .unwrap()
             .join(&section.path)
             .join(&topic.path)
-            .join(GrammarTopic::notes_file()),
+            .join("notes.md"),
     );
 
     return page.to_string();

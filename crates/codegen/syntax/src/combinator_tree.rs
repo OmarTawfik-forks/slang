@@ -1,7 +1,7 @@
 use std::{cell::Cell, fmt::Write};
 
 use codegen_ebnf::EbnfSerializer;
-use codegen_schema::types::production::{Production, ProductionRef};
+use codegen_schema::production::{Production, ProductionRef};
 
 use crate::first_set::FirstSet;
 

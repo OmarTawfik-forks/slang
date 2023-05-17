@@ -1,4 +1,4 @@
-use codegen_schema::types::{
+use codegen_schema::{
     parser::{ParserDefinition, ParserRef},
     precedence_parser::{OperatorModel, PrecedenceParserRef},
     scanner::{ScannerDefinition, ScannerRef},
