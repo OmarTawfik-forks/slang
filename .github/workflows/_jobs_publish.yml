@@ -57,7 +57,7 @@ jobs:
       - name: "Restore build cache"
         uses: "actions/cache/restore@v3.3.1"
         with:
-          path: "target/"
+          path: "**/target/"
           key: "build-cache-${{ hashFiles('Cargo.lock', 'package-lock.json', 'Pipfile.lock') }}"
           fail-on-cache-miss: true
 
@@ -74,13 +74,6 @@ jobs:
       #
       # Build and Publish:
       #
-
-      - name: "Build Native Binaries"
-        uses: "./.devcontainer"
-        with:
-          entrypoint: "scripts/npm/build.sh"
-        env:
-          SLANG_CROSS_BUILD: "true"
 
       - name: "Publish to NPM"
         uses: "./.devcontainer"

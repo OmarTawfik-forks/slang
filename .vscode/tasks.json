@@ -16,7 +16,7 @@
       },
       "problemMatcher": {
         "owner": "solidity",
-        "source": "codegen_utils",
+        "source": "slang",
         "applyTo": "allDocuments",
         "fileLocation": "absolute",
         "pattern": [

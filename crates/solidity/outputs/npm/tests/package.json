@@ -5,7 +5,7 @@
     "@swc-node/register": "1.6.6",
     "@swc/core": "1.3.66",
     "ava": "5.3.1",
-    "@nomicfoundation/slang": "file:../package/target/dist"
+    "@nomicfoundation/slang": "file:../package/target/npm/main"
   },
   "ava": {
     "require": [
@@ -20,6 +20,6 @@
     "timeout": "30s"
   },
   "scripts": {
-    "slang-test": "ava"
+    "test": "ava"
   }
 }

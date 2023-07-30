@@ -35,7 +35,7 @@ jobs:
       - name: "Restore build cache"
         uses: "actions/cache/restore@v3.3.1"
         with:
-          path: "target/"
+          path: "**/target/"
           key: "build-cache-${{ hashFiles('Cargo.lock', 'package-lock.json', 'Pipfile.lock') }}"
           fail-on-cache-miss: true
 

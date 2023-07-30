@@ -1,5 +1,6 @@
 env = {
-  // Used by build scripts to locate source files:
+  // Infra:
+  "IS_RUNNING_IN_NOMIC_FOUNDATION_SLANG_REPO": "true",
   "REPO_ROOT": "${HERMIT_ENV}",
 
   // Python:

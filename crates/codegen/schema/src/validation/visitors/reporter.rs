@@ -1,6 +1,7 @@
 use std::{collections::HashMap, error::Error, path::PathBuf};
 
-use codegen_utils::errors::{CodegenErrors, CodegenResult};
+use anyhow::Result;
+use infra_utils::errors::InfraErrors;
 
 use crate::{
     validation::visitors::location::{Location, LocationRef},
@@ -20,8 +21,8 @@ impl Reporter {
         self.errors.push((location.to_owned(), error.to_string()));
     }
 
-    pub fn to_result(self) -> CodegenResult<()> {
-        let mut errors = CodegenErrors::new();
+    pub fn to_result(self) -> Result<()> {
+        let mut errors = InfraErrors::new();
         let mut cst_cache = HashMap::<PathBuf, NodeRef>::new();
 
         for (location, message) in self.errors {

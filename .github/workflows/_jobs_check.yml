@@ -30,7 +30,7 @@ jobs:
         if: "${{ github.ref_name != 'main' }}"
         uses: "actions/cache/restore@v3.3.1"
         with:
-          path: "target/"
+          path: "**/target/"
           key: "build-cache-${{ hashFiles('Cargo.lock', 'package-lock.json', 'Pipfile.lock') }}"
           restore-keys: "build-cache-"
 
@@ -61,12 +61,6 @@ jobs:
         uses: "./.devcontainer"
         with:
           entrypoint: "scripts/cargo/test.sh"
-
-      - name: "NPM build"
-        if: "${{ (success() || failure()) && steps.installDependencies.outcome == 'success' }}"
-        uses: "./.devcontainer"
-        with:
-          entrypoint: "scripts/npm/build.sh"
 
       - name: "NPM test"
         if: "${{ (success() || failure()) && steps.installDependencies.outcome == 'success' }}"
@@ -102,5 +96,5 @@ jobs:
       - name: "Save build cache"
         uses: "actions/cache/save@v3.3.1"
         with:
-          path: "target/"
+          path: "**/target/"
           key: "build-cache-${{ hashFiles('Cargo.lock', 'package-lock.json', 'Pipfile.lock') }}"
