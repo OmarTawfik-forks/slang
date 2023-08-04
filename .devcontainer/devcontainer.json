@@ -6,7 +6,7 @@
   },
   "postAttachCommand": "/bin/bash scripts/setup/all.sh",
   "portsAttributes": {
-    // Keep in-sync with the port number defined in "$REPO_ROOT/scripts/mkdocs/watch.sh":
+    // _MKDOCS_WATCH_PORT_ | keep in sync with the port number defined in "$REPO_ROOT/scripts/mkdocs/watch.sh"
     "5353": {
       "label": "mkdocs",
       "onAutoForward": "openPreview"

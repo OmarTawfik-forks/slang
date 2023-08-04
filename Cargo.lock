@@ -824,6 +824,7 @@ dependencies = [
  "lazy_static",
  "owo-colors",
  "rayon",
+ "regex",
  "semver",
  "serde",
  "similar-asserts",

@@ -3,12 +3,15 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::{Context, Result};
+use anyhow::Result;
 use lazy_static::lazy_static;
 use rayon::prelude::{IntoParallelRefIterator, ParallelIterator};
 use semver::Version;
 
-use crate::{cargo::workspace::serde::Manifest, paths::PrivatePathExtensions};
+use crate::{
+    cargo::serde::{CrateManifest, WorkspaceManifest},
+    paths::PrivatePathExtensions,
+};
 
 lazy_static! {
     pub static ref CACHE: Cache = Cache::load().expect("Failed to load cache.");
@@ -40,6 +43,7 @@ impl Cache {
 }
 
 pub struct Workspace {
+    pub version: Version,
     pub members: Vec<String>,
     pub dependencies: HashMap<String, Version>,
 }
@@ -47,11 +51,12 @@ pub struct Workspace {
 impl Workspace {
     fn load(repo_root: &Path) -> Result<Self> {
         let super::serde::Workspace {
+            package,
             members,
             dependencies,
-        } = Manifest::load(&repo_root)?
-            .workspace
-            .context("Cannot find a [workspace] table in the root manifest.")?;
+        } = WorkspaceManifest::load(&repo_root)?.workspace;
+
+        let version = package.version;
 
         let dependencies = dependencies
             .into_iter()
@@ -59,6 +64,7 @@ impl Workspace {
             .collect();
 
         return Ok(Self {
+            version,
             members,
             dependencies,
         });
@@ -72,10 +78,7 @@ pub struct Crate {
 
 impl Crate {
     fn load(crate_dir: PathBuf) -> Result<Self> {
-        let super::serde::Package { name } =
-            Manifest::load(&crate_dir)?.package.with_context(|| {
-                format!("Cannot find a [package] table in the manifest of: {crate_dir:?}")
-            })?;
+        let super::serde::CratePackage { name } = CrateManifest::load(&crate_dir)?.package;
 
         return Ok(Crate { name, crate_dir });
     }

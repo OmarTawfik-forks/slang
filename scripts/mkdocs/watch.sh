@@ -3,7 +3,7 @@ set -euo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/../_common.sh"
 
-# Keep in-sync with the port number defined in "$REPO_ROOT/.devcontainer/devcontainer.json":
+# _MKDOCS_WATCH_PORT_ | keep in sync with the port number defined in "$REPO_ROOT/.devcontainer/devcontainer.json"
 WATCH_PORT=5353
 
 (

@@ -1,5 +1,6 @@
 mod check;
 mod lint;
+mod publish;
 mod run;
 mod setup;
 mod test;
@@ -8,7 +9,8 @@ use anyhow::Result;
 use clap::{Parser, Subcommand};
 
 use crate::commands::{
-    check::CheckCommand, lint::LintCommand, run::RunCommand, setup::SetupCommand, test::TestCommand,
+    check::CheckCommand, lint::LintCommand, publish::PublishCommand, run::RunCommand,
+    setup::SetupCommand, test::TestCommand,
 };
 
 #[derive(Debug, Parser)]
@@ -29,6 +31,8 @@ pub enum Command {
     Lint(LintCommand),
     /// Runs a local binary within this repository, forwarding any additional arguments along.
     Run(RunCommand),
+    /// Publishes different artifacts after a successful CI build on main branch.
+    Publish(PublishCommand),
 }
 
 impl CLI {
@@ -39,6 +43,7 @@ impl CLI {
             Command::Test(test_command) => test_command.execute(),
             Command::Lint(lint_command) => lint_command.execute(),
             Command::Run(run_command) => run_command.execute(),
+            Command::Publish(publish_command) => publish_command.execute(),
         };
     }
 }
