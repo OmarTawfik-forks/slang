@@ -2,16 +2,16 @@ use std::path::PathBuf;
 
 use infra_utils::cargo::CargoWorkspace;
 
-use crate::toolchains::napi::napi_cli::BuildTarget;
+use crate::toolchains::napi::cli::BuildTarget;
 
 pub enum NapiPackageKind {
     Main,
     Platform(String),
 }
 
-pub struct Resolver;
+pub struct NapiResolver;
 
-impl Resolver {
+impl NapiResolver {
     pub fn crate_dir() -> &'static PathBuf {
         return CargoWorkspace::locate_source_crate("solidity_npm_crate");
     }

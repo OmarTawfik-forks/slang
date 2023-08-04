@@ -9,9 +9,9 @@ use infra_utils::{
 };
 
 use crate::toolchains::napi::{
+    cli::{BuildTarget, NapiCli, NapiCliOutput},
     config::NapiConfig,
-    napi_cli::{BuildTarget, NapiCli, NapiCliOutput},
-    resolver::{NapiPackageKind, Resolver},
+    resolver::{NapiPackageKind, NapiResolver},
 };
 
 pub enum NapiProfile {
@@ -81,24 +81,18 @@ fn compile_target(target: &BuildTarget) -> Result<NapiCliOutput> {
         _ => "cargo",
     };
 
-    let output_dir = Resolver::napi_target_dir(target);
+    let output_dir = NapiResolver::napi_target_dir(target);
 
     std::fs::create_dir_all(&output_dir)?;
 
-    return NapiCli::build(
-        Resolver::package_dir(),
-        Resolver::crate_dir(),
-        output_dir,
-        cargo_executable,
-        target,
-    );
+    return NapiCli::build(output_dir, cargo_executable, target);
 }
 
 fn process_generated_files(napi_output: &NapiCliOutput) -> Result<()> {
     let mut codegen = Codegen::write_only()?;
 
     for raw_file in &napi_output.source_files {
-        let destination_file = Resolver::generated_dir().join(raw_file.unwrap_name());
+        let destination_file = NapiResolver::generated_dir().join(raw_file.unwrap_name());
 
         let w = &mut String::new();
 
@@ -124,8 +118,8 @@ fn process_generated_files(napi_output: &NapiCliOutput) -> Result<()> {
 }
 
 fn compile_root_package(node_binary: Option<&Path>) -> Result<()> {
-    let package_dir = Resolver::package_dir();
-    let output_dir = Resolver::npm_target_dir(&NapiPackageKind::Main);
+    let package_dir = NapiResolver::package_dir();
+    let output_dir = NapiResolver::npm_target_dir(&NapiPackageKind::Main);
 
     std::fs::create_dir_all(&output_dir)?;
 
@@ -143,8 +137,8 @@ fn compile_root_package(node_binary: Option<&Path>) -> Result<()> {
         std::fs::copy(source, destination)?;
     }
 
-    let generated_dir = Resolver::generated_dir();
-    let output_dir = Resolver::generated_target_dir();
+    let generated_dir = NapiResolver::generated_dir();
+    let output_dir = NapiResolver::generated_target_dir();
 
     std::fs::create_dir_all(&output_dir)?;
 
@@ -164,9 +158,10 @@ fn compile_root_package(node_binary: Option<&Path>) -> Result<()> {
 }
 
 fn compile_platform_packages(node_binaries: &Vec<PathBuf>) -> Result<()> {
-    for platform_dir in Resolver::platforms_dir().collect_children()? {
+    for platform_dir in NapiResolver::platforms_dir().collect_children()? {
         let platform = platform_dir.unwrap_name();
-        let output_dir = Resolver::npm_target_dir(&NapiPackageKind::Platform(platform.to_owned()));
+        let package_kind = NapiPackageKind::Platform(platform.to_owned());
+        let output_dir = NapiResolver::npm_target_dir(&package_kind);
 
         std::fs::create_dir_all(&output_dir)?;
 

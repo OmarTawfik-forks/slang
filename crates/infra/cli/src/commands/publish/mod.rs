@@ -33,25 +33,29 @@ impl OrderedCommand for PublishCommand {
 }
 
 fn publish_cargo() -> Result<()> {
-    let local_version = CargoWorkspace::local_version();
-    println!("Repository version: {local_version}");
+    let workspace_version = CargoWorkspace::workspace_version();
+    println!("Workspace_version version: {workspace_version}");
 
-    let published_version = CargoWorkspace::published_version()?;
-    println!("Published version: {published_version}");
+    for crate_name in CargoWorkspace::PUBLISHED_CRATES {
+        let published_version = CargoWorkspace::crate_published_version(crate_name)?;
+        println!("Published version: {published_version}");
 
-    if local_version == &published_version {
-        println!("Skipping publish, since the repository version is already published.");
-        return Ok(());
+        if workspace_version == &published_version {
+            println!("Skipping crate, since the workspace version is already published.");
+            continue;
+        }
+
+        let mut command = Command::new("cargo")
+            .arg("publish")
+            .property("--package", crate_name)
+            .flag("--all-features");
+
+        if !GitHub::is_running_in_ci() {
+            command = command.flag("--dry-run");
+        }
+
+        command.run()?;
     }
 
-    let mut command = Command::new("cargo")
-        .arg("publish")
-        .property("--package", "slang_solidity")
-        .flag("--all-features");
-
-    if !GitHub::is_running_in_ci() {
-        command = command.flag("--dry-run");
-    }
-
-    return command.run();
+    return Ok(());
 }

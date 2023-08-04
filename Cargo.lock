@@ -807,6 +807,7 @@ dependencies = [
  "anyhow",
  "clap",
  "infra_utils",
+ "semver",
  "serde",
  "serde_json",
  "toml",

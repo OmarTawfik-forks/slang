@@ -3,6 +3,8 @@ use std::path::{Path, PathBuf};
 use anyhow::{bail, Context, Result};
 use infra_utils::{commands::Command, paths::PathExtensions};
 
+use crate::toolchains::napi::resolver::NapiResolver;
+
 pub enum BuildTarget {
     Debug,
     ReleaseTarget(String),
@@ -19,25 +21,21 @@ pub struct NapiCli;
 
 impl NapiCli {
     pub fn build(
-        package_dir: impl AsRef<Path>,
-        crate_dir: impl AsRef<Path>,
         output_dir: impl AsRef<Path>,
         cargo_executable: impl Into<String>,
         target: &BuildTarget,
     ) -> Result<NapiCliOutput> {
-        let package_dir = package_dir.as_ref();
-        let crate_dir = crate_dir.as_ref();
         let output_dir = output_dir.as_ref();
+        let package_dir = NapiResolver::package_dir();
+        let crate_dir = NapiResolver::crate_dir();
 
         let mut command = Command::new("napi");
 
         {
-            // NAPI will fail if it was invoked with full paths.
-            // It expects all arguments to be relative to the current directory.
-            // Commands run from repo root by default, so let's strip it from paths.
+            // Note: NAPI expects all arguments to be relative to the current directory.
+            let output_dir = output_dir.strip_repo_root()?;
             let package_dir = package_dir.strip_repo_root()?;
             let crate_dir = crate_dir.strip_repo_root()?;
-            let output_dir = output_dir.strip_repo_root()?;
 
             command = command
                 .args(["build", output_dir.unwrap_str()])
@@ -93,5 +91,22 @@ impl NapiCli {
             source_files,
             node_binary,
         });
+    }
+
+    pub fn prepublish() -> Result<()> {
+        let package_dir = NapiResolver::package_dir();
+        let platforms_dir = NapiResolver::platforms_dir();
+
+        // Note: NAPI expects all arguments to be relative to the current directory.
+        let package_dir = package_dir.strip_repo_root()?;
+        let platforms_dir = platforms_dir.strip_repo_root()?;
+
+        return Command::new("napi")
+            .arg("prepublish")
+            .flag("--skip-gh-release")
+            .property("--config", package_dir.join("package.json").unwrap_str())
+            .property("--prefix", platforms_dir.unwrap_str())
+            .env("npm_config_dry_run", "true")
+            .run();
     }
 }

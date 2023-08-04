@@ -1,6 +1,9 @@
 mod compiler;
 mod config;
-mod napi_cli;
+mod cli;
 mod resolver;
 
 pub use compiler::*;
+pub use config::*;
+pub use cli::*;
+pub use resolver::*;

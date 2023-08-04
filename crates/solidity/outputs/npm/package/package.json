@@ -70,9 +70,5 @@
     "smart-contracts",
     "solidity",
     "tooling"
-  ],
-  "scripts": {
-    "slang-bump-version": "$REPO_ROOT/scripts/npm/napi/bump-version.sh",
-    "slang-publish": "$REPO_ROOT/scripts/npm/napi/publish.sh"
-  }
+  ]
 }

@@ -1,15 +1,22 @@
-use std::{env::var, path::PathBuf};
+use std::{
+    env::var,
+    path::{Path, PathBuf},
+};
 
-use anyhow::{Context, Result};
+use anyhow::{ensure, Context, Result};
 use regex::Regex;
 use semver::Version;
 
-use crate::{cargo::cache::CACHE, commands::Command};
+use crate::{cargo::cache::CACHE, commands::Command, paths::PathExtensions};
 
 pub struct CargoWorkspace;
 
 impl CargoWorkspace {
-    pub fn install_binary(crate_name: &str) -> Result<()> {
+    pub const PUBLISHED_CRATES: [&'static str; 1] = ["slang_solidity"];
+
+    pub fn install_binary(crate_name: impl AsRef<str>) -> Result<()> {
+        let crate_name = crate_name.as_ref();
+
         let version = CACHE
             .workspace
             .dependencies
@@ -24,39 +31,65 @@ impl CargoWorkspace {
     }
 
     pub fn is_running_inside_build_scripts() -> bool {
-        return var("TARGET").is_ok();
+        return var("CARGO_MANIFEST_DIR").is_ok() && var("TARGET").is_ok();
     }
 
-    pub fn locate_source_crate(name: &str) -> &PathBuf {
+    pub fn locate_source_crate(crate_name: impl AsRef<str>) -> &'static PathBuf {
+        let crate_name = crate_name.as_ref();
+
         return &CACHE
             .crates
-            .get(name)
-            .with_context(|| format!("Failed to find crate: {name}"))
+            .get(crate_name)
+            .with_context(|| format!("Failed to find crate: {crate_name}"))
             .unwrap()
             .crate_dir;
     }
 
-    pub fn local_version() -> &'static Version {
+    pub fn workspace_version() -> &'static Version {
         return &CACHE.workspace.version;
     }
 
-    pub fn published_version() -> Result<Version> {
-        // Expected Output from 'cargo search slang_solidity':
+    pub fn crate_published_version(crate_name: impl AsRef<str>) -> Result<Version> {
+        let crate_name = crate_name.as_ref();
+
+        // Expected Output from 'cargo search crate_name':
         //
-        // slang_solidity = "1.2.3" # description
+        // crate_name = "1.2.3" # description
         //
         // Extract and parse the version (middle part).
 
         let output = Command::new("cargo")
-            .args(["search", "slang_solidity"])
+            .args(["search", crate_name])
             .evaluate()?;
 
-        let (_full, [version]) = Regex::new(r#"^slang_solidity = "(\d+\.\d+\.\d+)" *#"#)?
+        let (_full, [version]) = Regex::new(&format!(r#"^{crate_name} = "(\d+\.\d+\.\d+)" *#"#))?
             .captures(&output)
             .with_context(|| format!("Failed to extract version:\n{output}"))?
             .extract();
 
         return Version::parse(version)
             .with_context(|| format!("Failed to parse version: '{version}'"));
+    }
+
+    pub fn update_workspace_version(
+        existing_version: &Version,
+        updated_version: &Version,
+    ) -> Result<()> {
+        // A hack until 'cargo metadata' can support updating versions.
+        // Just read the 'Cargo.toml' file manually and update the version:
+
+        let cargo_toml = Path::repo_path("Cargo.toml");
+        let existing_contents = std::fs::read_to_string(&cargo_toml)?;
+
+        let existing_header = format!("[workspace.package]\nversion = \"{existing_version}\"\n");
+        let updated_header = format!("[workspace.package]\nversion = \"{updated_version}\"\n");
+        ensure!(existing_contents.starts_with(&existing_header));
+
+        let updated_contents = existing_contents.replace(&existing_header, &updated_header);
+        ensure!(updated_contents.starts_with(&updated_header));
+
+        std::fs::write(&cargo_toml, updated_contents)?;
+
+        return Ok(());
     }
 }
