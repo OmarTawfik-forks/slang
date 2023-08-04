@@ -2,7 +2,7 @@ use anyhow::Result;
 use clap::{Parser, ValueEnum};
 use infra_utils::{cargo::CargoWorkspace, commands::Command, terminal::Terminal};
 
-use crate::utils::ClapExtensions;
+use crate::extensions::ClapExtensions;
 
 #[derive(Clone, Debug, Parser)]
 pub struct RunController {

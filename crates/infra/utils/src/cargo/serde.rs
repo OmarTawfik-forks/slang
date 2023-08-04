@@ -4,6 +4,8 @@ use anyhow::{Context, Result};
 use semver::Version;
 use serde::{de::DeserializeOwned, Deserialize};
 
+use crate::paths::PathExtensions;
+
 #[derive(Deserialize)]
 pub struct WorkspaceManifest {
     pub workspace: Workspace,
@@ -49,11 +51,8 @@ impl CrateManifest {
 }
 
 fn load_manifest<T: DeserializeOwned>(crate_dir: &Path) -> Result<T> {
-    let path = crate_dir.join("Cargo.toml");
+    let manifest_path = crate_dir.join("Cargo.toml");
 
-    let contents = std::fs::read_to_string(&path)
-        .with_context(|| format!("Failed to read manifest: {path:?}"))?;
-
-    return toml::from_str::<T>(&contents)
-        .with_context(|| format!("Failed to read manifest: {path:?}"));
+    return toml::from_str::<T>(&manifest_path.read_to_string()?)
+        .with_context(|| format!("Failed to deserialize manifest: {manifest_path:?}"));
 }

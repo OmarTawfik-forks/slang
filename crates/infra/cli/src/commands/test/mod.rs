@@ -2,7 +2,7 @@ use anyhow::Result;
 use clap::{Parser, ValueEnum};
 use infra_utils::{commands::Command, terminal::Terminal};
 
-use crate::utils::{ClapExtensions, OrderedCommand};
+use crate::extensions::{ClapExtensions, OrderedCommand};
 
 #[derive(Clone, Debug, Parser)]
 pub struct TestController {
@@ -12,7 +12,7 @@ pub struct TestController {
 
 impl TestController {
     pub fn execute(&self) -> Result<()> {
-        return TestCommand::execute_in_order(&self.commands);
+        return TestCommand::execute_all(&self.commands);
     }
 }
 

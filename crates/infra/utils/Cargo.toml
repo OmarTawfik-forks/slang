@@ -17,6 +17,7 @@ rayon = { workspace = true }
 regex = { workspace = true }
 semver = { workspace = true }
 serde = { workspace = true }
+serde_json = { workspace = true }
 similar-asserts = { workspace = true }
 tera = { workspace = true }
 terminal_size = { workspace = true }

@@ -11,6 +11,8 @@ description = "Commands to build, test, version, and publish projects in this re
 anyhow = { workspace = true }
 clap = { workspace = true }
 infra_utils = { workspace = true }
+itertools = { workspace = true }
+markdown = { workspace = true }
 semver = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }

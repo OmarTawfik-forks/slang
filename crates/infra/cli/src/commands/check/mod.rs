@@ -3,8 +3,8 @@ use clap::{Parser, ValueEnum};
 use infra_utils::{commands::Command, github::GitHub, terminal::Terminal};
 
 use crate::{
+    extensions::{ClapExtensions, OrderedCommand},
     toolchains::napi::{NapiCompiler, NapiProfile},
-    utils::{ClapExtensions, OrderedCommand},
 };
 
 #[derive(Clone, Debug, Parser)]
@@ -15,7 +15,7 @@ pub struct CheckController {
 
 impl CheckController {
     pub fn execute(&self) -> Result<()> {
-        return CheckCommand::execute_in_order(&self.commands);
+        return CheckCommand::execute_all(&self.commands);
     }
 }
 

@@ -1,5 +1,5 @@
-use anyhow::Result;
-use clap::{Parser, Subcommand};
+use anyhow::{bail, Result};
+use clap::{Parser, Subcommand, ValueEnum};
 use infra_utils::{
     cargo::CargoWorkspace,
     commands::Command,
@@ -7,7 +7,10 @@ use infra_utils::{
     terminal::Terminal,
 };
 
-use crate::toolchains::napi::{NapiCli, NapiConfig, NapiResolver};
+use crate::{
+    extensions::ClapExtensions,
+    toolchains::napi::{NapiCli, NapiConfig, NapiResolver},
+};
 
 /*
  * This repository versions and releases all its artifacts together, generating the same changelog.
@@ -27,7 +30,7 @@ pub struct ChangesetController {
     command: ChangesetCommand,
 }
 
-#[derive(Clone, Debug, Subcommand)]
+#[derive(Clone, Debug, Subcommand, ValueEnum)]
 pub enum ChangesetCommand {
     /// Adds a new changeset entry as markdown.
     Add,
@@ -37,7 +40,7 @@ pub enum ChangesetCommand {
 
 impl ChangesetController {
     pub fn execute(&self) -> Result<()> {
-        Terminal::separator("changeset");
+        Terminal::separator(self.command.clap_name());
 
         return match self.command {
             ChangesetCommand::Add => add_changeset(),
@@ -51,8 +54,15 @@ fn add_changeset() -> Result<()> {
 }
 
 fn consume_changesets() -> Result<()> {
-    let existing_version = NapiConfig::main_package_version()?;
-    println!("Existing version: {existing_version}");
+    let workspace_version = CargoWorkspace::workspace_version();
+    println!("Workspace version: {workspace_version}");
+
+    let main_package_version = NapiConfig::main_package_version()?;
+    println!("Main package version: {main_package_version}");
+
+    if workspace_version != &main_package_version {
+        bail!("Workspace version '{workspace_version}' and main package version '{main_package_version}' do not match.");
+    }
 
     // This command will:
     // 1) Consume/delete any changeset files currently in "$REPO_ROOT/.changeset"
@@ -64,7 +74,7 @@ fn consume_changesets() -> Result<()> {
     let updated_version = NapiConfig::main_package_version()?;
     println!("Updated version: {updated_version}");
 
-    if existing_version == updated_version {
+    if main_package_version == updated_version {
         println!("No version changes. Skipping.");
         return Ok(());
     }
@@ -90,7 +100,7 @@ fn consume_changesets() -> Result<()> {
     // Update Cargo workspace:
 
     println!("Updating Cargo workspace version.");
-    CargoWorkspace::update_workspace_version(&existing_version, &updated_version)?;
+    CargoWorkspace::update_workspace_version(&main_package_version, &updated_version)?;
 
     // Update Cargo lock file:
 

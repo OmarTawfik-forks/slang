@@ -10,6 +10,8 @@ pub trait PathExtensions {
 
     fn generated_dir(&self) -> Result<PathBuf>;
 
+    fn read_to_string(&self) -> Result<String>;
+
     fn repo_path(relative_path: impl AsRef<Path>) -> PathBuf;
 
     fn strip_repo_root(&self) -> Result<&Path>;
@@ -56,6 +58,11 @@ impl PathExtensions for Path {
         let generated_dir = self.iter().take(generated_index + 1).collect();
 
         return Ok(generated_dir);
+    }
+
+    fn read_to_string(&self) -> Result<String> {
+        return std::fs::read_to_string(self)
+            .with_context(|| format!("Failed to read file: {self:?}"));
     }
 
     fn repo_path(relative_path: impl AsRef<Path>) -> PathBuf {

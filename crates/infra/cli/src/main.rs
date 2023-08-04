@@ -1,6 +1,6 @@
 mod commands;
+mod extensions;
 mod toolchains;
-mod utils;
 
 use anyhow::Result;
 use clap::Parser;

@@ -4,7 +4,7 @@ use clap::ValueEnum;
 pub trait OrderedCommand: Clone + Ord + PartialEq + ValueEnum {
     fn execute(&self) -> Result<()>;
 
-    fn execute_in_order(commands: &Vec<Self>) -> Result<()> {
+    fn execute_all(commands: &Vec<Self>) -> Result<()> {
         let mut commands = commands.clone();
 
         if commands.is_empty() {

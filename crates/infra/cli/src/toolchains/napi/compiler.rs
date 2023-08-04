@@ -109,7 +109,7 @@ fn process_generated_files(napi_output: &NapiCliOutput) -> Result<()> {
         writeln!(w)?;
         writeln!(w, "// @ts-nocheck")?;
         writeln!(w)?;
-        writeln!(w, "{}", std::fs::read_to_string(raw_file)?)?;
+        writeln!(w, "{}", raw_file.read_to_string()?)?;
 
         codegen.write_file(destination_file, w)?;
     }

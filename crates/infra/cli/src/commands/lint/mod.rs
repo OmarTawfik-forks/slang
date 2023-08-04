@@ -10,7 +10,7 @@ use infra_utils::{
     terminal::Terminal,
 };
 
-use crate::utils::{ClapExtensions, OrderedCommand};
+use crate::extensions::{ClapExtensions, OrderedCommand};
 
 #[derive(Clone, Debug, Parser)]
 pub struct LintController {
@@ -20,7 +20,7 @@ pub struct LintController {
 
 impl LintController {
     pub fn execute(&self) -> Result<()> {
-        return LintCommand::execute_in_order(&self.commands);
+        return LintCommand::execute_all(&self.commands);
     }
 }
 

@@ -1,7 +1,7 @@
 use std::{collections::HashMap, error::Error, path::PathBuf};
 
 use anyhow::Result;
-use infra_utils::errors::InfraErrors;
+use infra_utils::{errors::InfraErrors, paths::PathExtensions};
 
 use crate::{
     validation::visitors::location::{Location, LocationRef},
@@ -29,8 +29,7 @@ impl Reporter {
             let (file_path, path) = location.flatten();
 
             let cst = cst_cache.entry(file_path.to_owned()).or_insert_with(|| {
-                let source = std::fs::read_to_string(&file_path)
-                    .expect(&format!("File cannot be read: {file_path:?}"));
+                let source = file_path.read_to_string().unwrap();
 
                 return Parser::run_parser(&file_path, &source)
                     .expect(&format!("File cannot be parsed: {file_path:?}"));

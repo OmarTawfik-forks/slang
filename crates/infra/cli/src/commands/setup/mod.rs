@@ -10,7 +10,7 @@ use infra_utils::{
 };
 use serde::Deserialize;
 
-use crate::utils::{ClapExtensions, OrderedCommand};
+use crate::extensions::{ClapExtensions, OrderedCommand};
 
 #[derive(Clone, Debug, Parser)]
 pub struct SetupController {
@@ -20,7 +20,7 @@ pub struct SetupController {
 
 impl SetupController {
     pub fn execute(&self) -> Result<()> {
-        return SetupCommand::execute_in_order(&self.commands);
+        return SetupCommand::execute_all(&self.commands);
     }
 }
 
@@ -92,12 +92,8 @@ fn setup_pipenv() -> Result<()> {
     }
 
     // Use the top-level `Pipfile` to find the correct version of `pipenv` to install.
-    let pip_file: Pipfile = {
-        let file_path = Path::repo_path("Pipfile");
-        let contents = std::fs::read_to_string(file_path)?;
-
-        toml::from_str(&contents)?
-    };
+    let pip_file_toml = Path::repo_path("Pipfile").read_to_string()?;
+    let pip_file: Pipfile = toml::from_str(&pip_file_toml)?;
 
     // This should be a value like "==YYYY.MM.DD"
     let version = pip_file

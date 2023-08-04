@@ -1,4 +1,5 @@
 use anyhow::{Context, Result};
+use infra_utils::paths::PathExtensions;
 use semver::Version;
 use serde::Deserialize;
 
@@ -44,13 +45,11 @@ impl NapiConfig {
 }
 
 fn load_package() -> Result<Package> {
-    let package_path = NapiResolver::package_dir().join("package.json");
+    let package_json = NapiResolver::package_dir()
+        .join("package.json")
+        .read_to_string()?;
 
-    let package_contents = std::fs::read_to_string(&package_path)
-        .with_context(|| format!("Failed to read manifest: {package_path:?}"))?;
-
-    let package = serde_json::from_str::<Package>(&package_contents)
-        .with_context(|| format!("Failed to read manifest: {package_path:?}"))?;
+    let package = serde_json::from_str::<Package>(&package_json)?;
 
     return Ok(package);
 }
