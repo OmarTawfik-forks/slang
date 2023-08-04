@@ -1,3 +1,4 @@
+mod changeset;
 mod check;
 mod lint;
 mod publish;
@@ -9,41 +10,44 @@ use anyhow::Result;
 use clap::{Parser, Subcommand};
 
 use crate::commands::{
-    check::CheckCommand, lint::LintCommand, publish::PublishCommand, run::RunCommand,
-    setup::SetupCommand, test::TestCommand,
+    changeset::ChangesetController, check::CheckController, lint::LintController,
+    publish::PublishController, run::RunController, setup::SetupController, test::TestController,
 };
 
 #[derive(Debug, Parser)]
-pub struct CLI {
+pub struct AppController {
     #[command(subcommand)]
-    command: Command,
+    command: AppCommand,
 }
 
 #[derive(Debug, Subcommand)]
-pub enum Command {
+pub enum AppCommand {
     /// Setup toolchains and dependencies.
-    Setup(SetupCommand),
+    Setup(SetupController),
     /// Runs codegen checks, and makes sure source files are up to date.
-    Check(CheckCommand),
+    Check(CheckController),
     /// Runs unit tests.
-    Test(TestCommand),
+    Test(TestController),
     /// Lints and attempts to fix formatting, spelling, broken links, and other issues.
-    Lint(LintCommand),
+    Lint(LintController),
     /// Runs a local binary within this repository, forwarding any additional arguments along.
-    Run(RunCommand),
+    Run(RunController),
+    /// Subcommands to create, consume, and publish changesets and changelogs.
+    Changeset(ChangesetController),
     /// Publishes different artifacts after a successful CI build on main branch.
-    Publish(PublishCommand),
+    Publish(PublishController),
 }
 
-impl CLI {
+impl AppController {
     pub fn execute(&self) -> Result<()> {
         return match &self.command {
-            Command::Setup(setup_command) => setup_command.execute(),
-            Command::Check(check_command) => check_command.execute(),
-            Command::Test(test_command) => test_command.execute(),
-            Command::Lint(lint_command) => lint_command.execute(),
-            Command::Run(run_command) => run_command.execute(),
-            Command::Publish(publish_command) => publish_command.execute(),
+            AppCommand::Setup(command) => command.execute(),
+            AppCommand::Check(command) => command.execute(),
+            AppCommand::Test(command) => command.execute(),
+            AppCommand::Lint(command) => command.execute(),
+            AppCommand::Run(command) => command.execute(),
+            AppCommand::Changeset(command) => command.execute(),
+            AppCommand::Publish(command) => command.execute(),
         };
     }
 }

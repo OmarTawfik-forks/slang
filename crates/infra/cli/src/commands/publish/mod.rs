@@ -2,32 +2,32 @@ use anyhow::Result;
 use clap::{Parser, ValueEnum};
 use infra_utils::{cargo::CargoWorkspace, commands::Command, github::GitHub, terminal::Terminal};
 
-use crate::utils::{Task, ValueEnumExtensions};
+use crate::utils::{ClapExtensions, OrderedCommand};
 
 #[derive(Clone, Debug, Parser)]
-pub struct PublishCommand {
+pub struct PublishController {
     #[clap(trailing_var_arg = true)]
-    tasks: Vec<PublishTask>,
+    commands: Vec<PublishCommand>,
 }
 
-impl PublishCommand {
+impl PublishController {
     pub fn execute(&self) -> Result<()> {
-        return PublishTask::execute_user_selection(&self.tasks);
+        return PublishCommand::execute_in_order(&self.commands);
     }
 }
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, ValueEnum)]
-pub enum PublishTask {
+pub enum PublishCommand {
     /// Publishes source crates to [crates.io].
     Cargo,
 }
 
-impl Task for PublishTask {
+impl OrderedCommand for PublishCommand {
     fn execute(&self) -> Result<()> {
         Terminal::separator(self.clap_name());
 
         return match self {
-            PublishTask::Cargo => publish_cargo(),
+            PublishCommand::Cargo => publish_cargo(),
         };
     }
 }

@@ -10,22 +10,22 @@ use infra_utils::{
 };
 use serde::Deserialize;
 
-use crate::utils::{Task, ValueEnumExtensions};
+use crate::utils::{ClapExtensions, OrderedCommand};
 
 #[derive(Clone, Debug, Parser)]
-pub struct SetupCommand {
+pub struct SetupController {
     #[clap(trailing_var_arg = true)]
-    tasks: Vec<SetupTask>,
+    commands: Vec<SetupCommand>,
 }
 
-impl SetupCommand {
+impl SetupController {
     pub fn execute(&self) -> Result<()> {
-        return SetupTask::execute_user_selection(&self.tasks);
+        return SetupCommand::execute_in_order(&self.commands);
     }
 }
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, ValueEnum)]
-pub enum SetupTask {
+pub enum SetupCommand {
     /// Configures repository for building in isolation.
     Workspace,
     /// Installs Cargo dependencies.
@@ -36,15 +36,15 @@ pub enum SetupTask {
     Pipenv,
 }
 
-impl Task for SetupTask {
+impl OrderedCommand for SetupCommand {
     fn execute(&self) -> Result<()> {
         Terminal::separator(self.clap_name());
 
         return match self {
-            SetupTask::Workspace => setup_workspace(),
-            SetupTask::Cargo => setup_cargo(),
-            SetupTask::Npm => setup_npm(),
-            SetupTask::Pipenv => setup_pipenv(),
+            SetupCommand::Workspace => setup_workspace(),
+            SetupCommand::Cargo => setup_cargo(),
+            SetupCommand::Npm => setup_npm(),
+            SetupCommand::Pipenv => setup_pipenv(),
         };
     }
 }

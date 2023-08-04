@@ -4,36 +4,36 @@ use infra_utils::{commands::Command, github::GitHub, terminal::Terminal};
 
 use crate::{
     toolchains::napi::{NapiCompiler, NapiProfile},
-    utils::{Task, ValueEnumExtensions},
+    utils::{ClapExtensions, OrderedCommand},
 };
 
 #[derive(Clone, Debug, Parser)]
-pub struct CheckCommand {
+pub struct CheckController {
     #[clap(trailing_var_arg = true)]
-    tasks: Vec<CheckTask>,
+    commands: Vec<CheckCommand>,
 }
 
-impl CheckCommand {
+impl CheckController {
     pub fn execute(&self) -> Result<()> {
-        return CheckTask::execute_user_selection(&self.tasks);
+        return CheckCommand::execute_in_order(&self.commands);
     }
 }
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, ValueEnum)]
-pub enum CheckTask {
+pub enum CheckCommand {
     /// Runs 'cargo check' for all crates, features, and targets.
     Cargo,
     /// Checks NPM packages for any outdated codegen steps.
     Npm,
 }
 
-impl Task for CheckTask {
+impl OrderedCommand for CheckCommand {
     fn execute(&self) -> Result<()> {
         Terminal::separator(self.clap_name());
 
         return match self {
-            CheckTask::Cargo => check_cargo(),
-            CheckTask::Npm => check_npm(),
+            CheckCommand::Cargo => check_cargo(),
+            CheckCommand::Npm => check_npm(),
         };
     }
 }

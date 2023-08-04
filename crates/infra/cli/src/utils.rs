@@ -1,34 +1,34 @@
 use anyhow::{Ok, Result};
 use clap::ValueEnum;
 
-pub trait Task: Clone + Ord + PartialEq + ValueEnum {
+pub trait OrderedCommand: Clone + Ord + PartialEq + ValueEnum {
     fn execute(&self) -> Result<()>;
 
-    fn execute_user_selection(tasks: &Vec<Self>) -> Result<()> {
-        let mut tasks = tasks.clone();
+    fn execute_in_order(commands: &Vec<Self>) -> Result<()> {
+        let mut commands = commands.clone();
 
-        if tasks.is_empty() {
+        if commands.is_empty() {
             // Execute all tasks if none are provided:
-            tasks.extend(Self::value_variants().iter().cloned());
+            commands.extend(Self::value_variants().iter().cloned());
         } else {
             // Sort and deduplicate user provided tasks by order of definition:
-            tasks.sort();
-            tasks.dedup();
+            commands.sort();
+            commands.dedup();
         }
 
-        for task in tasks {
-            task.execute()?;
+        for command in commands {
+            command.execute()?;
         }
 
         return Ok(());
     }
 }
 
-pub trait ValueEnumExtensions {
+pub trait ClapExtensions {
     fn clap_name(&self) -> String;
 }
 
-impl<T: ValueEnum> ValueEnumExtensions for T {
+impl<T: ValueEnum> ClapExtensions for T {
     fn clap_name(&self) -> String {
         return self
             .to_possible_value()

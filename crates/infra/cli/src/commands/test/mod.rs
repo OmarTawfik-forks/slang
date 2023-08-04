@@ -2,35 +2,35 @@ use anyhow::Result;
 use clap::{Parser, ValueEnum};
 use infra_utils::{commands::Command, terminal::Terminal};
 
-use crate::utils::{Task, ValueEnumExtensions};
+use crate::utils::{ClapExtensions, OrderedCommand};
 
 #[derive(Clone, Debug, Parser)]
-pub struct TestCommand {
+pub struct TestController {
     #[clap(trailing_var_arg = true)]
-    tasks: Vec<TestTask>,
+    commands: Vec<TestCommand>,
 }
 
-impl TestCommand {
+impl TestController {
     pub fn execute(&self) -> Result<()> {
-        return TestTask::execute_user_selection(&self.tasks);
+        return TestCommand::execute_in_order(&self.commands);
     }
 }
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, ValueEnum)]
-pub enum TestTask {
+pub enum TestCommand {
     /// Runs 'cargo test' for all crates, features, and targets.
     Cargo,
     /// Runs 'test' scripts in each NPM package in the repository.
     Npm,
 }
 
-impl Task for TestTask {
+impl OrderedCommand for TestCommand {
     fn execute(&self) -> Result<()> {
         Terminal::separator(self.clap_name());
 
         return match self {
-            TestTask::Cargo => test_cargo(),
-            TestTask::Npm => test_npm(),
+            TestCommand::Cargo => test_cargo(),
+            TestCommand::Npm => test_npm(),
         };
     }
 }

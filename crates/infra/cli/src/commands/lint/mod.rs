@@ -10,22 +10,22 @@ use infra_utils::{
     terminal::Terminal,
 };
 
-use crate::utils::{Task, ValueEnumExtensions};
+use crate::utils::{ClapExtensions, OrderedCommand};
 
 #[derive(Clone, Debug, Parser)]
-pub struct LintCommand {
+pub struct LintController {
     #[clap(trailing_var_arg = true)]
-    tasks: Vec<LintTask>,
+    commands: Vec<LintCommand>,
 }
 
-impl LintCommand {
+impl LintController {
     pub fn execute(&self) -> Result<()> {
-        return LintTask::execute_user_selection(&self.tasks);
+        return LintCommand::execute_in_order(&self.commands);
     }
 }
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, ValueEnum)]
-pub enum LintTask {
+pub enum LintCommand {
     /// Format all Rust source files.
     CargoFmt,
     /// Check for spelling issues in Markdown files.
@@ -44,19 +44,19 @@ pub enum LintTask {
     Yamllint,
 }
 
-impl Task for LintTask {
+impl OrderedCommand for LintCommand {
     fn execute(&self) -> Result<()> {
         Terminal::separator(self.clap_name());
 
         return match self {
-            LintTask::CargoFmt => run_cargo_fmt(),
-            LintTask::Cspell => run_cspell(),
-            LintTask::Prettier => run_prettier(),
-            LintTask::MarkdownLinkCheck => run_markdown_link_check(),
-            LintTask::MarkdownLint => run_markdown_lint(),
-            LintTask::Shellcheck => run_shellcheck(),
-            LintTask::Tsc => run_tsc(),
-            LintTask::Yamllint => run_yamllint(),
+            LintCommand::CargoFmt => run_cargo_fmt(),
+            LintCommand::Cspell => run_cspell(),
+            LintCommand::Prettier => run_prettier(),
+            LintCommand::MarkdownLinkCheck => run_markdown_link_check(),
+            LintCommand::MarkdownLint => run_markdown_lint(),
+            LintCommand::Shellcheck => run_shellcheck(),
+            LintCommand::Tsc => run_tsc(),
+            LintCommand::Yamllint => run_yamllint(),
         };
     }
 }

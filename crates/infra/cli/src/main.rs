@@ -5,8 +5,8 @@ mod utils;
 use anyhow::Result;
 use clap::Parser;
 
-use crate::commands::CLI;
+use crate::commands::AppController;
 
 fn main() -> Result<()> {
-    return CLI::parse().execute();
+    return AppController::parse().execute();
 }
