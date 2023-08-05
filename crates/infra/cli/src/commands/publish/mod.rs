@@ -185,6 +185,13 @@ fn publish_lock_files() -> Result<()> {
         return Ok(());
     }
 
+    let base_branch = Command::new("git")
+        .arg("branch")
+        .flag("--show-current")
+        .evaluate()?
+        .trim()
+        .to_owned();
+
     let remote = "origin";
     let head_branch = "infra/update-lock-files";
 
@@ -204,13 +211,6 @@ fn publish_lock_files() -> Result<()> {
         .property("--message", "update lock files after release")
         .run()?;
 
-    let base_branch = Command::new("git")
-        .arg("branch")
-        .flag("--show-current")
-        .evaluate()?
-        .trim()
-        .to_owned();
-
     Command::new("git")
         .arg("push")
         .flag("--force")
@@ -228,8 +228,9 @@ fn publish_lock_files() -> Result<()> {
     Command::new("gh")
         .args(["pr", "create"])
         .flag("--fill")
-        .property("--base", format!("{remote}/{base_branch}"))
-        .property("--head", format!("{remote}/{head_branch}"))
+        .property("--base", &base_branch)
+        .property("--head", head_branch)
+        .property("--repo", "OmarTawfik-forks/slang")
         .run()?;
 
     Command::new("git").args(["checkout", &base_branch]).run()?;
