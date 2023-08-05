@@ -1,5 +1,5 @@
 {
-  "name": "@slang-private/workspace",
+  "name": "@slang-private/workspace2",
   "private": true,
   "workspaces": [
     "crates/infra/cli",

@@ -174,7 +174,7 @@ fn publish_lock_files() -> Result<()> {
         return Ok(());
     }
 
-    if local_changes != " M package-lock.json" {
+    if local_changes != "M package-lock.json" {
         bail!("Unexpected local changes:\n{local_changes}");
     }
 
@@ -185,6 +185,7 @@ fn publish_lock_files() -> Result<()> {
         return Ok(());
     }
 
+    let remote = "origin";
     let head_branch = "infra/update-lock-files";
 
     Command::new("git")
@@ -213,22 +214,22 @@ fn publish_lock_files() -> Result<()> {
     Command::new("git")
         .arg("push")
         .flag("--force")
-        .property("--set-upstream", "origin")
+        .property("--set-upstream", remote)
         .arg(head_branch)
         .run()?;
 
     Command::new("git")
         .arg("push")
         .flag("--force")
-        .property("--set-upstream", "origin")
+        .property("--set-upstream", remote)
         .arg(head_branch)
         .run()?;
 
     Command::new("gh")
         .args(["pr", "create"])
         .flag("--fill")
-        .property("--base", &base_branch)
-        .property("--head", head_branch)
+        .property("--base", format!("{remote}/{base_branch}"))
+        .property("--head", format!("{remote}/{head_branch}"))
         .run()?;
 
     Command::new("git").args(["checkout", &base_branch]).run()?;
