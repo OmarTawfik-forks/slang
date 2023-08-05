@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 use clap::{Parser, ValueEnum};
 use infra_utils::{
     cargo::CargoWorkspace, commands::Command, github::GitHub, paths::PathExtensions,
@@ -30,6 +30,8 @@ pub enum PublishCommand {
     Cargo,
     /// Publishes a new release in the GitHub repository.
     GithubRelease,
+    /// Update lock files with any newly published versions.
+    LockFiles,
 }
 
 impl OrderedCommand for PublishCommand {
@@ -39,6 +41,7 @@ impl OrderedCommand for PublishCommand {
         return match self {
             PublishCommand::Cargo => publish_cargo(),
             PublishCommand::GithubRelease => publish_github_release(),
+            PublishCommand::LockFiles => publish_lock_files(),
         };
     }
 }
@@ -140,4 +143,95 @@ fn extract_latest_changelogs(
         .collect::<Vec<_>>();
 
     return Ok(markdown::generate_markdown(latest_version_blocks));
+}
+
+fn publish_lock_files() -> Result<()> {
+    let local_changes = Command::new("git")
+        .arg("status")
+        .flag("--short")
+        .evaluate()?
+        .trim()
+        .to_owned();
+
+    if !local_changes.is_empty() {
+        bail!("Cannot update lock files. Found local changes:\n{local_changes}");
+    }
+
+    Command::new("npm")
+        .arg("install")
+        .flag("--package-lock-only")
+        .run()?;
+
+    let local_changes = Command::new("git")
+        .arg("status")
+        .flag("--short")
+        .evaluate()?
+        .trim()
+        .to_owned();
+
+    if local_changes.is_empty() {
+        println!("No changes to lock files.");
+        return Ok(());
+    }
+
+    if local_changes != " M package-lock.json" {
+        bail!("Unexpected local changes:\n{local_changes}");
+    }
+
+    Command::new("git").arg("diff").flag("--cached").run()?;
+
+    if !GitHub::is_running_in_ci() {
+        println!("Skipping the update, since we are not running in CI.");
+        return Ok(());
+    }
+
+    let head_branch = "infra/update-lock-files";
+
+    Command::new("git")
+        .arg("checkout")
+        .property("-b", head_branch)
+        .run()?;
+
+    Command::new("git")
+        .args(["add", "package-lock.json"])
+        .run()?;
+
+    Command::new("git")
+        .property("-c", "user.name=github-actions")
+        .property("-c", "user.email=github-actions@users.noreply.github.com")
+        .arg("commit")
+        .property("--message", "update lock files after release")
+        .run()?;
+
+    let base_branch = Command::new("git")
+        .arg("branch")
+        .flag("--show-current")
+        .evaluate()?
+        .trim()
+        .to_owned();
+
+    Command::new("git")
+        .arg("push")
+        .flag("--force")
+        .property("--set-upstream", "origin")
+        .arg(head_branch)
+        .run()?;
+
+    Command::new("git")
+        .arg("push")
+        .flag("--force")
+        .property("--set-upstream", "origin")
+        .arg(head_branch)
+        .run()?;
+
+    Command::new("gh")
+        .args(["pr", "create"])
+        .flag("--fill")
+        .property("--base", &base_branch)
+        .property("--head", head_branch)
+        .run()?;
+
+    Command::new("git").args(["checkout", &base_branch]).run()?;
+
+    return Ok(());
 }
