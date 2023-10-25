@@ -405,7 +405,6 @@ dependencies = [
 name = "codegen_language_internal_macros"
 version = "0.10.0"
 dependencies = [
- "itertools",
  "proc-macro2",
  "quote",
  "syn 2.0.29",

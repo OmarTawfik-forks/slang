@@ -4,16 +4,16 @@ pub use self::wrapper::*;
 /// Unfortunately, module-level (inner) attribute macros are not supported yet:
 /// This is why we put the attribute on a wrapper module containing all of them, then re-export its inner contents.
 /// More information: https://github.com/rust-lang/rust/issues/54726
-#[codegen_language_internal_macros::derive_internals]
+#[codegen_language_internal_macros::derive_spanned_types]
 mod wrapper {
     use crate::Identifier;
     use indexmap::{IndexMap, IndexSet};
     use semver::Version;
-    use serde::Serialize;
+    use serde::{Deserialize, Serialize};
     use std::{path::PathBuf, rc::Rc};
     use strum_macros::{Display, EnumDiscriminants, EnumIter};
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct Language {
         pub name: Identifier,
 
@@ -27,13 +27,13 @@ mod wrapper {
         pub sections: Vec<Section>,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct Section {
         pub title: String,
         pub topics: Vec<Topic>,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct Topic {
         pub title: String,
         pub notes_file: Option<PathBuf>,
@@ -42,7 +42,7 @@ mod wrapper {
         pub items: Vec<Rc<Item>>,
     }
 
-    #[derive(Debug, Eq, PartialEq, EnumDiscriminants, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, EnumDiscriminants, Serialize)]
     #[strum_discriminants(name(ItemKind))]
     #[strum_discriminants(derive(Display, EnumIter))]
     pub enum Item {
@@ -61,7 +61,7 @@ mod wrapper {
         Fragment { item: FragmentItem },
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct StructItem {
         pub name: Identifier,
 
@@ -72,7 +72,7 @@ mod wrapper {
         pub fields: IndexMap<Identifier, Field>,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct EnumItem {
         pub name: Identifier,
 
@@ -83,7 +83,7 @@ mod wrapper {
         pub variants: Vec<EnumVariant>,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct EnumVariant {
         pub name: Identifier,
 
@@ -94,7 +94,7 @@ mod wrapper {
         pub fields: IndexMap<Identifier, Field>,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct RepeatedItem {
         pub name: Identifier,
         pub repeated: Identifier,
@@ -105,7 +105,7 @@ mod wrapper {
         pub allow_empty: Option<bool>,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct SeparatedItem {
         pub name: Identifier,
         pub separated: Identifier,
@@ -117,7 +117,7 @@ mod wrapper {
         pub allow_empty: Option<bool>,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct PrecedenceItem {
         pub name: Identifier,
 
@@ -130,14 +130,14 @@ mod wrapper {
         pub primary_expressions: Vec<PrimaryExpression>,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct PrecedenceExpression {
         pub name: Identifier,
 
         pub operators: Vec<PrecedenceOperator>,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct PrecedenceOperator {
         pub model: OperatorModel,
 
@@ -148,7 +148,7 @@ mod wrapper {
         pub fields: IndexMap<Identifier, Field>,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub enum OperatorModel {
         Prefix,
         Postfix,
@@ -156,7 +156,7 @@ mod wrapper {
         BinaryRightAssociative,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct PrimaryExpression {
         pub expression: Identifier,
 
@@ -164,19 +164,19 @@ mod wrapper {
         pub disabled_in: Option<Version>,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct FieldsErrorRecovery {
         pub terminator: Option<Identifier>,
         pub delimiters: Option<FieldDelimiters>,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct FieldDelimiters {
         pub open: Identifier,
         pub close: Identifier,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub enum Field {
         Required {
             kind: FieldKind,
@@ -189,13 +189,13 @@ mod wrapper {
         },
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub enum FieldKind {
         NonTerminal { item: Identifier },
         Terminal { items: IndexSet<Identifier> },
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub enum TriviaParser {
         Sequence { parsers: Vec<TriviaParser> },
         Choice { parsers: Vec<TriviaParser> },
@@ -206,14 +206,14 @@ mod wrapper {
         Trivia { trivia: Identifier },
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct TriviaItem {
         pub name: Identifier,
 
         pub scanner: Scanner,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct KeywordItem {
         pub name: Identifier,
         pub identifier: Identifier,
@@ -227,7 +227,7 @@ mod wrapper {
         pub value: KeywordValue,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub enum KeywordValue {
         Sequence {
             values: Vec<KeywordValue>,
@@ -245,14 +245,14 @@ mod wrapper {
         },
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct TokenItem {
         pub name: Identifier,
 
         pub definitions: Vec<TokenDefinition>,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct TokenDefinition {
         pub enabled_in: Option<Version>,
         pub disabled_in: Option<Version>,
@@ -260,7 +260,7 @@ mod wrapper {
         pub scanner: Scanner,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub struct FragmentItem {
         pub name: Identifier,
 
@@ -270,7 +270,7 @@ mod wrapper {
         pub scanner: Scanner,
     }
 
-    #[derive(Debug, Eq, PartialEq, Serialize)]
+    #[derive(Debug, Deserialize, Eq, PartialEq, Serialize)]
     pub enum Scanner {
         Sequence {
             scanners: Vec<Scanner>,

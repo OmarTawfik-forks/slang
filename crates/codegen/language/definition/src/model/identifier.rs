@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::ops::Deref;
 
 /// A wrapper type to make sure the DSL token is written as an identifier instead of a string literal.
@@ -35,11 +35,14 @@ impl From<&str> for Identifier {
     }
 }
 
+impl<'de> Deserialize<'de> for Identifier {
+    fn deserialize<D: Deserializer<'de>>(_: D) -> Result<Self, D::Error> {
+        todo!("deserialize an identifier if current deserializer is active, or a string of not.");
+    }
+}
+
 impl Serialize for Identifier {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         return self.value.serialize(serializer);
     }
 }

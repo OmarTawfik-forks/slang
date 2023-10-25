@@ -1,5 +1,5 @@
 use proc_macro2::Span;
-use serde::Serialize;
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::cmp::Ordering;
 
 #[derive(Clone, Debug)]
@@ -61,10 +61,16 @@ impl<T: PartialOrd> PartialOrd for Spanned<T> {
     }
 }
 
+impl<'de, T: Serialize> Deserialize<'de> for Spanned<T> {
+    fn deserialize<D: Deserializer<'de>>(_: D) -> Result<Self, D::Error> {
+        todo!("deserialize from current static deserializer");
+    }
+}
+
 impl<T: Serialize> Serialize for Spanned<T> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
-        S: serde::Serializer,
+        S: Serializer,
     {
         return self.value.serialize(serializer);
     }
