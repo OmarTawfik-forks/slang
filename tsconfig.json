@@ -26,6 +26,7 @@
 
     /* Interop Constraints */
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
 
     /* Emit */
     "noEmit": true,

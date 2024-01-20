@@ -41,7 +41,7 @@ impl NapiResolver {
         Self::main_package_dir()
             .join("target/npm")
             .join(match kind {
-                NapiPackageKind::Main => "main",
+                NapiPackageKind::Main => "main", // __SLANG_NPM_PACKAGE_MAIN_OUTPUT_DIR__ (keep in sync)
                 NapiPackageKind::Platform(platform) => platform,
             })
     }
