@@ -9,8 +9,10 @@ updates:
     labels: []
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "[cargo] "
     groups:
-      non-major:
+      non-major-dependencies:
         update-types:
           - "minor"
           - "patch"
@@ -20,8 +22,10 @@ updates:
     labels: []
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "[npm] "
     groups:
-      non-major:
+      non-major-dependencies:
         update-types:
           - "minor"
           - "patch"
@@ -31,8 +35,10 @@ updates:
     labels: []
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "[github-actions] "
     groups:
-      non-major:
+      non-major-dependencies:
         update-types:
           - "minor"
           - "patch"
@@ -42,8 +48,10 @@ updates:
     labels: []
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "[pip] "
     groups:
-      non-major:
+      non-major-dependencies:
         update-types:
           - "minor"
           - "patch"
