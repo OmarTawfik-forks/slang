@@ -41,7 +41,7 @@ jobs:
       - run: "scripts/bin/infra setup npm"
 
       - id: "changesets"
-        uses: "changesets/action@v1.4.1"
+        uses: "changesets/action@v1.4.5"
         with:
           title: "Bump Slang Version"
           commit: "Bump Slang Version"
