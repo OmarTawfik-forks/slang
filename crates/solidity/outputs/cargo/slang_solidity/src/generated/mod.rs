@@ -12,6 +12,9 @@ pub mod language;
 pub mod parse_error;
 pub mod parse_output;
 
+#[cfg(feature = "wit")]
+pub mod wit;
+
 #[cfg(feature = "slang_napi_interfaces")]
 pub mod napi_interface;
 
@@ -65,6 +68,7 @@ pub mod query {
     pub type Query = query::Query<KindTypes>;
     pub type QueryMatch = query::QueryMatch<KindTypes>;
     pub type QueryMatchIterator = query::QueryMatchIterator<KindTypes>;
+    pub use query::QueryError;
 }
 
 pub mod text_index {

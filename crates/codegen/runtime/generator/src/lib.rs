@@ -5,6 +5,7 @@ use anyhow::Result;
 use codegen_language_definition::model::Language;
 use infra_utils::cargo::CargoWorkspace;
 use infra_utils::codegen::CodegenTemplates;
+use infra_utils::commands::Command;
 use serde::Serialize;
 
 use crate::model::RuntimeModel;
@@ -25,14 +26,14 @@ pub enum OutputLanguage {
 #[derive(Serialize)]
 struct ModelWrapper {
     rendering_in_stubs: bool,
-    model: Option<RuntimeModel>,
+    model: RuntimeModel,
 }
 
 impl OutputLanguage {
     pub fn generate_runtime(&self, language: &Rc<Language>, output_dir: &Path) -> Result<()> {
         let model = ModelWrapper {
             rendering_in_stubs: false,
-            model: Some(RuntimeModel::from_language(language)),
+            model: RuntimeModel::from_language(language),
         };
 
         let mut templates = CodegenTemplates::new(self.source_dir()?)?;
@@ -43,12 +44,25 @@ impl OutputLanguage {
     pub fn generate_stubs(&self) -> Result<()> {
         let model = ModelWrapper {
             rendering_in_stubs: true,
-            model: None,
+            model: RuntimeModel::default(),
         };
 
         let mut templates = CodegenTemplates::new(self.source_dir()?)?;
 
         templates.render_stubs(&model)
+    }
+
+    pub fn wit_bindgen(&self, dir: &Path) -> Result<()> {
+        CargoWorkspace::install_binary("wit-bindgen-cli")?;
+        Command::new("wit-bindgen")
+            .arg("rust")
+            .arg(dir.join("wit/generated/").to_str().unwrap())
+            .flag("--rustfmt")
+            .flag("--pub-export-macro")
+            .property("--default-bindings-module", "$crate::wit::slang")
+            .property("--out-dir", dir.join("wit/generated/").to_str().unwrap())
+            .run()?;
+        Ok(())
     }
 
     fn source_dir(&self) -> Result<PathBuf> {

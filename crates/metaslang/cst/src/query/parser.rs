@@ -23,7 +23,7 @@ use crate::{AbstractKind as _, KindTypes};
 #[derive(Clone, Debug, Error)]
 pub struct QueryError {
     pub message: String,
-    pub row: usize,
+    pub line: usize,
     pub column: usize,
 }
 
@@ -43,7 +43,7 @@ pub(super) fn parse_query<T: KindTypes>(input: &str) -> Result<ASTNode<T>, Query
         .map(|(_, query)| query)
         .map_err(|e| QueryError {
             message: e.to_string(),
-            row: 0,
+            line: 0,
             column: 0,
         })
 }

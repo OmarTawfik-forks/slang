@@ -1558,7 +1558,7 @@ fn query_parse_errors_have_file_location() {
         Err(ParseError::QueryError(e)) => e,
         Err(e) => panic!("Unexpected error: {}", e),
     };
-    assert_eq!(err.row, 2, "expected row 2, got {}", err.row);
+    assert_eq!(err.line, 2, "expected row 2, got {}", err.line);
     assert_eq!(err.column, 8, "expected column 8, got {}", err.column);
     // assert_eq!(err.offset, 48, "expected offset 48, got {}", err.offset);
 }
@@ -1579,7 +1579,7 @@ fn multiline_query_parse_errors_have_file_location() {
         Err(ParseError::QueryError(e)) => e,
         Err(e) => panic!("Unexpected error: {}", e),
     };
-    assert_eq!(err.row, 3, "expected row 3, got {}", err.row);
+    assert_eq!(err.line, 3, "expected row 3, got {}", err.line);
     assert_eq!(err.column, 8, "expected column 8, got {}", err.column);
     // assert_eq!(err.offset, 112, "expected offset 112, got {}", err.offset);
 }

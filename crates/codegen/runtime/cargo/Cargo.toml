@@ -10,23 +10,27 @@ description = "Cargo runtime copied over by codegen"
 [build-dependencies]
 anyhow = { workspace = true }
 codegen_runtime_generator = { workspace = true }
+infra_utils = { workspace = true }
 
 [dependencies]
 ariadne = { workspace = true, optional = true }
 metaslang_cst = { workspace = true }
 napi = { workspace = true, optional = true }
 napi-derive = { workspace = true, optional = true }
+paste = { workspace = true }
 semver = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true, optional = true }
 strum = { workspace = true }
 strum_macros = { workspace = true }
 thiserror = { workspace = true }
+wit-bindgen = { workspace = true, optional = true }
 
 # Since the source code is copied over as-is, we need to retain exact feature set with target crate,
 # i.e `slang_solidity_node_addon`.
 [features]
-default = ["slang_napi_interfaces"]
+default = ["slang_napi_interfaces", "wit"]
+wit = ["dep:wit-bindgen"]
 slang_napi_interfaces = ["dep:napi", "dep:napi-derive", "dep:serde_json"]
 # Only used by the `slang_solidity` CLI
 __private_ariadne = ["dep:ariadne"]

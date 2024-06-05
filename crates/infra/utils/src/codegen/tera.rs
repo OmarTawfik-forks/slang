@@ -24,6 +24,9 @@ pub fn create_tera_instance(input_dir: &Path) -> Result<Tera> {
     instance.register_filter("camel_case", camel_case_filter);
     instance.register_filter("pascal_case", pascal_case_filter);
     instance.register_filter("snake_case", snake_case_filter);
+    instance.register_filter("kebab_case", kebab_case_filter);
+
+    instance.register_filter("wit_identifier", wit_identifier_filter);
 
     instance.register_filter("default_array", default_array_filter);
     instance.register_filter("default_object", default_object_filter);
@@ -66,6 +69,46 @@ fn snake_case_filter(value: &Value, args: &HashMap<String, Value>) -> tera::Resu
             .expect("Expected a string value")
             .to_snake_case(),
     ))
+}
+
+fn kebab_case_filter(value: &Value, args: &HashMap<String, Value>) -> tera::Result<Value> {
+    assert_eq!(args.len(), 0, "Expected no arguments");
+
+    Ok(Value::String(
+        value
+            .as_str()
+            .expect("Expected a string value")
+            .to_kebab_case(),
+    ))
+}
+
+fn wit_identifier_filter(value: &Value, args: &HashMap<String, Value>) -> tera::Result<Value> {
+    assert_eq!(args.len(), 0, "Expected no arguments");
+
+    let input = value.as_str().expect("Expected a string value");
+
+    let mut result = String::new();
+    result.push('%');
+    let mut last_was_upper = true;
+    for c in input.chars() {
+        if c.is_uppercase() {
+            if !last_was_upper {
+                result.push('-');
+            }
+            last_was_upper = true;
+            for c in c.to_lowercase() {
+                result.push(c);
+            }
+        } else if c.is_alphanumeric() {
+            last_was_upper = false;
+            result.push(c);
+        } else {
+            last_was_upper = false;
+            result.push('-');
+        }
+    }
+
+    Ok(Value::String(result))
 }
 
 fn default_array_filter(value: &Value, args: &HashMap<String, Value>) -> tera::Result<Value> {

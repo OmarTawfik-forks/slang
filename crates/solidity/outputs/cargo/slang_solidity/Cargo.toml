@@ -34,6 +34,7 @@ required-features = ["cli"]
 [features]
 default = ["cli"]
 cli = ["dep:anyhow", "dep:clap", "dep:serde_json", "__private_ariadne"]
+wit = ["dep:wit-bindgen"]
 # This is meant to be used by the CLI or internally only.
 __private_ariadne = ["dep:ariadne"]
 
@@ -48,12 +49,14 @@ anyhow = { workspace = true, optional = true }
 ariadne = { workspace = true, optional = true }
 clap = { workspace = true, optional = true }
 metaslang_cst = { workspace = true }
+paste = { workspace = true }
 semver = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true, optional = true }
 strum = { workspace = true }
 strum_macros = { workspace = true }
 thiserror = { workspace = true }
+wit-bindgen = { workspace = true, optional = true }
 
 [lints]
 workspace = true
