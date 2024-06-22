@@ -85,6 +85,8 @@ testlang_npm_package = { path = "crates/testlang/outputs/npm/package", version =
 #
 anyhow = { version = "1.0.86", features = ["backtrace", "std"] }
 ariadne = { version = "0.2.0" }
+iai-callgrind = { version = "0.11.0" }
+iai-callgrind-runner = { version = "0.11.0" }
 cargo-edit = { version = "0.12.3" }
 cargo-emit = { version = "0.2.1" }
 cargo-xwin = { version = "0.14.2" }
