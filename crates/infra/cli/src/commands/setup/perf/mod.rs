@@ -8,7 +8,12 @@ pub fn setup_perf() -> Result<()> {
             // Valgrind is available
         }
         other => {
-            bail!("valgrind needs to be installed to run perf tests:\n{other:?}");
+            bail!(
+                "valgrind needs to be installed to run perf tests.
+                It is installed by default inside our devcontainer.
+                Supported Platforms: https://valgrind.org/downloads/current.html
+                {other:?}"
+            );
         }
     };
 
