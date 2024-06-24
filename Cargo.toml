@@ -31,6 +31,7 @@ members = [
     "crates/solidity/outputs/cargo/tests",
     "crates/solidity/outputs/npm/package",
     "crates/solidity/outputs/spec",
+    "crates/solidity/testing/perf",
     "crates/solidity/testing/sanctuary",
     "crates/solidity/testing/snapshots",
     "crates/solidity/testing/solc",
@@ -70,6 +71,7 @@ solidity_cargo_tests = { path = "crates/solidity/outputs/cargo/tests", version =
 solidity_language = { path = "crates/solidity/inputs/language", version = "0.15.1" }
 solidity_npm_package = { path = "crates/solidity/outputs/npm/package", version = "0.15.1" }
 solidity_spec = { path = "crates/solidity/outputs/spec", version = "0.15.1" }
+solidity_testing_perf = { path = "crates/solidity/testing/perf", version = "0.15.1" }
 solidity_testing_sanctuary = { path = "crates/solidity/testing/sanctuary", version = "0.15.1" }
 solidity_testing_snapshots = { path = "crates/solidity/testing/snapshots", version = "0.15.1" }
 solidity_testing_solc = { path = "crates/solidity/testing/solc", version = "0.15.1" }
@@ -174,3 +176,7 @@ collection_is_never_read = "warn" # Lint against collections not used after crea
 equatable_if_let = "warn"         # Prefer regular `==` checks over Yoda `if let $pat = $value`
 useless_let_if_seq = "warn"       # Use idiomatic direct assignment of `let $val = if $cond { .. } else { .. };`
 redundant_else = "warn"           # Warn about redundant `else` blocks
+
+[profile.bench]
+debug = true
+strip = false
