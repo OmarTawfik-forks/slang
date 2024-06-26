@@ -2227,8 +2227,14 @@ dependencies = [
 name = "solidity_testing_perf"
 version = "0.15.1"
 dependencies = [
+ "anyhow",
  "iai-callgrind",
+ "infra_utils",
+ "reqwest",
+ "semver",
  "slang_solidity",
+ "strum_macros",
+ "url",
 ]
 
 [[package]]
