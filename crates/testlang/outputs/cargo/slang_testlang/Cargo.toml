@@ -24,5 +24,9 @@ thiserror = { workspace = true }
 [lints]
 workspace = true
 
+# __RUST_PRODUCT_CRATE_FEATURES__ (keep in sync)
 [features]
+default = ["cli"]
+cli = ["dep:ariadne", "dep:clap", "dep:serde_json"]
+__private_testing_utils = ["dep:ariadne"]
 __experimental_bindings_api = ["dep:metaslang_graph_builder"]
