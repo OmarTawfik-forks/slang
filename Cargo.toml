@@ -117,9 +117,13 @@ semver = { version = "1.0.23", features = ["serde"] }
 serde = { version = "1.0.203", features = ["derive", "rc"] }
 serde_json = { version = "1.0.117", features = ["preserve_order"] }
 similar-asserts = { version = "1.5.0" }
-smallvec = { version = "1.7.0" }
+smallvec = { version = "1.7.0", features = ["union"] }
 stack-graphs = { version = "0.13.0" }
-string-interner = { version = "0.17.0", default-features = false }
+string-interner = { version = "0.17.0", features = [
+    "std",
+    "inline-more",
+    "backends",
+] }
 strum = { version = "0.26.2" }
 strum_macros = { version = "0.26.2" }
 syn = { version = "2.0.66", features = [
@@ -132,8 +136,8 @@ syn = { version = "2.0.66", features = [
 tempfile = { version = "3.10.1" }
 tera = { version = "1.20.0" }
 thiserror = { version = "1.0.61" }
-trybuild = { version = "1.0.96" }
 toml = { version = "0.8.13" }
+trybuild = { version = "1.0.96" }
 url = { version = "2.3.1" }
 
 [workspace.lints.rust]
