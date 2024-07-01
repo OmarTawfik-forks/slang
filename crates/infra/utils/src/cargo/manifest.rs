@@ -25,8 +25,9 @@ pub struct WorkspacePackage {
 }
 
 #[derive(Deserialize)]
+#[serde(untagged)]
 pub enum Dependency {
-    Local { path: PathBuf },
+    Local { path: PathBuf, version: Version },
     CratesIO { version: Version },
     Git { git: Url, branch: String },
 }

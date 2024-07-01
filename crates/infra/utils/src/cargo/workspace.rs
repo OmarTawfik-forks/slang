@@ -1,11 +1,11 @@
 use std::env::var;
 use std::path::{Path, PathBuf};
 
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use regex::Regex;
 use semver::Version;
 
-use crate::cargo::manifest::WorkspaceManifest;
+use crate::cargo::manifest::{Dependency, WorkspaceManifest};
 use crate::commands::Command;
 use crate::github::GitHub;
 use crate::paths::PathExtensions;
@@ -16,22 +16,27 @@ impl CargoWorkspace {
     pub fn install_binary(crate_name: impl AsRef<str>) -> Result<()> {
         let crate_name = crate_name.as_ref();
 
-        let version = WorkspaceManifest::load()?
+        let manifest = WorkspaceManifest::load()?;
+
+        let dependency = manifest
             .workspace
             .dependencies
             .get(crate_name)
-            .with_context(|| format!("Cannot find dependency '{crate_name}' in workspace."))?
-            .version
-            .clone()
-            .with_context(|| {
-                format!("Dependency '{crate_name}' did not specify a version in Cargo.toml.")
-            })?
-            .to_string();
+            .with_context(|| format!("Cannot find dependency '{crate_name}' in workspace."))?;
 
-        Command::new("cargo")
-            .args(["install", crate_name])
-            .property("--version", version)
-            .run()
+        let mut command = Command::new("cargo").args(["install", crate_name]);
+
+        command = match dependency {
+            Dependency::Local { path, version } => command
+                .property("--path", path.unwrap_str())
+                .property("--version", version.to_string()),
+            Dependency::CratesIO { version } => command.property("--version", version.to_string()),
+            Dependency::Git { git, branch } => command
+                .property("--git", git.as_str())
+                .property("--branch", branch),
+        };
+
+        command.run()
     }
 
     pub fn is_running_inside_build_scripts() -> bool {
@@ -41,18 +46,20 @@ impl CargoWorkspace {
     pub fn locate_source_crate(crate_name: impl AsRef<str>) -> Result<PathBuf> {
         let crate_name = crate_name.as_ref();
 
-        let relative_path = WorkspaceManifest::load()?
+        let manifest = WorkspaceManifest::load()?;
+
+        let dependency = manifest
             .workspace
             .dependencies
             .get(crate_name)
-            .with_context(|| format!("Cannot find dependency '{crate_name}' in workspace."))?
-            .path
-            .clone()
-            .with_context(|| {
-                format!("Dependency '{crate_name}' did not specify a path in Cargo.toml.")
-            })?;
+            .with_context(|| format!("Cannot find dependency '{crate_name}' in workspace."))?;
 
-        Ok(Path::repo_path(relative_path))
+        match dependency {
+            Dependency::Local { path, version: _ } => Ok(Path::repo_path(path)),
+            Dependency::CratesIO { .. } | Dependency::Git { .. } => {
+                bail!("Cannot locate source crate for non-local dependencies.")
+            }
+        }
     }
 
     pub fn local_version() -> Result<Version> {
