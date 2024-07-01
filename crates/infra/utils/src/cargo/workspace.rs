@@ -30,7 +30,9 @@ impl CargoWorkspace {
             Dependency::Local { path, version } => command
                 .property("--path", path.unwrap_str())
                 .property("--version", version.to_string()),
+
             Dependency::CratesIO { version } => command.property("--version", version.to_string()),
+
             Dependency::Git { git, branch } => command
                 .property("--git", git.as_str())
                 .property("--branch", branch),
@@ -56,6 +58,7 @@ impl CargoWorkspace {
 
         match dependency {
             Dependency::Local { path, version: _ } => Ok(Path::repo_path(path)),
+
             Dependency::CratesIO { .. } | Dependency::Git { .. } => {
                 bail!("Cannot locate source crate for non-local dependencies.")
             }

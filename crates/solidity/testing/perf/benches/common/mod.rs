@@ -10,22 +10,20 @@ pub const SOURCES: [&str; 3] = [
     include_str!("../../dataset/Governor.sol"),
 ];
 
-pub fn report_process_memory(benchmark_name: &str) -> Result<()> {
-    let process_memory = System::new_all()
-        .process(get_current_pid()?)
-        .unwrap()
-        .memory();
+pub fn report_process_memory(benchmark_name: &str) {
+    let pid = get_current_pid().unwrap();
 
-    let measurement = Measurement::new(process_memory);
+    let process_memory = System::new_all().process(pid).unwrap().memory();
 
-    let benchmark = Benchmark::new();
+    #[allow(clippy::cast_precision_loss)]
+    let measurement = Measurement::new(process_memory as f64);
+
+    let mut benchmark = Benchmark::new();
     benchmark.insert("Process Memory".to_owned(), measurement);
 
-    let report = Report::new();
-    report.add_measurement(benchmark_name, benchmark);
+    let mut report = Report::new();
+    report.insert(benchmark_name.to_owned(), benchmark);
 
-    let dir = MeasurementsDir::load_existing()?;
-    dir.add_report(&report)?;
-
-    Ok(())
+    let dir = MeasurementsDir::load_existing().unwrap();
+    dir.add_report(&report).unwrap();
 }
