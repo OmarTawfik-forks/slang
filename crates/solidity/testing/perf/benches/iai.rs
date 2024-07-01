@@ -1,34 +1,36 @@
+//! WARNING:
+//! The reported `iai` benchmark ID is constructed from: `{file_name}::{group_name}::{function_name}`
+//! For the function below: `iai::benchmarks::list_contracts`
+//! Changing any of the above would change the resulting benchmark ID, and disconnect it from previous results.
+
 #![allow(clippy::exit)]
+#![allow(clippy::unit_arg)]
+
+mod dataset;
+mod testcases;
 
 use std::hint::black_box;
 
-use iai_callgrind::{library_benchmark, library_benchmark_group, main, FlamegraphConfig, LibraryBenchmarkConfig};
-use solidity_testing_perf::{TestContract, TestContractKind};
+use iai_callgrind::{
+    library_benchmark, library_benchmark_group, main, Direction, FlamegraphConfig,
+    LibraryBenchmarkConfig,
+};
 
-// WARNING:
-// The reported `iai` benchmark ID is constructed from:
-// `{file_name}::{group_name}::{function_name}::{bench_name}_{test_case_index}:{input_expression}`
-// Example: `iai::iai::parse contract_0:& erc721()`
-// Changing any of the above would change the resulting benchmark ID, and disconnect it from previous results.
-
-// Setup function: not included in `iai` calculations:
-fn erc721() -> TestContract {
-    TestContractKind::ERC721_v5_0_0.load().unwrap()
-}
-
-// Runner function: included in `iai` calculations:
 #[library_benchmark]
-#[benches::contract(&erc721())]
-fn parse(contract: &TestContract) {
-    black_box(contract.parse()).unwrap();
+fn list_contracts() {
+    black_box(testcases::list_contracts::run());
 }
 
 library_benchmark_group!(
-    name = iai;
-    benchmarks = parse
+    name = benchmarks;
+
+    benchmarks = list_contracts
 );
 
 main!(
-    config = LibraryBenchmarkConfig::default().flamegraph(FlamegraphConfig::default());
-    library_benchmark_groups = iai
+    config = LibraryBenchmarkConfig::default()
+        .env_clear(false)
+        .flamegraph(FlamegraphConfig::default().direction(Direction::BottomToTop));
+
+    library_benchmark_groups = benchmarks
 );
