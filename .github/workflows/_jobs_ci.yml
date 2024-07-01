@@ -36,7 +36,7 @@ jobs:
       # Run all CI steps in order: _SLANG_INFRA_CI_STEPS_ORDERED_ (keep in sync)
       #
 
-      - run: "scripts/bin/infra setup"
+      - run: "scripts/bin/infra setup cargo npm pipenv"
       - run: "scripts/bin/infra check"
       - run: "scripts/bin/infra test"
       - run: "scripts/bin/infra lint"

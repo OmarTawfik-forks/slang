@@ -1,0 +1,25 @@
+use anyhow::{bail, Result};
+use infra_utils::cargo::CargoWorkspace;
+use infra_utils::commands::Command;
+
+pub fn setup_perf() -> Result<()> {
+    match Command::new("valgrind").flag("--version").evaluate() {
+        Ok(output) if output.starts_with("valgrind-") => {
+            // Valgrind is available
+        }
+        other => {
+            bail!(
+                "valgrind needs to be installed to run perf tests.
+                It is installed by default inside our devcontainer.
+                Supported Platforms: https://valgrind.org/downloads/current.html
+                {other:?}"
+            );
+        }
+    };
+
+    CargoWorkspace::install_binary("iai-callgrind-runner")?;
+
+    CargoWorkspace::install_binary("bencher_cli")?;
+
+    Ok(())
+}

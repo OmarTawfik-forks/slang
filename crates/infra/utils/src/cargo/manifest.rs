@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 use anyhow::{Context, Result};
 use semver::Version;
 use serde::Deserialize;
+use url::Url;
 
 use crate::paths::PathExtensions;
 
@@ -24,9 +25,10 @@ pub struct WorkspacePackage {
 }
 
 #[derive(Deserialize)]
-pub struct Dependency {
-    pub path: Option<PathBuf>,
-    pub version: Option<Version>,
+pub enum Dependency {
+    Local { path: PathBuf },
+    CratesIO { version: Version },
+    Git { git: Url, branch: String },
 }
 
 impl WorkspaceManifest {
