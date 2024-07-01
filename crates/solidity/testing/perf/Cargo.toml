@@ -7,20 +7,24 @@ publish = false
 
 [dependencies]
 anyhow = { workspace = true }
+get-size = { workspace = true }
+iai-callgrind = { workspace = true }
 infra_utils = { workspace = true }
 reqwest = { workspace = true }
 semver = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
 slang_solidity = { workspace = true }
 strum_macros = { workspace = true }
 url = { workspace = true }
 
-[dev-dependencies]
-iai-callgrind = { workspace = true }
-slang_solidity = { workspace = true }
-
 [[bench]]
 name = "iai"
 harness = false
+
+[[bin]]
+name = "solidity_testing_perf_get_size_reporter"
+path = "reporters/get_size.rs"
 
 [lints]
 workspace = true

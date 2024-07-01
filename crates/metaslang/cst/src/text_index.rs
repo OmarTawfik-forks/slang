@@ -1,8 +1,11 @@
 use std::fmt::Display;
 use std::ops::{Add, AddAssign, Range};
 
+#[cfg(feature = "__private_testing_utils")]
+use get_size::GetSize;
 use serde::Serialize;
 
+#[cfg_attr(feature = "__private_testing_utils", derive(GetSize))]
 #[derive(Default, Hash, Copy, Clone, PartialEq, Eq, Debug, Serialize)]
 pub struct TextIndex {
     pub utf8: usize,

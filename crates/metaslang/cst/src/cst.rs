@@ -1,5 +1,7 @@
 use std::rc::Rc;
 
+#[cfg(feature = "__private_testing_utils")]
+use get_size::GetSize;
 use serde::Serialize;
 
 use crate::cursor::Cursor;
@@ -34,12 +36,14 @@ impl<T: KindTypes> std::fmt::Display for NodeKind<T> {
     }
 }
 
+#[cfg_attr(feature = "__private_testing_utils", derive(GetSize))]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct TerminalNode<T: KindTypes> {
     pub kind: T::TerminalKind,
     pub text: String,
 }
 
+#[cfg_attr(feature = "__private_testing_utils", derive(GetSize))]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct NonterminalNode<T: KindTypes> {
     pub kind: T::NonterminalKind,
@@ -48,12 +52,14 @@ pub struct NonterminalNode<T: KindTypes> {
     pub children: Vec<Edge<T>>,
 }
 
+#[cfg_attr(feature = "__private_testing_utils", derive(GetSize))]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub enum Node<T: KindTypes> {
     Nonterminal(Rc<NonterminalNode<T>>),
     Terminal(Rc<TerminalNode<T>>),
 }
 
+#[cfg_attr(feature = "__private_testing_utils", derive(GetSize))]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct Edge<T: KindTypes> {
     pub label: Option<T::EdgeLabel>,

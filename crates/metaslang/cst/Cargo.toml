@@ -20,7 +20,12 @@ license = "MIT"
 keywords = ["parser"]
 categories = ["compilers", "parsing", "parser-implementations"]
 
+[features]
+default = []
+__private_testing_utils = ["dep:get-size"]
+
 [dependencies]
+get-size = { workspace = true, optional = true }
 nom = { workspace = true }
 serde = { workspace = true }
 thiserror = { workspace = true }

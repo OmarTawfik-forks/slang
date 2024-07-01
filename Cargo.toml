@@ -87,8 +87,6 @@ testlang_npm_package = { path = "crates/testlang/outputs/npm/package", version =
 #
 anyhow = { version = "1.0.86", features = ["backtrace", "std"] }
 ariadne = { version = "0.2.0" }
-iai-callgrind = { version = "0.11.0" }
-iai-callgrind-runner = { version = "0.11.0" }
 cargo-edit = { version = "0.12.3" }
 cargo-emit = { version = "0.2.1" }
 cargo-xwin = { version = "0.14.2" }
@@ -98,6 +96,9 @@ clap_complete = { version = "4.5.2" }
 console = { version = "0.15.8" }
 derive-new = { version = "0.6.0" }
 env_logger = { version = "0.11.3" }
+get-size = { version = "0.1.4", features = ["derive"] }
+iai-callgrind = { version = "0.11.0" }
+iai-callgrind-runner = { version = "0.11.0" }
 ignore = { version = "0.4.22" }
 indexmap = { version = "2.2.6", features = ["serde"] }
 indicatif = { version = "0.17.8", features = ["in_memory"] }
@@ -136,8 +137,8 @@ syn = { version = "2.0.66", features = [
 tempfile = { version = "3.10.1" }
 tera = { version = "1.20.0" }
 thiserror = { version = "1.0.61" }
-trybuild = { version = "1.0.96" }
 toml = { version = "0.8.13" }
+trybuild = { version = "1.0.96" }
 url = { version = "2.3.1" }
 
 [workspace.lints.rust]
