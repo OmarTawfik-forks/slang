@@ -133,6 +133,7 @@ string-interner = { version = "0.17.0", features = [
 ] }
 strum = { version = "0.26.2" }
 strum_macros = { version = "0.26.2" }
+sysinfo = { version = "0.30.12" }
 syn = { version = "2.0.66", features = [
     "fold",
     "full",

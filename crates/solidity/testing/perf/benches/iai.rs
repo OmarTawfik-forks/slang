@@ -6,7 +6,7 @@
 #![allow(clippy::exit)]
 #![allow(clippy::unit_arg)]
 
-mod dataset;
+mod common;
 mod testcases;
 
 use std::hint::black_box;
@@ -19,6 +19,8 @@ use iai_callgrind::{
 #[library_benchmark]
 fn list_contracts() {
     black_box(testcases::list_contracts::run());
+
+    common::report_process_memory("iai::benchmarks::list_contracts");
 }
 
 library_benchmark_group!(

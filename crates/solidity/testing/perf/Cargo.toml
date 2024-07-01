@@ -7,8 +7,10 @@ publish = false
 
 [dev-dependencies]
 iai-callgrind = { workspace = true }
+infra_utils = { workspace = true }
 semver = { workspace = true }
 slang_solidity = { workspace = true }
+sysinfo = { workspace = true }
 
 [[bench]]
 name = "iai"

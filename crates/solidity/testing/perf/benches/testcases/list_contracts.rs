@@ -2,7 +2,7 @@ use slang_solidity::kinds::{NonterminalKind, TerminalKind};
 use slang_solidity::language::Language;
 use slang_solidity::text_index::TextIndex;
 
-use crate::dataset::{SOLC_VERSION, SOURCES};
+use crate::common::{SOLC_VERSION, SOURCES};
 
 pub fn run() {
     let language = Language::new(SOLC_VERSION).unwrap();
