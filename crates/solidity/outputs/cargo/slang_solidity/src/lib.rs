@@ -1,3 +1,4 @@
+mod bindings_example;
 mod generated;
 
 pub use generated::*;
