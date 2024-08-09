@@ -10,6 +10,7 @@ description = "Cargo runtime copied over by codegen"
 # __RUST_PRODUCT_CRATE_FEATURES__ (keep in sync)
 [features]
 default = ["cli"]
+wit = ["dep:paste"]
 cli = ["dep:ariadne", "dep:clap", "dep:serde_json"]
 __experimental_bindings_api = ["dep:metaslang_bindings"]
 __private_testing_utils = ["dep:ariadne"]
@@ -17,12 +18,14 @@ __private_testing_utils = ["dep:ariadne"]
 [build-dependencies]
 anyhow = { workspace = true }
 codegen_runtime_generator = { workspace = true }
+infra_utils = { workspace = true }
 
 [dependencies]
 ariadne = { workspace = true, optional = true }
 clap = { workspace = true, optional = true }
 metaslang_bindings = { workspace = true, optional = true }
 metaslang_cst = { workspace = true }
+paste = { workspace = true, optional = true }
 semver = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true, optional = true }

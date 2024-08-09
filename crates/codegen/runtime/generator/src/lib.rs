@@ -10,7 +10,7 @@ use std::rc::Rc;
 use anyhow::Result;
 use codegen_language_definition::model::Language;
 use infra_utils::cargo::CargoWorkspace;
-use infra_utils::codegen::CodegenTemplates;
+use infra_utils::codegen::CodegenRuntime;
 use semver::Version;
 use serde::Serialize;
 
@@ -31,9 +31,9 @@ impl OutputLanguage {
             model: RuntimeModel::from_language(language)?,
         };
 
-        let mut templates = CodegenTemplates::new(self.source_dir()?)?;
+        let mut runtime = CodegenRuntime::new(self.source_dir()?)?;
 
-        templates.render_directory(model, output_dir)
+        runtime.render_directory(model, output_dir)
     }
 
     pub fn generate_stubs(&self) -> Result<()> {
@@ -42,9 +42,9 @@ impl OutputLanguage {
             model: RuntimeModel::default(),
         };
 
-        let mut templates = CodegenTemplates::new(self.source_dir()?)?;
+        let mut runtime = CodegenRuntime::new(self.source_dir()?)?;
 
-        templates.render_stubs(&model)
+        runtime.render_stubs(&model)
     }
 
     fn source_dir(&self) -> Result<PathBuf> {
