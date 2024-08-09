@@ -22,6 +22,7 @@ use anyhow::Result;
 use serde::Serialize;
 
 use crate::codegen::tera::TeraWrapper;
+use crate::codegen::wit::generate_rust_bindings;
 use crate::codegen::{CodegenFileSystem, JINJA_GLOB, WIT_GLOB};
 use crate::paths::{FileWalker, PathExtensions};
 
@@ -47,10 +48,10 @@ impl CodegenRuntime {
     pub fn render_stubs(&mut self, model: impl Serialize) -> Result<()> {
         let output_dir = self.input_dir.clone();
 
-        let mut affected_files = HashSet::new();
+        let mut already_handled = HashSet::new();
 
-        self.run_jinja_pass(&output_dir, &mut affected_files, model)?;
-        self.run_wit_pass(&output_dir, &mut affected_files)?;
+        self.run_jinja_pass(&output_dir, &mut already_handled, model)?;
+        self.run_wit_pass(&output_dir, &mut already_handled)?;
 
         Ok(())
     }
@@ -62,14 +63,14 @@ impl CodegenRuntime {
     ) -> Result<()> {
         let output_dir = output_dir.as_ref();
 
-        let mut affected_files = HashSet::new();
+        let mut already_handled = HashSet::new();
 
-        self.run_jinja_pass(output_dir, &mut affected_files, model)?;
-        self.run_wit_pass(output_dir, &mut affected_files)?;
+        self.run_jinja_pass(output_dir, &mut already_handled, model)?;
+        self.run_wit_pass(output_dir, &mut already_handled)?;
 
         for source_path in FileWalker::from_directory(&self.input_dir).find_all()? {
-            // Skip templates already handled in the first pass:
-            if affected_files.contains(&source_path) {
+            // Skip files that are already handled:
+            if already_handled.contains(&source_path) {
                 continue;
             }
 
@@ -89,7 +90,7 @@ impl CodegenRuntime {
     fn run_jinja_pass(
         &mut self,
         output_dir: &Path,
-        affected_files: &mut HashSet<PathBuf>,
+        already_handled: &mut HashSet<PathBuf>,
         model: impl Serialize,
     ) -> Result<()> {
         let context = tera::Context::from_serialize(model)?;
@@ -103,8 +104,8 @@ impl CodegenRuntime {
 
             self.fs.write_file(&output_path, output)?;
 
-            assert!(affected_files.insert(template_path));
-            assert!(affected_files.insert(stub_path));
+            already_handled.insert(template_path);
+            already_handled.insert(stub_path);
         }
 
         Ok(())
@@ -113,21 +114,21 @@ impl CodegenRuntime {
     fn run_wit_pass(
         &mut self,
         output_dir: &Path,
-        affected_files: &mut HashSet<PathBuf>,
+        already_handled: &mut HashSet<PathBuf>,
     ) -> Result<()> {
-        for template_path in FileWalker::from_directory(&self.input_dir).find([WIT_GLOB])? {
-            let stub_path = Self::get_stub_path(&template_path, "wit");
+        for wit_path in FileWalker::from_directory(&self.input_dir).find([WIT_GLOB])? {
+            let stub_path = Self::get_stub_path(&wit_path, "wit");
 
             let output_path = output_dir
                 .join(stub_path.strip_prefix(&self.input_dir)?)
                 .with_extension("rs");
 
-            let output = "// TODO".to_string();
+            let output = generate_rust_bindings(&wit_path)?;
 
             self.fs.write_file(&output_path, output)?;
 
-            assert!(affected_files.insert(template_path));
-            assert!(affected_files.insert(stub_path));
+            already_handled.insert(wit_path);
+            already_handled.insert(stub_path);
         }
 
         Ok(())

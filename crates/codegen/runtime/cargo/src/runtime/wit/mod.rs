@@ -6,7 +6,7 @@ pub mod language;
 pub mod query;
 pub mod text_index;
 
-#[path = "generated/slang.rs"]
+#[path = "generated/generated/slang.rs"]
 #[allow(
     clippy::cast_possible_truncation,
     clippy::cast_possible_wrap,
@@ -21,7 +21,7 @@ pub mod text_index;
     clippy::unnecessary_cast,
     clippy::wrong_self_convention
 )]
-pub mod slang;
+mod slang;
 
 // #[path = "generated/ast_selectors.rs"]
 // pub mod ast_selectors;
