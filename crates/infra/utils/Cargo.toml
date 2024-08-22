@@ -28,9 +28,9 @@ url = { workspace = true }
 
 [dev-dependencies]
 anyhow = { workspace = true }
-public-api = { workspace = true }
 rayon = { workspace = true }
 rustdoc-json = { workspace = true }
+rustdoc-types = { workspace = true }
 
 [lints]
 workspace = true
