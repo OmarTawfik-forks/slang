@@ -9,5 +9,8 @@
     "crates/solidity/testing/perf",
     "crates/testlang/outputs/npm/package",
     "crates/testlang/outputs/npm/tests"
-  ]
+  ],
+  "dependencies": {
+    "@solidity-parser/parser": "^0.18.0"
+  }
 }
