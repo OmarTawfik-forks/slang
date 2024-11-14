@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <title>Prettier Demo</title>
+
+    <style>
+      .container {
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+      }
+      textarea {
+        width: 45%;
+        height: 600px;
+        font-family: monospace;
+        padding: 10px;
+      }
+    </style>
+
+    <script type="module">
+      const initialSource = `
+      contract ATARI is Token{
+
+    constructor() public{
+                       name = "Atari Chain";
+        symbol = "ATRI";
+        decimals = 18;
+       
+  totalSupply = 7711000000*10**18;  
+        owner = msg.sender;
+                            balances[owner] = totalSupply;
+        
+    }
+
+    receive () payable external { require(msg.value>0); owner.transfer(msg.value); }
+}
+    `;
+
+      await import("https://unpkg.com/prettier@latest");
+      await import("https://unpkg.com/prettier-plugin-solidity@next");
+
+      const inputArea = document.getElementById("input");
+      const outputArea = document.getElementById("output");
+
+      inputArea.value = initialSource;
+
+      async function updateOutput() {
+        try {
+          outputArea.value = await prettier.format(inputArea.value, {
+            parser: "slang-solidity",
+            plugins: prettierPlugins,
+          });
+        } catch (error) {
+          return `Error: ${error.message}`;
+        }
+      }
+
+      updateOutput();
+
+      inputArea.addEventListener("keyup", updateOutput);
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <textarea id="input" placeholder="Type your Solidity code here..."></textarea>
+      <textarea id="output" readonly placeholder="Formatted code will appear here..."></textarea>
+    </div>
+  </body>
+</html>
