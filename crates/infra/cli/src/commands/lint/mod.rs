@@ -2,11 +2,13 @@ use std::path::Path;
 
 use anyhow::Result;
 use clap::{Parser, ValueEnum};
+use infra_utils::cargo::CargoWorkspaceCommands;
 use infra_utils::commands::Command;
 use infra_utils::github::GitHub;
 use infra_utils::paths::{FileWalker, PathExtensions};
 use infra_utils::terminal::Terminal;
 
+use crate::toolchains::mkdocs::Mkdocs;
 use crate::toolchains::pipenv::PipEnv;
 use crate::utils::{ClapExtensions, OrderedCommand};
 
@@ -32,6 +34,10 @@ enum LintCommand {
     MarkdownLinkCheck,
     /// Check for violations in Markdown files.
     MarkdownLint,
+    /// Check mkdocs documentation for any build issues or broken links.
+    Mkdocs,
+    /// Run `cargo doc` to generate Rustdoc documentation and check for any broken links.
+    Rustdoc,
     /// Format all Rust source files.
     Rustfmt,
     /// Check for violations in Bash files.
@@ -51,6 +57,8 @@ impl OrderedCommand for LintCommand {
             LintCommand::Prettier => run_prettier(),
             LintCommand::MarkdownLinkCheck => run_markdown_link_check()?,
             LintCommand::MarkdownLint => run_markdown_lint()?,
+            LintCommand::Mkdocs => run_mkdocs(),
+            LintCommand::Rustdoc => run_rustdoc(),
             LintCommand::Rustfmt => run_rustfmt(),
             LintCommand::Shellcheck => run_shellcheck()?,
             LintCommand::Tsc => run_tsc(),
@@ -105,6 +113,21 @@ fn run_markdown_lint() -> Result<()> {
     command.run_xargs(markdown_files);
 
     Ok(())
+}
+
+fn run_mkdocs() {
+    Mkdocs::check();
+}
+
+fn run_rustdoc() {
+    Command::new("cargo")
+        .arg("doc")
+        .flag("--workspace")
+        .flag("--all-features")
+        .flag("--no-deps")
+        .flag("--document-private-items")
+        .add_build_rustflags()
+        .run();
 }
 
 fn run_rustfmt() {

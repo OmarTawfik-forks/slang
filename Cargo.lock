@@ -451,10 +451,7 @@ dependencies = [
 name = "codegen_runtime_cargo_crate"
 version = "0.18.3"
 dependencies = [
- "anyhow",
  "ariadne",
- "codegen_runtime_generator",
- "infra_utils",
  "metaslang_bindings",
  "metaslang_cst",
  "semver",
@@ -468,10 +465,7 @@ dependencies = [
 name = "codegen_runtime_cargo_wasm"
 version = "0.18.3"
 dependencies = [
- "anyhow",
  "codegen_runtime_cargo_crate",
- "codegen_runtime_generator",
- "infra_utils",
  "paste",
  "semver",
  "serde_json",
@@ -499,10 +493,15 @@ dependencies = [
 [[package]]
 name = "codegen_runtime_npm_package"
 version = "0.18.3"
+
+[[package]]
+name = "codegen_runtime_sync"
+version = "0.18.3"
 dependencies = [
  "anyhow",
  "codegen_runtime_generator",
  "infra_utils",
+ "rayon",
 ]
 
 [[package]]
@@ -2213,15 +2212,11 @@ dependencies = [
 name = "slang_solidity"
 version = "0.18.3"
 dependencies = [
- "anyhow",
  "ariadne",
- "codegen_runtime_generator",
- "infra_utils",
  "metaslang_bindings",
  "metaslang_cst",
  "semver",
  "serde",
- "solidity_language",
  "strum",
  "strum_macros",
  "thiserror",
@@ -2241,17 +2236,13 @@ dependencies = [
 name = "slang_testlang"
 version = "0.18.3"
 dependencies = [
- "anyhow",
  "ariadne",
- "codegen_runtime_generator",
- "infra_utils",
  "metaslang_bindings",
  "metaslang_cst",
  "semver",
  "serde",
  "strum",
  "strum_macros",
- "testlang_language",
  "thiserror",
 ]
 
@@ -2288,7 +2279,6 @@ dependencies = [
  "anyhow",
  "ariadne",
  "codegen_language_definition",
- "codegen_testing",
  "indoc",
  "infra_utils",
  "metaslang_bindings",
@@ -2306,14 +2296,10 @@ dependencies = [
 name = "solidity_cargo_wasm"
 version = "0.18.3"
 dependencies = [
- "anyhow",
- "codegen_runtime_generator",
- "infra_utils",
  "paste",
  "semver",
  "serde_json",
  "slang_solidity",
- "solidity_language",
  "wit-bindgen",
 ]
 
@@ -2329,20 +2315,22 @@ dependencies = [
 [[package]]
 name = "solidity_npm_package"
 version = "0.18.3"
-dependencies = [
- "anyhow",
- "codegen_runtime_generator",
- "infra_utils",
- "solidity_language",
-]
 
 [[package]]
 name = "solidity_spec"
 version = "0.18.3"
+
+[[package]]
+name = "solidity_sync"
+version = "0.18.3"
 dependencies = [
  "anyhow",
+ "codegen_runtime_generator",
+ "codegen_runtime_sync",
  "codegen_spec",
+ "codegen_testing",
  "infra_utils",
+ "rayon",
  "solidity_language",
 ]
 
@@ -2609,14 +2597,10 @@ dependencies = [
 name = "testlang_cargo_wasm"
 version = "0.18.3"
 dependencies = [
- "anyhow",
- "codegen_runtime_generator",
- "infra_utils",
  "paste",
  "semver",
  "serde_json",
  "slang_testlang",
- "testlang_language",
  "wit-bindgen",
 ]
 
@@ -2632,10 +2616,16 @@ dependencies = [
 [[package]]
 name = "testlang_npm_package"
 version = "0.18.3"
+
+[[package]]
+name = "testlang_sync"
+version = "0.18.3"
 dependencies = [
  "anyhow",
  "codegen_runtime_generator",
+ "codegen_runtime_sync",
  "infra_utils",
+ "rayon",
  "testlang_language",
 ]
 

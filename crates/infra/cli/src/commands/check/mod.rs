@@ -6,7 +6,6 @@ use infra_utils::terminal::Terminal;
 use rayon::iter::{ParallelBridge, ParallelIterator};
 use strum::IntoEnumIterator;
 
-use crate::toolchains::mkdocs::Mkdocs;
 use crate::toolchains::wasm::WasmPackage;
 use crate::utils::{ClapExtensions, OrderedCommand};
 
@@ -24,14 +23,12 @@ impl CheckController {
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, ValueEnum)]
 enum CheckCommand {
+    /// Runs the build steps to (re-)generate any runtime source files.
+    Sync,
     /// Run 'cargo check' for all crates, features, and targets.
     Cargo,
-    /// Run `cargo doc` to generate Rustdoc documentation and check for any broken links.
-    Rustdoc,
     /// Check NPM packages for any outdated codegen steps.
     Npm,
-    /// Check mkdocs documentation for any build issues or broken links.
-    Mkdocs,
 }
 
 impl OrderedCommand for CheckCommand {
@@ -39,14 +36,23 @@ impl OrderedCommand for CheckCommand {
         Terminal::step(format!("check {name}", name = self.clap_name()));
 
         match self {
+            CheckCommand::Sync => check_sync(),
             CheckCommand::Cargo => check_cargo(),
-            CheckCommand::Rustdoc => check_rustdoc(),
             CheckCommand::Npm => check_npm(),
-            CheckCommand::Mkdocs => check_mkdocs(),
         };
 
         Ok(())
     }
+}
+
+fn check_sync() {
+    Command::new("cargo")
+        .arg("check")
+        .property("--package", "codegen_runtime_sync")
+        .property("--package", "solidity_sync")
+        .property("--package", "testlang_sync")
+        .add_build_rustflags()
+        .run();
 }
 
 fn check_cargo() {
@@ -61,23 +67,8 @@ fn check_cargo() {
         .run();
 }
 
-fn check_rustdoc() {
-    Command::new("cargo")
-        .arg("doc")
-        .flag("--workspace")
-        .flag("--all-features")
-        .flag("--no-deps")
-        .flag("--document-private-items")
-        .add_build_rustflags()
-        .run();
-}
-
 fn check_npm() {
     WasmPackage::iter()
         .par_bridge()
         .for_each(|package| package.build().unwrap());
-}
-
-fn check_mkdocs() {
-    Mkdocs::check();
 }

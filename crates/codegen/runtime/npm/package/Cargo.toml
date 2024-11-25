@@ -7,10 +7,5 @@ publish = false
 
 description = "TypeScript runtime copied over by codegen"
 
-[build-dependencies]
-anyhow = { workspace = true }
-infra_utils = { workspace = true }
-codegen_runtime_generator = { workspace = true }
-
 [lints]
 workspace = true

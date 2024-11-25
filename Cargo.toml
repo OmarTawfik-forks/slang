@@ -16,6 +16,7 @@ members = [
     "crates/codegen/runtime/cargo/wasm",
     "crates/codegen/runtime/generator",
     "crates/codegen/runtime/npm/package",
+    "crates/codegen/runtime/sync",
     "crates/codegen/spec",
     "crates/codegen/testing",
 
@@ -33,8 +34,9 @@ members = [
     "crates/solidity/outputs/cargo/wasm",
     "crates/solidity/outputs/npm/package",
     "crates/solidity/outputs/spec",
+    "crates/solidity/sync",
     "crates/solidity/testing/perf",
-    "crates/solidity/testing/sanctuary",
+    "crates/solidity/testing/sanctuary", 
     "crates/solidity/testing/snapshots",
     "crates/solidity/testing/solc",
 
@@ -43,6 +45,7 @@ members = [
     "crates/testlang/outputs/cargo/tests",
     "crates/testlang/outputs/cargo/wasm",
     "crates/testlang/outputs/npm/package",
+    "crates/testlang/sync",
 ]
 
 [workspace.dependencies]
@@ -58,6 +61,7 @@ codegen_runtime_cargo_crate = { path = "crates/codegen/runtime/cargo/crate", ver
 codegen_runtime_cargo_wasm = { path = "crates/codegen/runtime/cargo/wasm", version = "0.18.3" }
 codegen_runtime_generator = { path = "crates/codegen/runtime/generator", version = "0.18.3" }
 codegen_runtime_npm_package = { path = "crates/codegen/runtime/npm/package", version = "0.18.3" }
+codegen_runtime_sync = { path = "crates/codegen/runtime/sync", version = "0.18.3" }
 codegen_spec = { path = "crates/codegen/spec", version = "0.18.3" }
 codegen_testing = { path = "crates/codegen/testing", version = "0.18.3" }
 
@@ -75,6 +79,7 @@ solidity_cargo_wasm = { path = "crates/solidity/outputs/cargo/wasm", version = "
 solidity_language = { path = "crates/solidity/inputs/language", version = "0.18.3" }
 solidity_npm_package = { path = "crates/solidity/outputs/npm/package", version = "0.18.3" }
 solidity_spec = { path = "crates/solidity/outputs/spec", version = "0.18.3" }
+solidity_sync = { path = "crates/solidity/sync", version = "0.18.3" }
 solidity_testing_perf = { path = "crates/solidity/testing/perf", version = "0.18.3" }
 solidity_testing_sanctuary = { path = "crates/solidity/testing/sanctuary", version = "0.18.3" }
 solidity_testing_snapshots = { path = "crates/solidity/testing/snapshots", version = "0.18.3" }
@@ -85,6 +90,7 @@ testlang_cargo_tests = { path = "crates/testlang/outputs/cargo/tests", version =
 testlang_cargo_wasm = { path = "crates/testlang/outputs/cargo/wasm", version = "0.18.3" }
 testlang_language = { path = "crates/testlang/inputs/language", version = "0.18.3" }
 testlang_npm_package = { path = "crates/testlang/outputs/npm/package", version = "0.18.3" }
+testlang_sync = { path = "crates/testlang/sync", version = "0.18.3" }
 
 #
 # External
