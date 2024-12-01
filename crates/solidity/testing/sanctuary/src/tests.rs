@@ -213,14 +213,12 @@ fn create_bindings(version: &Version, source_id: &str, output: &ParseOutput) -> 
         }),
     );
     let parser = Parser::create(version.clone())?;
-    let built_ins_tree = parser
-        .parse(
-            NonterminalKind::SourceUnit,
-            bindings::get_built_ins(version),
-        )
-        .tree();
+    let built_ins = parser.parse(
+        NonterminalKind::SourceUnit,
+        bindings::get_built_ins(version),
+    );
     let built_ins_cursor =
-        transform_built_ins_node(&built_ins_tree).cursor_with_offset(TextIndex::ZERO);
+        transform_built_ins_node(built_ins.tree()).cursor_with_offset(TextIndex::ZERO);
 
     bindings.add_system_file("built_ins.sol", built_ins_cursor);
     bindings.add_user_file(source_id, output.create_tree_cursor());

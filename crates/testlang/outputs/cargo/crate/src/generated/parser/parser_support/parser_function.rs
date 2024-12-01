@@ -66,7 +66,7 @@ where
                 };
 
                 ParseOutput {
-                    parse_tree: Node::terminal(kind, input.to_string()),
+                    tree: Node::terminal(kind, input.to_string()),
                     errors: vec![ParseError::new(
                         TextIndex::ZERO..input.into(),
                         no_match.expected_terminals,
@@ -130,18 +130,17 @@ where
                     ));
 
                     ParseOutput {
-                        parse_tree: Node::nonterminal(topmost_node.kind, new_children),
+                        tree: Node::nonterminal(topmost_node.kind, new_children),
                         errors,
                     }
                 } else {
-                    let parse_tree = Node::Nonterminal(topmost_node);
+                    let tree = Node::Nonterminal(topmost_node);
                     let errors = stream.into_errors();
 
                     // Sanity check: Make sure that succesful parse is equivalent to not having any invalid nodes
                     debug_assert_eq!(
                         errors.is_empty(),
-                        parse_tree
-                            .clone()
+                        tree.clone()
                             .cursor_with_offset(TextIndex::ZERO)
                             .remaining_nodes()
                             .all(|edge| edge
@@ -150,7 +149,7 @@ where
                                 .is_none())
                     );
 
-                    ParseOutput { parse_tree, errors }
+                    ParseOutput { tree, errors }
                 }
             }
         }

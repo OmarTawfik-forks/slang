@@ -73,7 +73,7 @@ define_wrapper! { ParseError {
 
 define_wrapper! { ParseOutput {
     fn tree(&self) -> ffi::Node {
-        self._borrow_ffi().tree()._into_ffi()
+        self._borrow_ffi().tree().clone()._into_ffi()
     }
 
     fn errors(&self) -> Vec<ffi::ParseError> {
