@@ -20,8 +20,8 @@ pub fn create_bindings(version: &Version) -> Result<Bindings> {
         "built-ins parse without errors"
     );
 
-    let built_ins_cursor = transform_built_ins_node(&built_ins_parse_output.tree())
-        .cursor_with_offset(TextIndex::ZERO);
+    let built_ins_cursor =
+        transform_built_ins_node(built_ins_parse_output.tree()).cursor_with_offset(TextIndex::ZERO);
 
     bindings.add_system_file("built_ins.sol", built_ins_cursor);
     Ok(bindings)

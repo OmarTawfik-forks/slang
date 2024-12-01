@@ -1,5 +1,20 @@
 {
   "mappings": {
+    "nomic-foundation:slang:compilation:compilation-unit.language-version()": {
+      "Function": {
+        "as_getter": true
+      }
+    },
+    "nomic-foundation:slang:compilation:file.id()": {
+      "Function": {
+        "as_getter": true
+      }
+    },
+    "nomic-foundation:slang:compilation:file.tree()": {
+      "Function": {
+        "as_getter": true
+      }
+    },
     "nomic-foundation:slang:cst:terminal-kind": {
       "Enum": {
         "as_typescript_enum": true
@@ -105,7 +120,7 @@
         "as_iterator": true
       }
     },
-    "nomic-foundation:slang:parser:parser.version()": {
+    "nomic-foundation:slang:parser:parser.language-version()": {
       "Function": {
         "as_getter": true
       }

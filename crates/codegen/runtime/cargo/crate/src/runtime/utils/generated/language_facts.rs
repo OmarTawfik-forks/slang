@@ -5,7 +5,7 @@ use semver::Version;
 pub struct LanguageFacts;
 
 impl LanguageFacts {
-    pub const NAME: &'static str = "";
+    pub const NAME: &'static str = "CodegenRuntime";
 
     pub const SUPPORTED_VERSIONS: &'static [Version] = &[];
 }

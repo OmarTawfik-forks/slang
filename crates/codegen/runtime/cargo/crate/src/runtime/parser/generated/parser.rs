@@ -31,7 +31,7 @@ use crate::utils::LanguageFacts;
 
 #[derive(Debug)]
 pub struct Parser {
-    pub version: Version,
+    language_version: Version,
 }
 
 #[derive(thiserror::Error, Debug)]
@@ -43,21 +43,23 @@ pub enum ParserInitializationError {
 impl Parser {
     pub const ROOT_KIND: NonterminalKind = NonterminalKind::Stub1;
 
-    pub fn create(version: Version) -> std::result::Result<Self, ParserInitializationError> {
+    pub fn create(
+        language_version: Version,
+    ) -> std::result::Result<Self, ParserInitializationError> {
         if LanguageFacts::SUPPORTED_VERSIONS
-            .binary_search(&version)
+            .binary_search(&language_version)
             .is_ok()
         {
-            Ok(Self { version })
+            Ok(Self { language_version })
         } else {
             Err(ParserInitializationError::UnsupportedLanguageVersion(
-                version,
+                language_version,
             ))
         }
     }
 
-    pub fn version(&self) -> &Version {
-        &self.version
+    pub fn language_version(&self) -> &Version {
+        &self.language_version
     }
 
     pub fn parse(&self, kind: NonterminalKind, input: &str) -> ParseOutput {

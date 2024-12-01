@@ -57,11 +57,11 @@ export class Parser {
   /**
    * Creates a new parser instance for the specified language version.
    */
-  static create(version: string): Parser;
+  static create(languageVersion: string): Parser;
   /**
    * Returns the language version this parser instance is configured for.
    */
-  get version(): string;
+  get languageVersion(): string;
   /**
    * Parses the input string starting from the specified nonterminal kind.
    */

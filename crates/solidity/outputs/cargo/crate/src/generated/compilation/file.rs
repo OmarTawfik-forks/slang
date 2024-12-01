@@ -12,7 +12,7 @@ pub struct File {
     id: String,
     parse_output: ParseOutput,
 
-    imports_map: BTreeMap<String, String>,
+    resolved_imports: BTreeMap<usize, String>,
 }
 
 impl File {
@@ -21,7 +21,7 @@ impl File {
             id,
             parse_output,
 
-            imports_map: BTreeMap::new(),
+            resolved_imports: BTreeMap::new(),
         }
     }
 
@@ -37,7 +37,8 @@ impl File {
         self.parse_output.create_tree_cursor()
     }
 
-    pub(super) fn add_import(&mut self, import_string: String, imported_file_id: String) {
-        self.imports_map.insert(import_string, imported_file_id);
+    pub(super) fn resolve_import(&mut self, import_path: &Cursor, destination_file_id: String) {
+        self.resolved_imports
+            .insert(import_path.node().id(), destination_file_id);
     }
 }

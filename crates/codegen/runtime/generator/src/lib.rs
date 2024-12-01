@@ -93,7 +93,7 @@ impl Default for RuntimeModel {
     fn default() -> Self {
         Self {
             slang_version: Version::new(0, 0, 0),
-            language_name: String::default(),
+            language_name: "CodegenRuntime".to_string(),
             all_language_versions: BTreeSet::default(),
             breaking_language_versions: BTreeSet::default(),
 

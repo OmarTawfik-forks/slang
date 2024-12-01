@@ -8,6 +8,26 @@ pub fn slang_solidity::bindings::get_built_ins(version: &semver::Version) -> &'s
 pub type slang_solidity::bindings::Bindings = metaslang_bindings::Bindings<slang_solidity::cst::KindTypes>
 pub type slang_solidity::bindings::Definition<'a> = metaslang_bindings::Definition<'a, slang_solidity::cst::KindTypes>
 pub type slang_solidity::bindings::Reference<'a> = metaslang_bindings::Reference<'a, slang_solidity::cst::KindTypes>
+pub mod slang_solidity::compilation
+pub struct slang_solidity::compilation::AddFileResponse
+pub slang_solidity::compilation::AddFileResponse::import_paths: alloc::vec::Vec<slang_solidity::cst::Cursor>
+pub struct slang_solidity::compilation::CompilationUnit
+impl slang_solidity::compilation::CompilationUnit
+pub fn slang_solidity::compilation::CompilationUnit::file(&self, id: &str) -> core::option::Option<alloc::rc::Rc<slang_solidity::compilation::File>>
+pub fn slang_solidity::compilation::CompilationUnit::files(&self) -> alloc::vec::Vec<alloc::rc::Rc<slang_solidity::compilation::File>>
+pub struct slang_solidity::compilation::File
+impl slang_solidity::compilation::File
+pub fn slang_solidity::compilation::File::create_tree_cursor(&self) -> slang_solidity::cst::Cursor
+pub fn slang_solidity::compilation::File::id(&self) -> &str
+pub fn slang_solidity::compilation::File::tree(&self) -> &slang_solidity::cst::Node
+impl core::clone::Clone for slang_solidity::compilation::File
+pub fn slang_solidity::compilation::File::clone(&self) -> slang_solidity::compilation::File
+pub struct slang_solidity::compilation::InternalCompilationBuilder
+impl slang_solidity::compilation::InternalCompilationBuilder
+pub fn slang_solidity::compilation::InternalCompilationBuilder::add_file(&mut self, id: alloc::string::String, contents: &str) -> core::result::Result<slang_solidity::compilation::AddFileResponse, AddFileError>
+pub fn slang_solidity::compilation::InternalCompilationBuilder::build(&self) -> slang_solidity::compilation::CompilationUnit
+pub fn slang_solidity::compilation::InternalCompilationBuilder::create(version: semver::Version) -> core::result::Result<Self, CompilationInitializationError>
+pub fn slang_solidity::compilation::InternalCompilationBuilder::resolve_import(&mut self, source_file_id: &str, import_path: &slang_solidity::cst::Cursor, destination_file_id: alloc::string::String) -> core::result::Result<(), ResolveImportError>
 pub mod slang_solidity::cst
 pub use slang_solidity::cst::EdgeLabelExtensions
 pub use slang_solidity::cst::NonterminalKindExtensions
@@ -914,7 +934,9 @@ impl slang_solidity::parser::ParseOutput
 pub fn slang_solidity::parser::ParseOutput::create_tree_cursor(&self) -> slang_solidity::cst::Cursor
 pub fn slang_solidity::parser::ParseOutput::errors(&self) -> &alloc::vec::Vec<slang_solidity::parser::ParseError>
 pub fn slang_solidity::parser::ParseOutput::is_valid(&self) -> bool
-pub fn slang_solidity::parser::ParseOutput::tree(&self) -> slang_solidity::cst::Node
+pub fn slang_solidity::parser::ParseOutput::tree(&self) -> &slang_solidity::cst::Node
+impl core::clone::Clone for slang_solidity::parser::ParseOutput
+pub fn slang_solidity::parser::ParseOutput::clone(&self) -> slang_solidity::parser::ParseOutput
 impl core::cmp::PartialEq for slang_solidity::parser::ParseOutput
 pub fn slang_solidity::parser::ParseOutput::eq(&self, other: &slang_solidity::parser::ParseOutput) -> bool
 impl core::fmt::Debug for slang_solidity::parser::ParseOutput
@@ -932,5 +954,6 @@ pub fn slang_solidity::parser::Parser::fmt(&self, f: &mut core::fmt::Formatter<'
 pub mod slang_solidity::utils
 pub struct slang_solidity::utils::LanguageFacts
 impl slang_solidity::utils::LanguageFacts
+pub const slang_solidity::utils::LanguageFacts::NAME: &'static str
 pub const slang_solidity::utils::LanguageFacts::SUPPORTED_VERSIONS: &'static [semver::Version]
 pub fn slang_solidity::transform_built_ins_node(node: &slang_solidity::cst::Node) -> slang_solidity::cst::Node

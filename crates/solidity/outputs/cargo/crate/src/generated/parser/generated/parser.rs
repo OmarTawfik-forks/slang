@@ -66,7 +66,7 @@ pub struct Parser {
     pub(crate) version_is_at_least_0_8_24: bool,
     pub(crate) version_is_at_least_0_8_25: bool,
     pub(crate) version_is_at_least_0_8_27: bool,
-    pub version: Version,
+    language_version: Version,
 }
 
 #[derive(thiserror::Error, Debug)]
@@ -78,57 +78,59 @@ pub enum ParserInitializationError {
 impl Parser {
     pub const ROOT_KIND: NonterminalKind = NonterminalKind::SourceUnit;
 
-    pub fn create(version: Version) -> std::result::Result<Self, ParserInitializationError> {
+    pub fn create(
+        language_version: Version,
+    ) -> std::result::Result<Self, ParserInitializationError> {
         if LanguageFacts::SUPPORTED_VERSIONS
-            .binary_search(&version)
+            .binary_search(&language_version)
             .is_ok()
         {
             Ok(Self {
-                version_is_at_least_0_4_11: Version::new(0, 4, 11) <= version,
-                version_is_at_least_0_4_12: Version::new(0, 4, 12) <= version,
-                version_is_at_least_0_4_14: Version::new(0, 4, 14) <= version,
-                version_is_at_least_0_4_16: Version::new(0, 4, 16) <= version,
-                version_is_at_least_0_4_21: Version::new(0, 4, 21) <= version,
-                version_is_at_least_0_4_22: Version::new(0, 4, 22) <= version,
-                version_is_at_least_0_4_25: Version::new(0, 4, 25) <= version,
-                version_is_at_least_0_5_0: Version::new(0, 5, 0) <= version,
-                version_is_at_least_0_5_3: Version::new(0, 5, 3) <= version,
-                version_is_at_least_0_5_5: Version::new(0, 5, 5) <= version,
-                version_is_at_least_0_5_8: Version::new(0, 5, 8) <= version,
-                version_is_at_least_0_5_10: Version::new(0, 5, 10) <= version,
-                version_is_at_least_0_5_12: Version::new(0, 5, 12) <= version,
-                version_is_at_least_0_5_14: Version::new(0, 5, 14) <= version,
-                version_is_at_least_0_6_0: Version::new(0, 6, 0) <= version,
-                version_is_at_least_0_6_2: Version::new(0, 6, 2) <= version,
-                version_is_at_least_0_6_5: Version::new(0, 6, 5) <= version,
-                version_is_at_least_0_6_7: Version::new(0, 6, 7) <= version,
-                version_is_at_least_0_6_8: Version::new(0, 6, 8) <= version,
-                version_is_at_least_0_6_11: Version::new(0, 6, 11) <= version,
-                version_is_at_least_0_7_0: Version::new(0, 7, 0) <= version,
-                version_is_at_least_0_7_1: Version::new(0, 7, 1) <= version,
-                version_is_at_least_0_7_4: Version::new(0, 7, 4) <= version,
-                version_is_at_least_0_8_0: Version::new(0, 8, 0) <= version,
-                version_is_at_least_0_8_4: Version::new(0, 8, 4) <= version,
-                version_is_at_least_0_8_7: Version::new(0, 8, 7) <= version,
-                version_is_at_least_0_8_8: Version::new(0, 8, 8) <= version,
-                version_is_at_least_0_8_13: Version::new(0, 8, 13) <= version,
-                version_is_at_least_0_8_18: Version::new(0, 8, 18) <= version,
-                version_is_at_least_0_8_19: Version::new(0, 8, 19) <= version,
-                version_is_at_least_0_8_22: Version::new(0, 8, 22) <= version,
-                version_is_at_least_0_8_24: Version::new(0, 8, 24) <= version,
-                version_is_at_least_0_8_25: Version::new(0, 8, 25) <= version,
-                version_is_at_least_0_8_27: Version::new(0, 8, 27) <= version,
-                version,
+                version_is_at_least_0_4_11: Version::new(0, 4, 11) <= language_version,
+                version_is_at_least_0_4_12: Version::new(0, 4, 12) <= language_version,
+                version_is_at_least_0_4_14: Version::new(0, 4, 14) <= language_version,
+                version_is_at_least_0_4_16: Version::new(0, 4, 16) <= language_version,
+                version_is_at_least_0_4_21: Version::new(0, 4, 21) <= language_version,
+                version_is_at_least_0_4_22: Version::new(0, 4, 22) <= language_version,
+                version_is_at_least_0_4_25: Version::new(0, 4, 25) <= language_version,
+                version_is_at_least_0_5_0: Version::new(0, 5, 0) <= language_version,
+                version_is_at_least_0_5_3: Version::new(0, 5, 3) <= language_version,
+                version_is_at_least_0_5_5: Version::new(0, 5, 5) <= language_version,
+                version_is_at_least_0_5_8: Version::new(0, 5, 8) <= language_version,
+                version_is_at_least_0_5_10: Version::new(0, 5, 10) <= language_version,
+                version_is_at_least_0_5_12: Version::new(0, 5, 12) <= language_version,
+                version_is_at_least_0_5_14: Version::new(0, 5, 14) <= language_version,
+                version_is_at_least_0_6_0: Version::new(0, 6, 0) <= language_version,
+                version_is_at_least_0_6_2: Version::new(0, 6, 2) <= language_version,
+                version_is_at_least_0_6_5: Version::new(0, 6, 5) <= language_version,
+                version_is_at_least_0_6_7: Version::new(0, 6, 7) <= language_version,
+                version_is_at_least_0_6_8: Version::new(0, 6, 8) <= language_version,
+                version_is_at_least_0_6_11: Version::new(0, 6, 11) <= language_version,
+                version_is_at_least_0_7_0: Version::new(0, 7, 0) <= language_version,
+                version_is_at_least_0_7_1: Version::new(0, 7, 1) <= language_version,
+                version_is_at_least_0_7_4: Version::new(0, 7, 4) <= language_version,
+                version_is_at_least_0_8_0: Version::new(0, 8, 0) <= language_version,
+                version_is_at_least_0_8_4: Version::new(0, 8, 4) <= language_version,
+                version_is_at_least_0_8_7: Version::new(0, 8, 7) <= language_version,
+                version_is_at_least_0_8_8: Version::new(0, 8, 8) <= language_version,
+                version_is_at_least_0_8_13: Version::new(0, 8, 13) <= language_version,
+                version_is_at_least_0_8_18: Version::new(0, 8, 18) <= language_version,
+                version_is_at_least_0_8_19: Version::new(0, 8, 19) <= language_version,
+                version_is_at_least_0_8_22: Version::new(0, 8, 22) <= language_version,
+                version_is_at_least_0_8_24: Version::new(0, 8, 24) <= language_version,
+                version_is_at_least_0_8_25: Version::new(0, 8, 25) <= language_version,
+                version_is_at_least_0_8_27: Version::new(0, 8, 27) <= language_version,
+                language_version,
             })
         } else {
             Err(ParserInitializationError::UnsupportedLanguageVersion(
-                version,
+                language_version,
             ))
         }
     }
 
-    pub fn version(&self) -> &Version {
-        &self.version
+    pub fn language_version(&self) -> &Version {
+        &self.language_version
     } /********************************************
        *         Parser Functions
        ********************************************/

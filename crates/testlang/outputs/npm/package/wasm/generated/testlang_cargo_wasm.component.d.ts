@@ -2,9 +2,11 @@
 
 import { NomicFoundationSlangCst } from "./interfaces/nomic-foundation-slang-cst.js";
 import { NomicFoundationSlangAst } from "./interfaces/nomic-foundation-slang-ast.js";
+import { NomicFoundationSlangCompilation } from "./interfaces/nomic-foundation-slang-compilation.js";
 import { NomicFoundationSlangParser } from "./interfaces/nomic-foundation-slang-parser.js";
 import { NomicFoundationSlangUtils } from "./interfaces/nomic-foundation-slang-utils.js";
 export * as cst from "./interfaces/nomic-foundation-slang-cst.js";
 export * as ast from "./interfaces/nomic-foundation-slang-ast.js";
+export * as compilation from "./interfaces/nomic-foundation-slang-compilation.js";
 export * as parser from "./interfaces/nomic-foundation-slang-parser.js";
 export * as utils from "./interfaces/nomic-foundation-slang-utils.js";
