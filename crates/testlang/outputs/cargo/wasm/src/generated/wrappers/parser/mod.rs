@@ -3,10 +3,10 @@
 use crate::wasm_crate::utils::{define_wrapper, FromFFI, IntoFFI};
 
 mod ffi {
-    pub use crate::wasm_crate::bindings::exports::nomic_foundation::slang::cst::{
+    pub use crate::wasm_crate::bindgen::exports::nomic_foundation::slang::cst::{
         Cursor, Node, TextRange,
     };
-    pub use crate::wasm_crate::bindings::exports::nomic_foundation::slang::parser::{
+    pub use crate::wasm_crate::bindgen::exports::nomic_foundation::slang::parser::{
         Guest, GuestParseError, GuestParseOutput, GuestParser, NonterminalKind, ParseError,
         ParseErrorBorrow, ParseOutput, ParseOutputBorrow, Parser, ParserBorrow,
     };

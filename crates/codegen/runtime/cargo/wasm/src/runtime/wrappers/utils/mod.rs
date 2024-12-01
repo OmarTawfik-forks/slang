@@ -1,7 +1,7 @@
 use crate::wasm_crate::utils::define_wrapper;
 
 mod ffi {
-    pub use crate::wasm_crate::bindings::exports::nomic_foundation::slang::utils::{
+    pub use crate::wasm_crate::bindgen::exports::nomic_foundation::slang::utils::{
         Guest, GuestLanguageFacts, LanguageFacts, LanguageFactsBorrow,
     };
 }
