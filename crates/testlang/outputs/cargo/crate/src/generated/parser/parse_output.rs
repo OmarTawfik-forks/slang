@@ -3,7 +3,7 @@
 use crate::cst::{Cursor, Node, TextIndex};
 use crate::parser::ParseError;
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct ParseOutput {
     pub(crate) tree: Node,
     pub(crate) errors: Vec<ParseError>,
