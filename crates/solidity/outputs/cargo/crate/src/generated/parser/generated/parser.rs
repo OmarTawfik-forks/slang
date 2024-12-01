@@ -27,6 +27,7 @@ use crate::parser::scanner_macros::{
     scan_not_followed_by, scan_one_or_more, scan_optional, scan_sequence, scan_zero_or_more,
 };
 use crate::parser::ParseOutput;
+use crate::utils::LanguageFacts;
 
 #[derive(Debug)]
 pub struct Parser {
@@ -75,96 +76,13 @@ pub enum ParserInitializationError {
 }
 
 impl Parser {
-    pub const SUPPORTED_VERSIONS: &'static [Version] = &[
-        Version::new(0, 4, 11),
-        Version::new(0, 4, 12),
-        Version::new(0, 4, 13),
-        Version::new(0, 4, 14),
-        Version::new(0, 4, 15),
-        Version::new(0, 4, 16),
-        Version::new(0, 4, 17),
-        Version::new(0, 4, 18),
-        Version::new(0, 4, 19),
-        Version::new(0, 4, 20),
-        Version::new(0, 4, 21),
-        Version::new(0, 4, 22),
-        Version::new(0, 4, 23),
-        Version::new(0, 4, 24),
-        Version::new(0, 4, 25),
-        Version::new(0, 4, 26),
-        Version::new(0, 5, 0),
-        Version::new(0, 5, 1),
-        Version::new(0, 5, 2),
-        Version::new(0, 5, 3),
-        Version::new(0, 5, 4),
-        Version::new(0, 5, 5),
-        Version::new(0, 5, 6),
-        Version::new(0, 5, 7),
-        Version::new(0, 5, 8),
-        Version::new(0, 5, 9),
-        Version::new(0, 5, 10),
-        Version::new(0, 5, 11),
-        Version::new(0, 5, 12),
-        Version::new(0, 5, 13),
-        Version::new(0, 5, 14),
-        Version::new(0, 5, 15),
-        Version::new(0, 5, 16),
-        Version::new(0, 5, 17),
-        Version::new(0, 6, 0),
-        Version::new(0, 6, 1),
-        Version::new(0, 6, 2),
-        Version::new(0, 6, 3),
-        Version::new(0, 6, 4),
-        Version::new(0, 6, 5),
-        Version::new(0, 6, 6),
-        Version::new(0, 6, 7),
-        Version::new(0, 6, 8),
-        Version::new(0, 6, 9),
-        Version::new(0, 6, 10),
-        Version::new(0, 6, 11),
-        Version::new(0, 6, 12),
-        Version::new(0, 7, 0),
-        Version::new(0, 7, 1),
-        Version::new(0, 7, 2),
-        Version::new(0, 7, 3),
-        Version::new(0, 7, 4),
-        Version::new(0, 7, 5),
-        Version::new(0, 7, 6),
-        Version::new(0, 8, 0),
-        Version::new(0, 8, 1),
-        Version::new(0, 8, 2),
-        Version::new(0, 8, 3),
-        Version::new(0, 8, 4),
-        Version::new(0, 8, 5),
-        Version::new(0, 8, 6),
-        Version::new(0, 8, 7),
-        Version::new(0, 8, 8),
-        Version::new(0, 8, 9),
-        Version::new(0, 8, 10),
-        Version::new(0, 8, 11),
-        Version::new(0, 8, 12),
-        Version::new(0, 8, 13),
-        Version::new(0, 8, 14),
-        Version::new(0, 8, 15),
-        Version::new(0, 8, 16),
-        Version::new(0, 8, 17),
-        Version::new(0, 8, 18),
-        Version::new(0, 8, 19),
-        Version::new(0, 8, 20),
-        Version::new(0, 8, 21),
-        Version::new(0, 8, 22),
-        Version::new(0, 8, 23),
-        Version::new(0, 8, 24),
-        Version::new(0, 8, 25),
-        Version::new(0, 8, 26),
-        Version::new(0, 8, 27),
-        Version::new(0, 8, 28),
-    ];
-
     pub const ROOT_KIND: NonterminalKind = NonterminalKind::SourceUnit;
 
     pub fn create(version: Version) -> std::result::Result<Self, ParserInitializationError> {
-        if Self::SUPPORTED_VERSIONS.binary_search(&version).is_ok() {
+        if LanguageFacts::SUPPORTED_VERSIONS
+            .binary_search(&version)
+            .is_ok()
+        {
             Ok(Self {
                 version_is_at_least_0_4_11: Version::new(0, 4, 11) <= version,
                 version_is_at_least_0_4_12: Version::new(0, 4, 12) <= version,

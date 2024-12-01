@@ -47,7 +47,8 @@
     ".": "./target/generated/index.mjs",
     "./ast": "./target/generated/ast/index.mjs",
     "./cst": "./target/generated/cst/index.mjs",
-    "./parser": "./target/generated/parser/index.mjs"
+    "./parser": "./target/generated/parser/index.mjs",
+    "./utils": "./target/generated/utils/index.mjs"
   },
   "__dependencies_comment__": "__SLANG_NPM_PACKAGE_DEPENDENCIES__ (keep in sync)",
   "dependencies": {

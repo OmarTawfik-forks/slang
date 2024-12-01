@@ -33,13 +33,6 @@ define_wrapper! { Parser {
         rust::Parser::ROOT_KIND._into_ffi()
     }
 
-    fn supported_versions() -> Vec<String> {
-        rust::Parser::SUPPORTED_VERSIONS
-            .iter()
-            .map(|v| v.to_string())
-            .collect()
-    }
-
     fn create(version: String) -> Result<ffi::Parser, String> {
         semver::Version::parse(&version)
             .map_err(|_| format!("Invalid semantic version: '{version}'"))

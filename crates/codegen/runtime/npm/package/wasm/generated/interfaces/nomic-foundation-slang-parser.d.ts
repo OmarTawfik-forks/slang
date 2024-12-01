@@ -55,11 +55,6 @@ export class Parser {
    */
   static rootKind(): NonterminalKind;
   /**
-   * Returns a list of language versions supported by this parser.
-   * Each version string represents a specific grammar configuration.
-   */
-  static supportedVersions(): string[];
-  /**
    * Creates a new parser instance for the specified language version.
    */
   static create(version: string): Parser;

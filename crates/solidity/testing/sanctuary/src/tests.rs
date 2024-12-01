@@ -11,6 +11,7 @@ use slang_solidity::bindings::Bindings;
 use slang_solidity::cst::{Cursor, NonterminalKind, TextIndex, TextRange};
 use slang_solidity::diagnostic::{Diagnostic, Severity};
 use slang_solidity::parser::{ParseOutput, Parser};
+use slang_solidity::utils::LanguageFacts;
 use slang_solidity::{bindings, transform_built_ins_node};
 
 use crate::datasets::{DataSet, SourceFile};
@@ -152,7 +153,7 @@ fn extract_compiler_version(compiler: &str) -> Option<Version> {
         panic!("Unrecognized compiler/version: '{compiler}'");
     };
 
-    if &version < Parser::SUPPORTED_VERSIONS.first().unwrap() {
+    if &version < LanguageFacts::SUPPORTED_VERSIONS.first().unwrap() {
         // Version is too early:
         return None;
     }

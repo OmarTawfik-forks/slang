@@ -1,0 +1,13 @@
+use semver::Version;
+
+pub struct LanguageFacts;
+
+impl LanguageFacts {
+    pub const SUPPORTED_VERSIONS: &'static [Version] = &[
+        {%- if not rendering_in_stubs -%}
+            {% for version in model.all_language_versions %}
+                Version::new({{ version | split(pat=".") | join(sep=", ") }}),
+            {% endfor %}
+        {%- endif -%}
+    ];
+}

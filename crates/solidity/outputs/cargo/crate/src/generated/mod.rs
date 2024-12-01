@@ -5,3 +5,4 @@ pub mod bindings;
 pub mod cst;
 pub mod diagnostic;
 pub mod parser;
+pub mod utils;

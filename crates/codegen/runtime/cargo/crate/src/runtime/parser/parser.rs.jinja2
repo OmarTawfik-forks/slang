@@ -11,6 +11,7 @@
 use semver::Version;
 
 use crate::cst;
+use crate::utils::LanguageFacts;
 use crate::cst::{
     EdgeLabel, IsLexicalContext, LexicalContext, LexicalContextType, NonterminalKind, TerminalKind,
 };
@@ -47,18 +48,10 @@ pub enum ParserInitializationError {
 }
 
 impl Parser {
-    pub const SUPPORTED_VERSIONS: &'static [Version] = &[
-        {%- if not rendering_in_stubs -%}
-            {% for version in model.all_language_versions %}
-                Version::new({{ version | split(pat=".") | join(sep=", ") }}),
-            {% endfor %}
-        {%- endif -%}
-    ];
-
     pub const ROOT_KIND: NonterminalKind = NonterminalKind::{{ model.kinds.root_kind }};
 
     pub fn create(version: Version) -> std::result::Result<Self, ParserInitializationError> {
-        if Self::SUPPORTED_VERSIONS.binary_search(&version).is_ok() {
+        if LanguageFacts::SUPPORTED_VERSIONS.binary_search(&version).is_ok() {
             Ok(Self {
                 {%- if not rendering_in_stubs -%}
                     {%- for version in model.breaking_language_versions %}

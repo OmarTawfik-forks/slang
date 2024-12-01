@@ -924,10 +924,13 @@ pub struct slang_solidity::parser::Parser
 pub slang_solidity::parser::Parser::version: semver::Version
 impl slang_solidity::parser::Parser
 pub const slang_solidity::parser::Parser::ROOT_KIND: slang_solidity::cst::NonterminalKind
-pub const slang_solidity::parser::Parser::SUPPORTED_VERSIONS: &'static [semver::Version]
 pub fn slang_solidity::parser::Parser::create(version: semver::Version) -> core::result::Result<Self, slang_solidity::parser::ParserInitializationError>
 pub fn slang_solidity::parser::Parser::parse(&self, kind: slang_solidity::cst::NonterminalKind, input: &str) -> slang_solidity::parser::ParseOutput
 pub fn slang_solidity::parser::Parser::version(&self) -> &semver::Version
 impl core::fmt::Debug for slang_solidity::parser::Parser
 pub fn slang_solidity::parser::Parser::fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub mod slang_solidity::utils
+pub struct slang_solidity::utils::LanguageFacts
+impl slang_solidity::utils::LanguageFacts
+pub const slang_solidity::utils::LanguageFacts::SUPPORTED_VERSIONS: &'static [semver::Version]
 pub fn slang_solidity::transform_built_ins_node(node: &slang_solidity::cst::Node) -> slang_solidity::cst::Node
