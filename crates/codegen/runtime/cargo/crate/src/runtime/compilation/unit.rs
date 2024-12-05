@@ -37,21 +37,22 @@ impl CompilationUnit {
     }
 
     fn bindings(&self) -> &Bindings {
-        struct Resolver;
+        todo!()
+        // struct Resolver;
 
-        impl PathResolver for Resolver {
-            fn resolve_path(&self, context_path: &str, path_to_resolve: &str) -> Option<String> {
-                files[context_path].resolved_import(&path_to_resolve)
-            }
-        }
+        // impl PathResolver for Resolver {
+        //     fn resolve_path(&self, context_path: &str, path_to_resolve: &str) -> Option<String> {
+        //         files[context_path].resolved_import(&path_to_resolve)
+        //     }
+        // }
 
-        let bindings = create_with_resolver(language_version, resolver);
+        // let bindings = create_with_resolver(language_version, resolver);
 
-        for file in files.values() {
-            bindings.add_file(file);
-        }
+        // for file in files.values() {
+        //     bindings.add_file(file);
+        // }
 
-        self.bindings
-            .get_or_init(|| create_with_resolver(self.language_version, PathResolver::default()))
+        // self.bindings
+        //     .get_or_init(|| create_with_resolver(self.language_version, PathResolver::default()))
     }
 }
