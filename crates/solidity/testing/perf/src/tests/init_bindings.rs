@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use metaslang_bindings::PathResolver;
 use slang_solidity::bindings::{create_with_resolver, get_built_ins, Bindings};
+use slang_solidity::cst::{Cursor, KindTypes};
 use slang_solidity::parser::{ParseOutput, Parser};
 
 use crate::dataset::SOLC_VERSION;
@@ -26,8 +27,8 @@ pub fn run(built_ins: ParseOutput) -> Bindings {
 
 struct NoOpResolver;
 
-impl PathResolver for NoOpResolver {
-    fn resolve_path(&self, _context_path: &str, path_to_resolve: &str) -> Option<String> {
-        Some(path_to_resolve.to_string())
+impl PathResolver<KindTypes> for NoOpResolver {
+    fn resolve_path(&self, _context_path: &str, path_to_resolve: &Cursor) -> Option<String> {
+        Some(path_to_resolve.node().unparse())
     }
 }

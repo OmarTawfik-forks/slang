@@ -111,15 +111,15 @@ impl FileDescriptor {
     }
 }
 
-pub trait PathResolver {
-    fn resolve_path(&self, context_path: &str, path_to_resolve: &str) -> Option<String>;
+pub trait PathResolver<KT: KindTypes + 'static> {
+    fn resolve_path(&self, context_path: &str, path_to_resolve: &Cursor<KT>) -> Option<String>;
 }
 
 impl<KT: KindTypes + 'static> Bindings<KT> {
     pub fn create(
         version: Version,
         binding_rules: &str,
-        path_resolver: Arc<dyn PathResolver + Sync + Send>,
+        path_resolver: Arc<dyn PathResolver<KT> + Sync + Send>,
     ) -> Self {
         let graph_builder_file =
             File::from_str(binding_rules).expect("Bindings stack graph builder parse error");

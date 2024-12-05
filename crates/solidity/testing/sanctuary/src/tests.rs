@@ -8,7 +8,7 @@ use itertools::Itertools;
 use metaslang_bindings::PathResolver;
 use semver::Version;
 use slang_solidity::bindings::Bindings;
-use slang_solidity::cst::{Cursor, NonterminalKind, TextIndex, TextRange};
+use slang_solidity::cst::{Cursor, KindTypes, NonterminalKind, TextIndex, TextRange};
 use slang_solidity::diagnostic::{Diagnostic, Severity};
 use slang_solidity::parser::{ParseOutput, Parser};
 use slang_solidity::utils::LanguageFacts;
@@ -232,8 +232,8 @@ struct SingleFileResolver {
     source_id: String,
 }
 
-impl PathResolver for SingleFileResolver {
-    fn resolve_path(&self, _context_path: &str, _path_to_resolve: &str) -> Option<String> {
+impl PathResolver<KindTypes> for SingleFileResolver {
+    fn resolve_path(&self, _context_path: &str, _path_to_resolve: &Cursor) -> Option<String> {
         Some(self.source_id.clone())
     }
 }

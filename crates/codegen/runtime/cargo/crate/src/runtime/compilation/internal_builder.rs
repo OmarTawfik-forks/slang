@@ -103,7 +103,7 @@ fn extract_import_paths(cursor: Cursor) -> Result<Vec<Cursor>, String> {
         Query::parse(
             "[PathImport
                 path: [StringLiteral
-                    @variant (variant: [DoubleQuotedStringLiteral] | variant: [SingleQuotedStringLiteral])
+                    @variant ([DoubleQuotedStringLiteral] | [SingleQuotedStringLiteral])
                 ]
             ]",
         )
@@ -111,7 +111,7 @@ fn extract_import_paths(cursor: Cursor) -> Result<Vec<Cursor>, String> {
         Query::parse(
             "[NamedImport
                 path: [StringLiteral
-                    @variant (variant: [DoubleQuotedStringLiteral] | variant: [SingleQuotedStringLiteral])
+                    @variant ([DoubleQuotedStringLiteral] | [SingleQuotedStringLiteral])
                 ]
             ]",
         )
@@ -119,7 +119,7 @@ fn extract_import_paths(cursor: Cursor) -> Result<Vec<Cursor>, String> {
         Query::parse(
             "[ImportDeconstruction
                 path: [StringLiteral
-                    @variant (variant: [DoubleQuotedStringLiteral] | variant: [SingleQuotedStringLiteral])
+                    @variant ([DoubleQuotedStringLiteral] | [SingleQuotedStringLiteral])
                 ]
             ]",
         )

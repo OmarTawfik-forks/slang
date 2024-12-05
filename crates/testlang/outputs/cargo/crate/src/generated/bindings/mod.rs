@@ -19,7 +19,7 @@ pub use metaslang_bindings::PathResolver;
 
 pub fn create_with_resolver(
     version: Version,
-    resolver: Arc<dyn PathResolver + Sync + Send>,
+    resolver: Arc<dyn PathResolver<KindTypes> + Sync + Send>,
 ) -> Bindings {
     Bindings::create(version, binding_rules::BINDING_RULES_SOURCE, resolver)
 }
