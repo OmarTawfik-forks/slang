@@ -6,7 +6,6 @@ mod built_ins;
 
 use std::sync::Arc;
 
-use metaslang_bindings::{self, PathResolver};
 use semver::Version;
 
 use crate::cst::KindTypes;
@@ -14,6 +13,7 @@ use crate::cst::KindTypes;
 pub type Bindings = metaslang_bindings::Bindings<KindTypes>;
 pub type Definition<'a> = metaslang_bindings::Definition<'a, KindTypes>;
 pub type Reference<'a> = metaslang_bindings::Reference<'a, KindTypes>;
+pub use metaslang_bindings::PathResolver;
 
 pub fn create_with_resolver(
     version: Version,

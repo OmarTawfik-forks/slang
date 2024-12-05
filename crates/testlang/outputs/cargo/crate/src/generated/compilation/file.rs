@@ -41,4 +41,8 @@ impl File {
         self.resolved_imports
             .insert(import_path.node().id(), destination_file_id);
     }
+
+    pub(super) fn resolved_import(&self, import_path: &Cursor) -> Option<&String> {
+        self.resolved_imports.get(&import_path.node().id())
+    }
 }

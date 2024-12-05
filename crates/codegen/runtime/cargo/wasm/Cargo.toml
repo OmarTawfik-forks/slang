@@ -18,6 +18,7 @@ infra_utils = { workspace = true }
 
 [dependencies]
 codegen_runtime_cargo_crate = { workspace = true, features = [
+  "__experimental_bindings_api",
   "__private_compilation_api",
 ] }
 paste = { workspace = true }
