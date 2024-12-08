@@ -8,6 +8,7 @@ use semver::Version;
 
 use crate::bindings::{create_with_resolver, Bindings, PathResolver};
 use crate::compilation::File;
+use crate::cst::{Cursor, KindTypes};
 
 pub struct CompilationUnit {
     language_version: Version,
@@ -37,22 +38,32 @@ impl CompilationUnit {
     }
 
     fn bindings(&self) -> &Bindings {
-        todo!()
-        // struct Resolver;
+        self.bindings.get_or_init(|| {
+            let resolver = Resolver {
+                files: self.files.clone(),
+            };
 
-        // impl PathResolver for Resolver {
-        //     fn resolve_path(&self, context_path: &str, path_to_resolve: &str) -> Option<String> {
-        //         files[context_path].resolved_import(&path_to_resolve)
-        //     }
-        // }
+            let mut bindings =
+                create_with_resolver(self.language_version.clone(), Rc::new(resolver));
 
-        // let bindings = create_with_resolver(language_version, resolver);
+            for (id, file) in &self.files {
+                bindings.add_user_file(id, file.create_tree_cursor());
+            }
 
-        // for file in files.values() {
-        //     bindings.add_file(file);
-        // }
+            bindings
+        })
+    }
+}
 
-        // self.bindings
-        //     .get_or_init(|| create_with_resolver(self.language_version, PathResolver::default()))
+struct Resolver {
+    files: BTreeMap<String, Rc<File>>,
+}
+
+impl PathResolver<KindTypes> for Resolver {
+    fn resolve_path(&self, context_path: &str, path_to_resolve: &Cursor) -> Option<String> {
+        self.files
+            .get(context_path)?
+            .resolved_import(path_to_resolve)
+            .cloned()
     }
 }

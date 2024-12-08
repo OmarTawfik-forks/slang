@@ -2,22 +2,23 @@
 
 use std::collections::BTreeMap;
 
+use metaslang_cst::text_index::TextIndex;
+
 use crate::cst::{Cursor, Node};
-use crate::parser::ParseOutput;
 
 #[derive(Clone)]
 pub struct File {
     id: String,
-    parse_output: ParseOutput,
+    tree: Node,
 
     resolved_imports: BTreeMap<usize, String>,
 }
 
 impl File {
-    pub(super) fn new(id: String, parse_output: ParseOutput) -> Self {
+    pub(super) fn new(id: String, tree: Node) -> Self {
         Self {
             id,
-            parse_output,
+            tree,
 
             resolved_imports: BTreeMap::new(),
         }
@@ -28,11 +29,11 @@ impl File {
     }
 
     pub fn tree(&self) -> &Node {
-        self.parse_output.tree()
+        &self.tree
     }
 
     pub fn create_tree_cursor(&self) -> Cursor {
-        self.parse_output.create_tree_cursor()
+        self.tree.clone().cursor_with_offset(TextIndex::ZERO)
     }
 
     pub(super) fn resolve_import(&mut self, import_path: &Cursor, destination_file_id: String) {
