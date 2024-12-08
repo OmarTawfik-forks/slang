@@ -37,7 +37,7 @@ impl CompilationUnit {
         self.files.get(id).cloned()
     }
 
-    fn bindings(&self) -> &Bindings {
+    pub fn binding_graph(&self) -> &Bindings {
         self.bindings.get_or_init(|| {
             let resolver = Resolver {
                 files: self.files.clone(),

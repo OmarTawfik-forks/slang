@@ -1,6 +1,7 @@
 // This file is generated automatically by infrastructure scripts. Please don't edit by hand.
 
 interface compilation {
+    use bindings.{binding-graph};
     use cst.{node, cursor};
 
     /// A builder for creating compilation units.
@@ -44,6 +45,13 @@ interface compilation {
 
         /// Returns the file with the specified ID, if it exists.
         file: func(id: string) -> option<file>;
+        
+        /// Calculates name binding information for all source files within the compilation unit.
+        /// Returns a graph that contains all found definitions and their references.
+        ///
+        /// Note: building this graph is an expensive operation.
+        /// It is done lazily on the first access, and cached thereafter.
+        binding-graph: func() -> binding-graph;
     }
 
     /// A single source file in the compilation unit.
