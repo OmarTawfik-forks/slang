@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::rc::Rc;
 
 use metaslang_cst::kinds::KindTypes;
 use metaslang_graph_builder::functions::Functions;
@@ -8,7 +8,7 @@ use crate::PathResolver;
 
 pub fn default_functions<KT: KindTypes + 'static>(
     version: Version,
-    path_resolver: Arc<dyn PathResolver<KT> + Sync + Send>,
+    path_resolver: Rc<dyn PathResolver<KT>>,
 ) -> Functions<KT> {
     let mut functions = Functions::stdlib();
     version::add_version_functions(&mut functions, version);
@@ -56,7 +56,7 @@ mod version {
 }
 
 mod resolver {
-    use std::sync::Arc;
+    use std::rc::Rc;
 
     use metaslang_cst::kinds::KindTypes;
     use metaslang_graph_builder::functions::{Function, Functions, Parameters};
@@ -67,14 +67,14 @@ mod resolver {
 
     pub fn add_functions<KT: KindTypes + 'static>(
         functions: &mut Functions<KT>,
-        path_resolver: Arc<dyn PathResolver<KT> + Sync + Send>,
+        path_resolver: Rc<dyn PathResolver<KT>>,
     ) {
         functions.add("resolve-path".into(), ResolvePath { path_resolver });
         functions.add("is-system-file".into(), IsSystemFile {});
     }
 
     struct ResolvePath<KT: KindTypes + 'static> {
-        path_resolver: Arc<dyn PathResolver<KT> + Sync + Send>,
+        path_resolver: Rc<dyn PathResolver<KT>>,
     }
 
     impl<KT: KindTypes + 'static> Function<KT> for ResolvePath<KT> {

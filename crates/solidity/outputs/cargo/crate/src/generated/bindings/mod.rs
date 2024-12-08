@@ -6,7 +6,7 @@ mod binding_rules;
 #[path = "generated/built_ins.rs"]
 mod built_ins;
 
-use std::sync::Arc;
+use std::rc::Rc;
 
 use semver::Version;
 
@@ -19,7 +19,7 @@ pub use metaslang_bindings::PathResolver;
 
 pub fn create_with_resolver(
     version: Version,
-    resolver: Arc<dyn PathResolver<KindTypes> + Sync + Send>,
+    resolver: Rc<dyn PathResolver<KindTypes>>,
 ) -> Bindings {
     Bindings::create(version, binding_rules::BINDING_RULES_SOURCE, resolver)
 }

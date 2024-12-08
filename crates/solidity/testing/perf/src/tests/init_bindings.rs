@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::rc::Rc;
 
 use metaslang_bindings::PathResolver;
 use slang_solidity::bindings::{create_with_resolver, get_built_ins, Bindings};
@@ -18,7 +18,7 @@ pub fn setup() -> ParseOutput {
 }
 
 pub fn run(built_ins: ParseOutput) -> Bindings {
-    let mut bindings = create_with_resolver(SOLC_VERSION, Arc::new(NoOpResolver {}));
+    let mut bindings = create_with_resolver(SOLC_VERSION, Rc::new(NoOpResolver {}));
 
     bindings.add_system_file("built_ins.sol", built_ins.create_tree_cursor());
 

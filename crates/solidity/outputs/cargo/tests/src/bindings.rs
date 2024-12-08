@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::rc::Rc;
 
 use anyhow::Result;
 use semver::Version;
@@ -12,7 +12,7 @@ use crate::resolver::TestsPathResolver;
 pub fn create_bindings(version: &Version) -> Result<Bindings> {
     let parser = Parser::create(version.clone())?;
     let mut bindings =
-        bindings::create_with_resolver(version.clone(), Arc::new(TestsPathResolver {}));
+        bindings::create_with_resolver(version.clone(), Rc::new(TestsPathResolver {}));
 
     let built_ins_parse_output = parser.parse(Parser::ROOT_KIND, bindings::get_built_ins(version));
     assert!(

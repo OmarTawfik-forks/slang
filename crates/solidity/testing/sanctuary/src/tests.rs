@@ -1,6 +1,6 @@
 use std::cmp::min;
 use std::path::Path;
-use std::sync::Arc;
+use std::rc::Rc;
 
 use anyhow::Result;
 use infra_utils::paths::PathExtensions;
@@ -208,7 +208,7 @@ fn run_bindings_check(
 fn create_bindings(version: &Version, source_id: &str, output: &ParseOutput) -> Result<Bindings> {
     let mut bindings = bindings::create_with_resolver(
         version.clone(),
-        Arc::new(SingleFileResolver {
+        Rc::new(SingleFileResolver {
             source_id: source_id.into(),
         }),
     );

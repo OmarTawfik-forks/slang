@@ -4,7 +4,7 @@ mod resolver;
 use std::collections::{HashMap, HashSet};
 use std::fmt::{self, Debug, Display};
 use std::hash::Hash;
-use std::sync::Arc;
+use std::rc::Rc;
 
 use builder::BuildResult;
 use metaslang_cst::cursor::Cursor;
@@ -119,7 +119,7 @@ impl<KT: KindTypes + 'static> Bindings<KT> {
     pub fn create(
         version: Version,
         binding_rules: &str,
-        path_resolver: Arc<dyn PathResolver<KT> + Sync + Send>,
+        path_resolver: Rc<dyn PathResolver<KT>>,
     ) -> Self {
         let graph_builder_file =
             File::from_str(binding_rules).expect("Bindings stack graph builder parse error");
