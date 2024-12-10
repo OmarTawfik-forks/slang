@@ -15,7 +15,7 @@ use crate::cst::{Cursor, KindTypes};
 pub struct CompilationUnit {
     language_version: Version,
     files: BTreeMap<String, Rc<File>>,
-    bindings: OnceCell<Bindings>,
+    binding_graph: OnceCell<Rc<Bindings>>,
 }
 
 impl CompilationUnit {
@@ -23,7 +23,7 @@ impl CompilationUnit {
         Self {
             language_version,
             files,
-            bindings: OnceCell::new(),
+            binding_graph: OnceCell::new(),
         }
     }
 
@@ -39,20 +39,20 @@ impl CompilationUnit {
         self.files.get(id).cloned()
     }
 
-    pub fn binding_graph(&self) -> &Bindings {
-        self.bindings.get_or_init(|| {
+    pub fn binding_graph(&self) -> &Rc<Bindings> {
+        self.binding_graph.get_or_init(|| {
             let resolver = Resolver {
                 files: self.files.clone(),
             };
 
-            let mut bindings =
+            let mut binding_graph =
                 create_with_resolver(self.language_version.clone(), Rc::new(resolver));
 
             for (id, file) in &self.files {
-                bindings.add_user_file(id, file.create_tree_cursor());
+                binding_graph.add_user_file(id, file.create_tree_cursor());
             }
 
-            bindings
+            Rc::new(binding_graph)
         })
     }
 }

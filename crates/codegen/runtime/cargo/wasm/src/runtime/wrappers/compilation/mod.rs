@@ -5,6 +5,7 @@ use semver::Version;
 use crate::wasm_crate::utils::{define_rc_wrapper, define_refcell_wrapper, IntoFFI};
 
 mod ffi {
+    pub use crate::wasm_crate::bindgen::exports::nomic_foundation::slang::bindings::BindingGraph;
     pub use crate::wasm_crate::bindgen::exports::nomic_foundation::slang::compilation::{
         AddFileResponse, CompilationUnit, CompilationUnitBorrow, File, FileBorrow, Guest,
         GuestCompilationUnit, GuestFile, GuestInternalCompilationBuilder,
@@ -92,6 +93,10 @@ define_rc_wrapper! { CompilationUnit {
 
      fn file(&self, id: String) -> Option<ffi::File> {
         self._borrow_ffi().file(&id).map(IntoFFI::_into_ffi)
+    }
+
+    fn binding_graph(&self) -> ffi::BindingGraph {
+        Rc::clone(self._borrow_ffi().binding_graph())._into_ffi()
     }
 } }
 
