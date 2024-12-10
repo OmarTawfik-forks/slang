@@ -7,7 +7,7 @@ use infra_utils::paths::PathExtensions;
 use itertools::Itertools;
 use metaslang_bindings::PathResolver;
 use semver::Version;
-use slang_solidity::bindings::Bindings;
+use slang_solidity::bindings::BindingGraph;
 use slang_solidity::cst::{Cursor, KindTypes, NonterminalKind, TextIndex, TextRange};
 use slang_solidity::diagnostic::{Diagnostic, Severity};
 use slang_solidity::parser::{ParseOutput, Parser};
@@ -187,9 +187,9 @@ fn run_bindings_check(
     output: &ParseOutput,
 ) -> Result<Vec<UnresolvedReference>> {
     let mut unresolved = Vec::new();
-    let bindings = create_bindings(version, source_id, output)?;
+    let binding_graph = create_bindings(version, source_id, output)?;
 
-    for reference in bindings.all_references() {
+    for reference in binding_graph.all_references() {
         if reference.get_file().is_system() {
             // skip built-ins
             continue;
@@ -205,8 +205,12 @@ fn run_bindings_check(
     Ok(unresolved)
 }
 
-fn create_bindings(version: &Version, source_id: &str, output: &ParseOutput) -> Result<Bindings> {
-    let mut bindings = bindings::create_with_resolver(
+fn create_bindings(
+    version: &Version,
+    source_id: &str,
+    output: &ParseOutput,
+) -> Result<BindingGraph> {
+    let mut binding_graph = bindings::create_with_resolver(
         version.clone(),
         Rc::new(SingleFileResolver {
             source_id: source_id.into(),
@@ -220,12 +224,12 @@ fn create_bindings(version: &Version, source_id: &str, output: &ParseOutput) -> 
     let built_ins_cursor =
         transform_built_ins_node(built_ins.tree()).cursor_with_offset(TextIndex::ZERO);
 
-    bindings.add_system_file("built_ins.sol", built_ins_cursor);
-    bindings.add_user_file(source_id, output.create_tree_cursor());
-    Ok(bindings)
+    binding_graph.add_system_file("built_ins.sol", built_ins_cursor);
+    binding_graph.add_user_file(source_id, output.create_tree_cursor());
+    Ok(binding_graph)
 }
 
-/// Bindings `PathResolver` that always resolves to the given `source_id`.
+/// The `PathResolver` that always resolves to the given `source_id`.
 /// This is useful for Sanctuary since all dependencies are concatenated in the
 /// same file, but the import directives are retained.
 struct SingleFileResolver {

@@ -43,7 +43,7 @@ pub(crate) struct ReferenceBindingInfo {
     parents: Vec<GraphHandle>,
 }
 
-pub struct Bindings<KT: KindTypes + 'static> {
+pub struct BindingGraph<KT: KindTypes + 'static> {
     graph_builder_file: File<KT>,
     functions: Functions<KT>,
     stack_graph: StackGraph,
@@ -115,7 +115,7 @@ pub trait PathResolver<KT: KindTypes + 'static> {
     fn resolve_path(&self, context_path: &str, path_to_resolve: &Cursor<KT>) -> Option<String>;
 }
 
-impl<KT: KindTypes + 'static> Bindings<KT> {
+impl<KT: KindTypes + 'static> BindingGraph<KT> {
     pub fn create(
         version: Version,
         binding_rules: &str,
@@ -361,7 +361,7 @@ impl<'a, KT: KindTypes + 'static> fmt::Display for DisplayCursor<'a, KT> {
 
 #[derive(Clone)]
 pub struct Definition<'a, KT: KindTypes + 'static> {
-    owner: &'a Bindings<KT>,
+    owner: &'a BindingGraph<KT>,
     handle: GraphHandle,
 }
 
@@ -432,8 +432,8 @@ impl<KT: KindTypes + 'static> Debug for Definition<'_, KT> {
 
 impl<KT: KindTypes + 'static> PartialEq for Definition<'_, KT> {
     fn eq(&self, other: &Self) -> bool {
-        let our_owner: *const Bindings<KT> = self.owner;
-        let other_owner: *const Bindings<KT> = other.owner;
+        let our_owner: *const BindingGraph<KT> = self.owner;
+        let other_owner: *const BindingGraph<KT> = other.owner;
         our_owner == other_owner && self.handle == other.handle
     }
 }
@@ -442,7 +442,7 @@ impl<KT: KindTypes + 'static> Eq for Definition<'_, KT> {}
 
 impl<KT: KindTypes + 'static> Hash for Definition<'_, KT> {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        let owner: *const Bindings<KT> = self.owner;
+        let owner: *const BindingGraph<KT> = self.owner;
         owner.hash(state);
         self.handle.hash(state);
     }
@@ -450,7 +450,7 @@ impl<KT: KindTypes + 'static> Hash for Definition<'_, KT> {
 
 #[derive(Clone)]
 pub struct Reference<'a, KT: KindTypes + 'static> {
-    owner: &'a Bindings<KT>,
+    owner: &'a BindingGraph<KT>,
     handle: GraphHandle,
 }
 
@@ -517,8 +517,8 @@ impl<KT: KindTypes + 'static> Display for Reference<'_, KT> {
 
 impl<KT: KindTypes + 'static> PartialEq for Reference<'_, KT> {
     fn eq(&self, other: &Self) -> bool {
-        let our_owner: *const Bindings<KT> = self.owner;
-        let other_owner: *const Bindings<KT> = other.owner;
+        let our_owner: *const BindingGraph<KT> = self.owner;
+        let other_owner: *const BindingGraph<KT> = other.owner;
         our_owner == other_owner && self.handle == other.handle
     }
 }

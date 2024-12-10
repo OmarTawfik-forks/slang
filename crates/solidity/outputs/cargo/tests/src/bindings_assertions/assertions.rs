@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use semver::{Version, VersionReq};
-use slang_solidity::bindings::{Bindings, Definition};
+use slang_solidity::bindings::{BindingGraph, Definition};
 use slang_solidity::cst::{Cursor, TerminalKind};
 use thiserror::Error;
 
@@ -308,21 +308,21 @@ fn search_asserted_node_backwards(mut cursor: Cursor, anchor_column: usize) -> O
     None
 }
 
-/// Checks that the given `assertions` are fulfilled in the given `bindings` for
+/// Checks that the given `assertions` are fulfilled in the given `binding_graph` for
 /// the indicated `version`. Only references can have version requirements, and
 /// the absence of a requirement means the assertion should hold for all
 /// language versions.
 ///
 pub fn check_assertions(
-    bindings: &Bindings,
+    binding_graph: &BindingGraph,
     assertions: &Assertions<'_>,
     version: &Version,
 ) -> Result<usize, AssertionError> {
     let mut failures: Vec<String> = Vec::new();
 
-    check_definitions(bindings, assertions.definitions.values(), &mut failures);
+    check_definitions(binding_graph, assertions.definitions.values(), &mut failures);
     check_references(
-        bindings,
+        binding_graph,
         version,
         assertions.references.iter(),
         &assertions.definitions,
@@ -342,24 +342,24 @@ pub fn check_assertions(
 }
 
 fn check_definitions<'a>(
-    bindings: &Bindings,
+    binding_graph: &BindingGraph,
     definitions: impl Iterator<Item = &'a DefinitionAssertion<'a>>,
     failures: &mut Vec<String>,
 ) {
     for assertion in definitions {
-        if let Err(failure) = find_definition(bindings, assertion) {
+        if let Err(failure) = find_definition(binding_graph, assertion) {
             failures.push(failure);
         }
     }
 }
 
 fn find_definition<'a>(
-    bindings: &'a Bindings,
+    binding_graph: &'a BindingGraph,
     assertion: &DefinitionAssertion<'_>,
 ) -> Result<Definition<'a>, String> {
     let DefinitionAssertion { cursor, .. } = assertion;
 
-    let Some(definition) = bindings.definition_at(cursor) else {
+    let Some(definition) = binding_graph.definition_at(cursor) else {
         return Err(format!("{assertion} failed: not found"));
     };
 
@@ -367,21 +367,21 @@ fn find_definition<'a>(
 }
 
 fn check_references<'a>(
-    bindings: &Bindings,
+    binding_graph: &BindingGraph,
     version: &Version,
     references: impl Iterator<Item = &'a ReferenceAssertion<'a>>,
     definitions: &HashMap<String, DefinitionAssertion<'_>>,
     failures: &mut Vec<String>,
 ) {
     for assertion in references {
-        if let Err(failure) = check_reference_assertion(bindings, definitions, version, assertion) {
+        if let Err(failure) = check_reference_assertion(binding_graph, definitions, version, assertion) {
             failures.push(failure);
         }
     }
 }
 
 fn check_reference_assertion(
-    bindings: &Bindings,
+    binding_graph: &BindingGraph,
     definitions: &HashMap<String, DefinitionAssertion<'_>>,
     version: &Version,
     assertion: &ReferenceAssertion<'_>,
@@ -396,7 +396,7 @@ fn check_reference_assertion(
         true
     };
 
-    let resolution = match find_and_resolve_reference(bindings, assertion) {
+    let resolution = match find_and_resolve_reference(binding_graph, assertion) {
         Ok(resolution) => resolution,
         Err(err) => {
             if version_matches {
@@ -426,7 +426,7 @@ fn check_reference_assertion(
                 ));
             };
             let resolved_cursor = resolved_handle.get_cursor().unwrap();
-            let expected_handle = lookup_referenced_definition(bindings, definitions, assertion)?;
+            let expected_handle = lookup_referenced_definition(binding_graph, definitions, assertion)?;
             let expected_cursor = expected_handle.get_cursor().unwrap();
             if expected_cursor != resolved_cursor {
                 return Err(format!(
@@ -447,7 +447,7 @@ fn check_reference_assertion(
             if let Some(resolved_handle) = resolution {
                 let resolved_cursor = resolved_handle.get_cursor().unwrap();
                 let referenced_handle =
-                    lookup_referenced_definition(bindings, definitions, assertion)?;
+                    lookup_referenced_definition(binding_graph, definitions, assertion)?;
                 let referenced_cursor = referenced_handle.get_cursor().unwrap();
                 if referenced_cursor == resolved_cursor {
                     return Err(format!(
@@ -464,12 +464,12 @@ fn check_reference_assertion(
 }
 
 fn find_and_resolve_reference<'a>(
-    bindings: &'a Bindings,
+    binding_graph: &'a BindingGraph,
     assertion: &ReferenceAssertion<'_>,
 ) -> Result<Option<Definition<'a>>, String> {
     let ReferenceAssertion { cursor, .. } = assertion;
 
-    let Some(reference) = bindings.reference_at(cursor) else {
+    let Some(reference) = binding_graph.reference_at(cursor) else {
         return Err(format!("{assertion} failed: not found"));
     };
 
@@ -479,7 +479,7 @@ fn find_and_resolve_reference<'a>(
 }
 
 fn lookup_referenced_definition<'a>(
-    bindings: &'a Bindings,
+    binding_graph: &'a BindingGraph,
     definitions: &HashMap<String, DefinitionAssertion<'_>>,
     assertion: &ReferenceAssertion<'_>,
 ) -> Result<Definition<'a>, String> {
@@ -490,5 +490,5 @@ fn lookup_referenced_definition<'a>(
     let Some(definition) = definitions.get(id) else {
         return Err(format!("{assertion} failed: reference is undefined"));
     };
-    find_definition(bindings, definition)
+    find_definition(binding_graph, definition)
 }

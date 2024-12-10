@@ -12,7 +12,7 @@ use semver::Version;
 
 use crate::cst::KindTypes;
 
-pub type Bindings = metaslang_bindings::Bindings<KindTypes>;
+pub type BindingGraph = metaslang_bindings::BindingGraph<KindTypes>;
 pub type Definition<'a> = metaslang_bindings::Definition<'a, KindTypes>;
 pub type Reference<'a> = metaslang_bindings::Reference<'a, KindTypes>;
 pub use metaslang_bindings::PathResolver;
@@ -20,8 +20,8 @@ pub use metaslang_bindings::PathResolver;
 pub fn create_with_resolver(
     version: Version,
     resolver: Rc<dyn PathResolver<KindTypes>>,
-) -> Bindings {
-    Bindings::create(version, binding_rules::BINDING_RULES_SOURCE, resolver)
+) -> BindingGraph {
+    BindingGraph::create(version, binding_rules::BINDING_RULES_SOURCE, resolver)
 }
 
 #[cfg(feature = "__private_testing_utils")]

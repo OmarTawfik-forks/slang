@@ -1,7 +1,7 @@
 use std::rc::Rc;
 
 use metaslang_bindings::PathResolver;
-use slang_solidity::bindings::{create_with_resolver, get_built_ins, Bindings};
+use slang_solidity::bindings::{create_with_resolver, get_built_ins, BindingGraph};
 use slang_solidity::cst::{Cursor, KindTypes};
 use slang_solidity::parser::{ParseOutput, Parser};
 
@@ -17,12 +17,12 @@ pub fn setup() -> ParseOutput {
     built_ins
 }
 
-pub fn run(built_ins: ParseOutput) -> Bindings {
-    let mut bindings = create_with_resolver(SOLC_VERSION, Rc::new(NoOpResolver {}));
+pub fn run(built_ins: ParseOutput) -> BindingGraph {
+    let mut binding_graph = create_with_resolver(SOLC_VERSION, Rc::new(NoOpResolver {}));
 
-    bindings.add_system_file("built_ins.sol", built_ins.create_tree_cursor());
+    binding_graph.add_system_file("built_ins.sol", built_ins.create_tree_cursor());
 
-    bindings
+    binding_graph
 }
 
 struct NoOpResolver;

@@ -1,8 +1,4 @@
-use std::rc::Rc;
-
-use semver::Version;
-
-use crate::wasm_crate::utils::{define_rc_wrapper, IntoFFI};
+use crate::wasm_crate::utils::define_rc_wrapper;
 
 mod ffi {
     pub use crate::wasm_crate::bindgen::exports::nomic_foundation::slang::bindings::{
@@ -11,7 +7,7 @@ mod ffi {
 }
 
 mod rust {
-    pub use crate::rust_crate::bindings::Bindings as BindingGraph;
+    pub use crate::rust_crate::bindings::BindingGraph;
 }
 
 impl ffi::Guest for crate::wasm_crate::World {

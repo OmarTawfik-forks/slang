@@ -8,14 +8,14 @@ use std::rc::Rc;
 
 use semver::Version;
 
-use crate::bindings::{create_with_resolver, Bindings, PathResolver};
+use crate::bindings::{create_with_resolver, BindingGraph, PathResolver};
 use crate::compilation::File;
 use crate::cst::{Cursor, KindTypes};
 
 pub struct CompilationUnit {
     language_version: Version,
     files: BTreeMap<String, Rc<File>>,
-    binding_graph: OnceCell<Rc<Bindings>>,
+    binding_graph: OnceCell<Rc<BindingGraph>>,
 }
 
 impl CompilationUnit {
@@ -39,7 +39,7 @@ impl CompilationUnit {
         self.files.get(id).cloned()
     }
 
-    pub fn binding_graph(&self) -> &Rc<Bindings> {
+    pub fn binding_graph(&self) -> &Rc<BindingGraph> {
         self.binding_graph.get_or_init(|| {
             let resolver = Resolver {
                 files: self.files.clone(),
