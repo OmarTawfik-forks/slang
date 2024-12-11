@@ -5,6 +5,8 @@ export namespace NomicFoundationSlangCompilation {
   export { CompilationUnit };
   export { File };
 }
+import type { BindingGraph } from "./nomic-foundation-slang-bindings.js";
+export { BindingGraph };
 import type { Node } from "./nomic-foundation-slang-cst.js";
 export { Node };
 import type { Cursor } from "./nomic-foundation-slang-cst.js";
@@ -32,6 +34,14 @@ export class CompilationUnit {
    * Returns the file with the specified ID, if it exists.
    */
   file(id: string): File | undefined;
+  /**
+   * Calculates name binding information for all source files within the compilation unit.
+   * Returns a graph that contains all found definitions and their references.
+   *
+   * Note: building this graph is an expensive operation.
+   * It is done lazily on the first access, and cached thereafter.
+   */
+  get bindingGraph(): BindingGraph;
 }
 
 export class File {

@@ -45,6 +45,11 @@
         "as_getter": true
       }
     },
+    "nomic-foundation:slang:compilation:compilation-unit.binding-graph()": {
+      "Function": {
+        "as_getter": true
+      }
+    },
     "nomic-foundation:slang:compilation:file.id()": {
       "Function": {
         "as_getter": true
