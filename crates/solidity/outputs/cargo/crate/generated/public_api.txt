@@ -3,10 +3,10 @@
 pub mod slang_solidity
 pub mod slang_solidity::bindings
 pub use slang_solidity::bindings::PathResolver
-pub fn slang_solidity::bindings::create_with_resolver(version: semver::Version, resolver: alloc::sync::Arc<(dyn metaslang_bindings::PathResolver<slang_solidity::cst::KindTypes> + core::marker::Sync + core::marker::Send)>) -> slang_solidity::bindings::Bindings
+pub fn slang_solidity::bindings::create_with_resolver(version: semver::Version, resolver: alloc::rc::Rc<dyn metaslang_bindings::PathResolver<slang_solidity::cst::KindTypes>>) -> slang_solidity::bindings::BindingGraph
 pub fn slang_solidity::bindings::get_binding_rules() -> &'static str
 pub fn slang_solidity::bindings::get_built_ins(version: &semver::Version) -> &'static str
-pub type slang_solidity::bindings::Bindings = metaslang_bindings::Bindings<slang_solidity::cst::KindTypes>
+pub type slang_solidity::bindings::BindingGraph = metaslang_bindings::BindingGraph<slang_solidity::cst::KindTypes>
 pub type slang_solidity::bindings::Definition<'a> = metaslang_bindings::Definition<'a, slang_solidity::cst::KindTypes>
 pub type slang_solidity::bindings::Reference<'a> = metaslang_bindings::Reference<'a, slang_solidity::cst::KindTypes>
 pub mod slang_solidity::compilation
@@ -14,6 +14,7 @@ pub struct slang_solidity::compilation::AddFileResponse
 pub slang_solidity::compilation::AddFileResponse::import_paths: alloc::vec::Vec<slang_solidity::cst::Cursor>
 pub struct slang_solidity::compilation::CompilationUnit
 impl slang_solidity::compilation::CompilationUnit
+pub fn slang_solidity::compilation::CompilationUnit::binding_graph(&self) -> &alloc::rc::Rc<slang_solidity::bindings::BindingGraph>
 pub fn slang_solidity::compilation::CompilationUnit::file(&self, id: &str) -> core::option::Option<alloc::rc::Rc<slang_solidity::compilation::File>>
 pub fn slang_solidity::compilation::CompilationUnit::files(&self) -> alloc::vec::Vec<alloc::rc::Rc<slang_solidity::compilation::File>>
 pub fn slang_solidity::compilation::CompilationUnit::language_version(&self) -> &semver::Version

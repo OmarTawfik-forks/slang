@@ -55,7 +55,7 @@ pub(crate) fn render_bindings(
 fn collect_all_definitions(binding_graph: &BindingGraph) -> Vec<Definition<'_>> {
     let mut definitions: Vec<Definition<'_>> = Vec::new();
     for definition in binding_graph.all_definitions() {
-        if definition.get_file().is_user() && definition.get_cursor().is_some() {
+        if definition.get_file().is_user() {
             definitions.push(definition);
         }
     }
@@ -86,15 +86,12 @@ fn build_report_for_part<'a>(
     .with_config(Config::default().with_color(false));
 
     for (index, definition) in all_definitions.iter().enumerate() {
-        let Some(cursor) = definition.get_cursor() else {
-            continue;
-        };
         if !definition.get_file().is_user_path(part.path) {
             continue;
         }
 
         let range = {
-            let range = cursor.text_range();
+            let range = definition.get_cursor().text_range();
             let start = part.contents[..range.start.utf8].chars().count();
             let end = part.contents[..range.end.utf8].chars().count();
             start..end
@@ -107,12 +104,8 @@ fn build_report_for_part<'a>(
     let mut all_resolved = true;
 
     for reference in part_references {
-        let Some(cursor) = reference.get_cursor() else {
-            continue;
-        };
-
         let range = {
-            let range = cursor.text_range();
+            let range = reference.get_cursor().text_range();
             let start = part.contents[..range.start.utf8].chars().count();
             let end = part.contents[..range.end.utf8].chars().count();
             start..end

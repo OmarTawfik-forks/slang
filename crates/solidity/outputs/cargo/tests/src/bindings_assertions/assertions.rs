@@ -320,7 +320,11 @@ pub fn check_assertions(
 ) -> Result<usize, AssertionError> {
     let mut failures: Vec<String> = Vec::new();
 
-    check_definitions(binding_graph, assertions.definitions.values(), &mut failures);
+    check_definitions(
+        binding_graph,
+        assertions.definitions.values(),
+        &mut failures,
+    );
     check_references(
         binding_graph,
         version,
@@ -374,7 +378,9 @@ fn check_references<'a>(
     failures: &mut Vec<String>,
 ) {
     for assertion in references {
-        if let Err(failure) = check_reference_assertion(binding_graph, definitions, version, assertion) {
+        if let Err(failure) =
+            check_reference_assertion(binding_graph, definitions, version, assertion)
+        {
             failures.push(failure);
         }
     }
@@ -411,11 +417,11 @@ fn check_reference_assertion(
     match (version_matches, id) {
         (true, None) => {
             if let Some(resolved_handle) = resolution {
-                let resolved_cursor = resolved_handle.get_cursor().unwrap();
+                let resolved_cursor = resolved_handle.get_cursor();
                 let resolved_file = resolved_handle.get_file();
                 return Err(format!(
                     "{assertion} failed: expected not to resolve, but instead resolved to {resolved}",
-                    resolved = DisplayCursor(&resolved_cursor, resolved_file.get_path())
+                    resolved = DisplayCursor(resolved_cursor, resolved_file.get_path())
                 ));
             }
         }
@@ -425,14 +431,15 @@ fn check_reference_assertion(
                     "{assertion} failed: did not resolve or ambiguous resolution"
                 ));
             };
-            let resolved_cursor = resolved_handle.get_cursor().unwrap();
-            let expected_handle = lookup_referenced_definition(binding_graph, definitions, assertion)?;
-            let expected_cursor = expected_handle.get_cursor().unwrap();
+            let resolved_cursor = resolved_handle.get_cursor();
+            let expected_handle =
+                lookup_referenced_definition(binding_graph, definitions, assertion)?;
+            let expected_cursor = expected_handle.get_cursor();
             if expected_cursor != resolved_cursor {
                 return Err(format!(
                     "{assertion} failed: expected resolve to {expected}, but instead resolved to {resolved}",
-                    resolved = DisplayCursor(&resolved_cursor, resolved_handle.get_file().get_path()),
-                    expected = DisplayCursor(&expected_cursor, expected_handle.get_file().get_path()),
+                    resolved = DisplayCursor(resolved_cursor, resolved_handle.get_file().get_path()),
+                    expected = DisplayCursor(expected_cursor, expected_handle.get_file().get_path()),
                 ));
             }
         }
@@ -445,15 +452,15 @@ fn check_reference_assertion(
         }
         (false, Some(_)) => {
             if let Some(resolved_handle) = resolution {
-                let resolved_cursor = resolved_handle.get_cursor().unwrap();
+                let resolved_cursor = resolved_handle.get_cursor();
                 let referenced_handle =
                     lookup_referenced_definition(binding_graph, definitions, assertion)?;
-                let referenced_cursor = referenced_handle.get_cursor().unwrap();
+                let referenced_cursor = referenced_handle.get_cursor();
                 if referenced_cursor == resolved_cursor {
                     return Err(format!(
                         "{assertion} failed: expected to not resolve to {resolved} in this version",
                         resolved =
-                            DisplayCursor(&resolved_cursor, resolved_handle.get_file().get_path()),
+                            DisplayCursor(resolved_cursor, resolved_handle.get_file().get_path()),
                     ));
                 }
             }

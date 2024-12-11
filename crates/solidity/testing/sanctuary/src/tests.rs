@@ -197,7 +197,7 @@ fn run_bindings_check(
         // We're not interested in the exact definition a reference resolves
         // to, so we lookup all of them and fail if we find none.
         if reference.definitions().is_empty() {
-            let cursor = reference.get_cursor().unwrap();
+            let cursor = reference.get_cursor().to_owned();
             unresolved.push(UnresolvedReference { cursor });
         }
     }

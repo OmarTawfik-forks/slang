@@ -1,4 +1,5 @@
 mod builder;
+mod location;
 mod resolver;
 
 use std::collections::{HashMap, HashSet};
@@ -19,6 +20,9 @@ type Builder<'a, KT> = builder::Builder<'a, KT>;
 type GraphHandle = stack_graphs::arena::Handle<stack_graphs::graph::Node>;
 type FileHandle = stack_graphs::arena::Handle<stack_graphs::graph::File>;
 type CursorID = usize;
+
+pub use location::{BindingLocation, BuiltInLocation, UserFileLocation};
+
 pub struct DefinitionHandle(GraphHandle);
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -267,7 +271,7 @@ impl<KT: KindTypes + 'static> BindingGraph<KT> {
 
     pub fn lookup_definition_by_name(&self, name: &str) -> Option<Definition<'_, KT>> {
         self.all_definitions()
-            .find(|definition| definition.get_cursor().unwrap().node().unparse() == name)
+            .find(|definition| definition.get_cursor().node().unparse() == name)
     }
 
     pub fn get_context(&self) -> Option<Definition<'_, KT>> {
@@ -366,15 +370,43 @@ pub struct Definition<'a, KT: KindTypes + 'static> {
 }
 
 impl<'a, KT: KindTypes + 'static> Definition<'a, KT> {
-    pub fn get_cursor(&self) -> Option<Cursor<KT>> {
-        self.owner.cursors.get(&self.handle).cloned()
+    pub fn id(&self) -> usize {
+        self.get_cursor().node().id()
     }
 
-    pub fn get_definiens_cursor(&self) -> Option<Cursor<KT>> {
+    pub fn name_location(&self) -> BindingLocation<KT> {
+        match self.get_file() {
+            FileDescriptor::System(_) => BindingLocation::built_in(),
+            FileDescriptor::User(file_id) => {
+                BindingLocation::user_file(file_id, self.get_cursor().to_owned())
+            }
+        }
+    }
+
+    pub fn definiens_location(&self) -> BindingLocation<KT> {
+        match self.get_file() {
+            FileDescriptor::System(_) => BindingLocation::built_in(),
+            FileDescriptor::User(file_id) => {
+                BindingLocation::user_file(file_id, self.get_definiens_cursor().to_owned())
+            }
+        }
+    }
+
+    pub fn get_cursor(&self) -> &Cursor<KT> {
+        self.owner
+            .cursors
+            .get(&self.handle)
+            .expect("Definition does not have a valid cursor")
+    }
+
+    pub fn get_definiens_cursor(&self) -> &Cursor<KT> {
         self.owner
             .definitions_info
             .get(&self.handle)
-            .and_then(|info| info.definiens.clone())
+            .expect("Definition does not have valid binding info")
+            .definiens
+            .as_ref()
+            .expect("Definiens does not have a valid cursor")
     }
 
     pub fn get_file(&self) -> FileDescriptor {
@@ -408,19 +440,14 @@ impl<'a, KT: KindTypes + 'static> Definition<'a, KT> {
 
 impl<KT: KindTypes + 'static> Display for Definition<'_, KT> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self.get_cursor() {
-            Some(cursor) => {
-                write!(
-                    f,
-                    "definition {}",
-                    DisplayCursor {
-                        cursor: &cursor,
-                        file: self.get_file()
-                    }
-                )
+        write!(
+            f,
+            "definition {}",
+            DisplayCursor {
+                cursor: self.get_cursor(),
+                file: self.get_file()
             }
-            None => write!(f, "{}", self.handle.display(&self.owner.stack_graph)),
-        }
+        )
     }
 }
 
@@ -460,8 +487,24 @@ pub enum ResolutionError<'a, KT: KindTypes + 'static> {
 }
 
 impl<'a, KT: KindTypes + 'static> Reference<'a, KT> {
-    pub fn get_cursor(&self) -> Option<Cursor<KT>> {
-        self.owner.cursors.get(&self.handle).cloned()
+    pub fn id(&self) -> usize {
+        self.get_cursor().node().id()
+    }
+
+    pub fn location(&self) -> BindingLocation<KT> {
+        match self.get_file() {
+            FileDescriptor::System(_) => BindingLocation::built_in(),
+            FileDescriptor::User(file_id) => {
+                BindingLocation::user_file(file_id, self.get_cursor().to_owned())
+            }
+        }
+    }
+
+    pub fn get_cursor(&self) -> &Cursor<KT> {
+        self.owner
+            .cursors
+            .get(&self.handle)
+            .expect("Reference does not have a valid cursor")
     }
 
     pub fn get_file(&self) -> FileDescriptor {
@@ -499,19 +542,14 @@ impl<'a, KT: KindTypes + 'static> Reference<'a, KT> {
 
 impl<KT: KindTypes + 'static> Display for Reference<'_, KT> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self.get_cursor() {
-            Some(cursor) => {
-                write!(
-                    f,
-                    "reference {}",
-                    DisplayCursor {
-                        cursor: &cursor,
-                        file: self.get_file()
-                    }
-                )
+        write!(
+            f,
+            "reference {}",
+            DisplayCursor {
+                cursor: self.get_cursor(),
+                file: self.get_file()
             }
-            None => write!(f, "{}", self.handle.display(&self.owner.stack_graph)),
-        }
+        )
     }
 }
 

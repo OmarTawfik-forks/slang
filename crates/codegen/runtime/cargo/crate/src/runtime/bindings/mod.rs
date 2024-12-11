@@ -13,7 +13,10 @@ use crate::cst::KindTypes;
 pub type BindingGraph = metaslang_bindings::BindingGraph<KindTypes>;
 pub type Definition<'a> = metaslang_bindings::Definition<'a, KindTypes>;
 pub type Reference<'a> = metaslang_bindings::Reference<'a, KindTypes>;
-pub use metaslang_bindings::PathResolver;
+pub type BindingLocation = metaslang_bindings::BindingLocation<KindTypes>;
+pub type UserFileLocation = metaslang_bindings::UserFileLocation<KindTypes>;
+
+pub use metaslang_bindings::{BuiltInLocation, PathResolver};
 
 pub fn create_with_resolver(
     version: Version,
