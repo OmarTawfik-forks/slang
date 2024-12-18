@@ -1,0 +1,53 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+
+  "mainEntryPointFilePath": "target/generated/index.d.mts",
+
+  "enumMemberOrder": "preserve",
+  "newlineKind": "lf",
+
+  "apiReport": {
+    "enabled": true,
+    "reportFolder": "generated/api-extractor/api-report/",
+    "reportTempFolder": "target/api-extractor/temp/api-report/"
+  },
+
+  // TODO(OmarTawfik): can generate markdown from JSON if default report is not good enough:
+  // https://api-extractor.com/pages/setup/generating_docs/#using-api-documenter-to-generate-markdown
+  "docModel": {
+    "enabled": true,
+    "apiJsonFilePath": "target/api-extractor/temp/doc-model/<unscopedPackageName>.api.json",
+    // TODO(OmarTawfik): how to use mkdocs versioning for this link?
+    "projectFolderUrl": "https://nomicfoundation.github.io/slang/user-guide/npm-package/api-reference"
+  },
+
+  "dtsRollup": {
+    "enabled": false
+  },
+
+  "messages": {
+    "compilerMessageReporting": {
+      "default": {
+        "logLevel": "error",
+        "addToApiReportFile": false
+      }
+    },
+
+    "extractorMessageReporting": {
+      "default": {
+        "logLevel": "error",
+        "addToApiReportFile": false
+      },
+      "ae-missing-release-tag": {
+        "logLevel": "none" // we don't use release tags (@alpha, @beta, @public, @internal, etc...)
+      }
+    },
+
+    "tsdocMessageReporting": {
+      "default": {
+        "logLevel": "error",
+        "addToApiReportFile": false
+      }
+    }
+  }
+}
