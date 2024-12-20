@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 use infra_utils::cargo::CargoWorkspace;
@@ -11,8 +11,37 @@ use crate::utils::DryRun;
 pub struct Mkdocs;
 
 impl Mkdocs {
-    pub fn check() {
+    pub fn check() -> Result<()> {
         mkdocs().arg("build").flag("--clean").flag("--strict").run();
+
+        let site_dir = site_dir();
+        let package_dir = CargoWorkspace::locate_source_crate("solidity_npm_package")?;
+
+        Command::new("typedoc")
+            .arg(package_dir.join("src/generated/index.mts").unwrap_string())
+            // only needed if multiple entries
+            // .property(
+            //     "--basePath",
+            //     package_dir.join("src/generated/").unwrap_string(),
+            // )
+            .property("--readme", "none")
+            .flag("--cleanOutputDir")
+            .property("--emit", "both")
+            .property(
+                "--json",
+                site_dir
+                    .join("user-guide/npm-package/api-reference/api.json")
+                    .unwrap_string(),
+            )
+            .property(
+                "--out",
+                site_dir
+                    .join("user-guide/npm-package/api-reference")
+                    .unwrap_string(),
+            )
+            .run();
+
+        Ok(())
     }
 
     pub fn watch() {
@@ -76,4 +105,9 @@ fn mkdocs() -> Command {
 
 fn mike() -> Command {
     PipEnv::run("mike").current_dir(Path::repo_path("documentation"))
+}
+
+fn site_dir() -> PathBuf {
+    // _SLANG_MKDOCS_DOCUMENTATION_SITE_DIR_ (keep in sync)
+    Path::repo_path("documentation/target/site")
 }

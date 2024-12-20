@@ -42,7 +42,7 @@ impl OrderedCommand for CheckCommand {
             CheckCommand::Cargo => check_cargo(),
             CheckCommand::Rustdoc => check_rustdoc(),
             CheckCommand::Npm => check_npm(),
-            CheckCommand::Mkdocs => check_mkdocs(),
+            CheckCommand::Mkdocs => check_mkdocs()?,
         };
 
         Ok(())
@@ -78,6 +78,6 @@ fn check_npm() {
         .for_each(|package| package.build().unwrap());
 }
 
-fn check_mkdocs() {
-    Mkdocs::check();
+fn check_mkdocs() -> Result<()> {
+    Mkdocs::check()
 }
