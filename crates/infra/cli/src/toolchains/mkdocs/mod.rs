@@ -18,6 +18,7 @@ impl Mkdocs {
         let package_dir = CargoWorkspace::locate_source_crate("solidity_npm_package")?;
 
         Command::new("typedoc")
+            .property("--options", package_dir.join("typedoc.mjs").unwrap_string())
             .arg(package_dir.join("src/generated/index.mts").unwrap_string())
             // only needed if multiple entries
             // .property(
