@@ -21,7 +21,7 @@ test("using queries", async () => {
     const matches: QueryMatchIterator = cursor.query([query]);
     // --8<-- [end:creating-a-query]
 
-    matches; // Silence the unused warning
+    expect(matches).toBeDefined(); // Silence the unused warning
   }
 
   {

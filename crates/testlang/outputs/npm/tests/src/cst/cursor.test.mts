@@ -104,7 +104,7 @@ test("access the node using its name", () => {
   const parseOutput = parser.parse(NonterminalKind.SourceUnit, source);
 
   const cursor = parseOutput.createTreeCursor();
-  let names: string[] = [];
+  const names: string[] = [];
 
   while (cursor.goToNextNonterminalWithKind(NonterminalKind.TreeNode)) {
     const innerCursor = cursor.spawn();

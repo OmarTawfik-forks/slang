@@ -127,8 +127,13 @@ impl WasmPackage {
 
                 "js" => {
                     // Disable type checking for JS, since we have no control over the generated output:
-                    let mut contents = temp_path.read_to_string()?;
-                    contents.insert_str(0, "// @ts-nocheck\n\n");
+                    let contents = &[
+                        "// @ts-nocheck",
+                        "/* eslint-disable */",
+                        "",
+                        &temp_path.read_to_string()?,
+                    ]
+                    .join("\n");
 
                     // Files git-ignored. Don't go through our codegen/formatting APIs:
                     std::fs::write(&output_path, contents)?;

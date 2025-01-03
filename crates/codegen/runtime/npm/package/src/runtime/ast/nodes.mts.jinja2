@@ -80,7 +80,7 @@
             switch (variant.kind) {
               {%- for nonterminal in choice.nonterminal_types %}
                 case NonterminalKind.{{ nonterminal }}:
-                  return new {{ nonterminal }}(variant as NonterminalNode);
+                  return new {{ nonterminal }}(variant);
               {%- endfor %}
 
               default:

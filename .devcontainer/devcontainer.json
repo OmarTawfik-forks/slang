@@ -34,6 +34,7 @@
         "yzhang.markdown-all-in-one",
         // Formatting/Linting
         "DavidAnson.vscode-markdownlint",
+        "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "Gruntfuggly.triggertaskonsave",
         "streetsidesoftware.code-spell-checker",

@@ -38,6 +38,8 @@ enum LintCommand {
     Shellcheck,
     /// Check for type errors in TypeScript files.
     Tsc,
+    /// Checks for other issues in TypeScript files.
+    Eslint,
     /// Check for violations issues in Yaml files.
     Yamllint,
 }
@@ -54,6 +56,7 @@ impl OrderedCommand for LintCommand {
             LintCommand::Rustfmt => run_rustfmt(),
             LintCommand::Shellcheck => run_shellcheck()?,
             LintCommand::Tsc => run_tsc(),
+            LintCommand::Eslint => run_eslint(),
             LintCommand::Yamllint => run_yamllint()?,
         };
 
@@ -136,6 +139,18 @@ fn run_tsc() {
     Command::new("tsc")
         .property("--build", root_project.unwrap_str())
         .run();
+}
+
+fn run_eslint() {
+    let mut command = Command::new("eslint")
+        .flag("--cache")
+        .property("--cache-location", "target/eslint/cache");
+
+    if GitHub::is_running_in_ci() {
+        command = command.flag("--fix");
+    }
+
+    command.run();
 }
 
 fn run_yamllint() -> Result<()> {

@@ -3,6 +3,7 @@ import { TerminalKindExtensions, TerminalKind } from "@slang-private/testlang-np
 describe("is_trivia()", () => {
   for (const kind in TerminalKind) {
     it(`TerminalKind.${kind}`, () => {
+      /* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
       switch (kind) {
         case TerminalKind.EndOfLine:
         case TerminalKind.MultiLineComment:
@@ -30,6 +31,7 @@ describe("is_trivia()", () => {
           throw new Error(`Unexpected terminal kind: ${kind}`);
         }
       }
+      /* eslint-enable @typescript-eslint/no-unsafe-enum-comparison */
     });
   }
 });
@@ -37,6 +39,7 @@ describe("is_trivia()", () => {
 describe("is_valid()", () => {
   for (const kind in TerminalKind) {
     it(`TerminalKind.${kind}`, () => {
+      /* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
       switch (kind) {
         case TerminalKind.Bang:
         case TerminalKind.CloseBracket:
@@ -64,6 +67,7 @@ describe("is_valid()", () => {
           throw new Error(`Unexpected terminal kind: ${kind}`);
         }
       }
+      /* eslint-enable @typescript-eslint/no-unsafe-enum-comparison */
     });
   }
 });

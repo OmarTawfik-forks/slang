@@ -175,13 +175,13 @@ export class SourceUnitMember {
 
     switch (variant.kind) {
       case NonterminalKind.Tree:
-        return new Tree(variant as NonterminalNode);
+        return new Tree(variant);
       case NonterminalKind.Expression:
-        return new Expression(variant as NonterminalNode);
+        return new Expression(variant);
       case NonterminalKind.SeparatedIdentifiers:
-        return new SeparatedIdentifiers(variant as NonterminalNode);
+        return new SeparatedIdentifiers(variant);
       case NonterminalKind.Literal:
-        return new Literal(variant as NonterminalNode);
+        return new Literal(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -207,7 +207,7 @@ export class TreeNodeChild {
 
     switch (variant.kind) {
       case NonterminalKind.TreeNode:
-        return new TreeNode(variant as NonterminalNode);
+        return new TreeNode(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -234,11 +234,11 @@ export class Expression {
 
       switch (variant.kind) {
         case NonterminalKind.AdditionExpression:
-          return new AdditionExpression(variant as NonterminalNode);
+          return new AdditionExpression(variant);
         case NonterminalKind.NegationExpression:
-          return new NegationExpression(variant as NonterminalNode);
+          return new NegationExpression(variant);
         case NonterminalKind.MemberAccessExpression:
-          return new MemberAccessExpression(variant as NonterminalNode);
+          return new MemberAccessExpression(variant);
 
         default:
           throw new Error(`Unexpected variant: '${variant.kind}'.`);

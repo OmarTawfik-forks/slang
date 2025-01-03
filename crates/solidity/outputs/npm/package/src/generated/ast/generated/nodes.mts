@@ -3787,31 +3787,31 @@ export class SourceUnitMember {
 
     switch (variant.kind) {
       case NonterminalKind.PragmaDirective:
-        return new PragmaDirective(variant as NonterminalNode);
+        return new PragmaDirective(variant);
       case NonterminalKind.ImportDirective:
-        return new ImportDirective(variant as NonterminalNode);
+        return new ImportDirective(variant);
       case NonterminalKind.ContractDefinition:
-        return new ContractDefinition(variant as NonterminalNode);
+        return new ContractDefinition(variant);
       case NonterminalKind.InterfaceDefinition:
-        return new InterfaceDefinition(variant as NonterminalNode);
+        return new InterfaceDefinition(variant);
       case NonterminalKind.LibraryDefinition:
-        return new LibraryDefinition(variant as NonterminalNode);
+        return new LibraryDefinition(variant);
       case NonterminalKind.StructDefinition:
-        return new StructDefinition(variant as NonterminalNode);
+        return new StructDefinition(variant);
       case NonterminalKind.EnumDefinition:
-        return new EnumDefinition(variant as NonterminalNode);
+        return new EnumDefinition(variant);
       case NonterminalKind.FunctionDefinition:
-        return new FunctionDefinition(variant as NonterminalNode);
+        return new FunctionDefinition(variant);
       case NonterminalKind.ErrorDefinition:
-        return new ErrorDefinition(variant as NonterminalNode);
+        return new ErrorDefinition(variant);
       case NonterminalKind.UserDefinedValueTypeDefinition:
-        return new UserDefinedValueTypeDefinition(variant as NonterminalNode);
+        return new UserDefinedValueTypeDefinition(variant);
       case NonterminalKind.UsingDirective:
-        return new UsingDirective(variant as NonterminalNode);
+        return new UsingDirective(variant);
       case NonterminalKind.EventDefinition:
-        return new EventDefinition(variant as NonterminalNode);
+        return new EventDefinition(variant);
       case NonterminalKind.ConstantDefinition:
-        return new ConstantDefinition(variant as NonterminalNode);
+        return new ConstantDefinition(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -3846,11 +3846,11 @@ export class Pragma {
 
     switch (variant.kind) {
       case NonterminalKind.AbicoderPragma:
-        return new AbicoderPragma(variant as NonterminalNode);
+        return new AbicoderPragma(variant);
       case NonterminalKind.ExperimentalPragma:
-        return new ExperimentalPragma(variant as NonterminalNode);
+        return new ExperimentalPragma(variant);
       case NonterminalKind.VersionPragma:
-        return new VersionPragma(variant as NonterminalNode);
+        return new VersionPragma(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -3876,7 +3876,7 @@ export class ExperimentalFeature {
 
     switch (variant.kind) {
       case NonterminalKind.StringLiteral:
-        return new StringLiteral(variant as NonterminalNode);
+        return new StringLiteral(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -3898,9 +3898,9 @@ export class VersionExpression {
 
     switch (variant.kind) {
       case NonterminalKind.VersionRange:
-        return new VersionRange(variant as NonterminalNode);
+        return new VersionRange(variant);
       case NonterminalKind.VersionTerm:
-        return new VersionTerm(variant as NonterminalNode);
+        return new VersionTerm(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -3942,7 +3942,7 @@ export class VersionLiteral {
 
     switch (variant.kind) {
       case NonterminalKind.SimpleVersionLiteral:
-        return new SimpleVersionLiteral(variant as NonterminalNode);
+        return new SimpleVersionLiteral(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -3964,11 +3964,11 @@ export class ImportClause {
 
     switch (variant.kind) {
       case NonterminalKind.PathImport:
-        return new PathImport(variant as NonterminalNode);
+        return new PathImport(variant);
       case NonterminalKind.NamedImport:
-        return new NamedImport(variant as NonterminalNode);
+        return new NamedImport(variant);
       case NonterminalKind.ImportDeconstruction:
-        return new ImportDeconstruction(variant as NonterminalNode);
+        return new ImportDeconstruction(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -3990,9 +3990,9 @@ export class UsingClause {
 
     switch (variant.kind) {
       case NonterminalKind.IdentifierPath:
-        return new IdentifierPath(variant as NonterminalNode);
+        return new IdentifierPath(variant);
       case NonterminalKind.UsingDeconstruction:
-        return new UsingDeconstruction(variant as NonterminalNode);
+        return new UsingDeconstruction(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4034,7 +4034,7 @@ export class UsingTarget {
 
     switch (variant.kind) {
       case NonterminalKind.TypeName:
-        return new TypeName(variant as NonterminalNode);
+        return new TypeName(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4069,31 +4069,31 @@ export class ContractMember {
 
     switch (variant.kind) {
       case NonterminalKind.UsingDirective:
-        return new UsingDirective(variant as NonterminalNode);
+        return new UsingDirective(variant);
       case NonterminalKind.FunctionDefinition:
-        return new FunctionDefinition(variant as NonterminalNode);
+        return new FunctionDefinition(variant);
       case NonterminalKind.ConstructorDefinition:
-        return new ConstructorDefinition(variant as NonterminalNode);
+        return new ConstructorDefinition(variant);
       case NonterminalKind.ReceiveFunctionDefinition:
-        return new ReceiveFunctionDefinition(variant as NonterminalNode);
+        return new ReceiveFunctionDefinition(variant);
       case NonterminalKind.FallbackFunctionDefinition:
-        return new FallbackFunctionDefinition(variant as NonterminalNode);
+        return new FallbackFunctionDefinition(variant);
       case NonterminalKind.UnnamedFunctionDefinition:
-        return new UnnamedFunctionDefinition(variant as NonterminalNode);
+        return new UnnamedFunctionDefinition(variant);
       case NonterminalKind.ModifierDefinition:
-        return new ModifierDefinition(variant as NonterminalNode);
+        return new ModifierDefinition(variant);
       case NonterminalKind.StructDefinition:
-        return new StructDefinition(variant as NonterminalNode);
+        return new StructDefinition(variant);
       case NonterminalKind.EnumDefinition:
-        return new EnumDefinition(variant as NonterminalNode);
+        return new EnumDefinition(variant);
       case NonterminalKind.EventDefinition:
-        return new EventDefinition(variant as NonterminalNode);
+        return new EventDefinition(variant);
       case NonterminalKind.ErrorDefinition:
-        return new ErrorDefinition(variant as NonterminalNode);
+        return new ErrorDefinition(variant);
       case NonterminalKind.UserDefinedValueTypeDefinition:
-        return new UserDefinedValueTypeDefinition(variant as NonterminalNode);
+        return new UserDefinedValueTypeDefinition(variant);
       case NonterminalKind.StateVariableDefinition:
-        return new StateVariableDefinition(variant as NonterminalNode);
+        return new StateVariableDefinition(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4132,7 +4132,7 @@ export class StateVariableAttribute {
 
     switch (variant.kind) {
       case NonterminalKind.OverrideSpecifier:
-        return new OverrideSpecifier(variant as NonterminalNode);
+        return new OverrideSpecifier(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4174,9 +4174,9 @@ export class FunctionAttribute {
 
     switch (variant.kind) {
       case NonterminalKind.ModifierInvocation:
-        return new ModifierInvocation(variant as NonterminalNode);
+        return new ModifierInvocation(variant);
       case NonterminalKind.OverrideSpecifier:
-        return new OverrideSpecifier(variant as NonterminalNode);
+        return new OverrideSpecifier(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4202,7 +4202,7 @@ export class FunctionBody {
 
     switch (variant.kind) {
       case NonterminalKind.Block:
-        return new Block(variant as NonterminalNode);
+        return new Block(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4228,7 +4228,7 @@ export class ConstructorAttribute {
 
     switch (variant.kind) {
       case NonterminalKind.ModifierInvocation:
-        return new ModifierInvocation(variant as NonterminalNode);
+        return new ModifierInvocation(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4254,7 +4254,7 @@ export class UnnamedFunctionAttribute {
 
     switch (variant.kind) {
       case NonterminalKind.ModifierInvocation:
-        return new ModifierInvocation(variant as NonterminalNode);
+        return new ModifierInvocation(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4280,9 +4280,9 @@ export class FallbackFunctionAttribute {
 
     switch (variant.kind) {
       case NonterminalKind.ModifierInvocation:
-        return new ModifierInvocation(variant as NonterminalNode);
+        return new ModifierInvocation(variant);
       case NonterminalKind.OverrideSpecifier:
-        return new OverrideSpecifier(variant as NonterminalNode);
+        return new OverrideSpecifier(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4308,9 +4308,9 @@ export class ReceiveFunctionAttribute {
 
     switch (variant.kind) {
       case NonterminalKind.ModifierInvocation:
-        return new ModifierInvocation(variant as NonterminalNode);
+        return new ModifierInvocation(variant);
       case NonterminalKind.OverrideSpecifier:
-        return new OverrideSpecifier(variant as NonterminalNode);
+        return new OverrideSpecifier(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4336,7 +4336,7 @@ export class ModifierAttribute {
 
     switch (variant.kind) {
       case NonterminalKind.OverrideSpecifier:
-        return new OverrideSpecifier(variant as NonterminalNode);
+        return new OverrideSpecifier(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4359,15 +4359,15 @@ export class TypeName {
 
       switch (variant.kind) {
         case NonterminalKind.ArrayTypeName:
-          return new ArrayTypeName(variant as NonterminalNode);
+          return new ArrayTypeName(variant);
         case NonterminalKind.FunctionType:
-          return new FunctionType(variant as NonterminalNode);
+          return new FunctionType(variant);
         case NonterminalKind.MappingType:
-          return new MappingType(variant as NonterminalNode);
+          return new MappingType(variant);
         case NonterminalKind.ElementaryType:
-          return new ElementaryType(variant as NonterminalNode);
+          return new ElementaryType(variant);
         case NonterminalKind.IdentifierPath:
-          return new IdentifierPath(variant as NonterminalNode);
+          return new IdentifierPath(variant);
 
         default:
           throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4406,9 +4406,9 @@ export class MappingKeyType {
 
     switch (variant.kind) {
       case NonterminalKind.ElementaryType:
-        return new ElementaryType(variant as NonterminalNode);
+        return new ElementaryType(variant);
       case NonterminalKind.IdentifierPath:
-        return new IdentifierPath(variant as NonterminalNode);
+        return new IdentifierPath(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4434,7 +4434,7 @@ export class ElementaryType {
 
     switch (variant.kind) {
       case NonterminalKind.AddressType:
-        return new AddressType(variant as NonterminalNode);
+        return new AddressType(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4473,39 +4473,39 @@ export class Statement {
 
     switch (variant.kind) {
       case NonterminalKind.IfStatement:
-        return new IfStatement(variant as NonterminalNode);
+        return new IfStatement(variant);
       case NonterminalKind.ForStatement:
-        return new ForStatement(variant as NonterminalNode);
+        return new ForStatement(variant);
       case NonterminalKind.WhileStatement:
-        return new WhileStatement(variant as NonterminalNode);
+        return new WhileStatement(variant);
       case NonterminalKind.DoWhileStatement:
-        return new DoWhileStatement(variant as NonterminalNode);
+        return new DoWhileStatement(variant);
       case NonterminalKind.ContinueStatement:
-        return new ContinueStatement(variant as NonterminalNode);
+        return new ContinueStatement(variant);
       case NonterminalKind.BreakStatement:
-        return new BreakStatement(variant as NonterminalNode);
+        return new BreakStatement(variant);
       case NonterminalKind.ReturnStatement:
-        return new ReturnStatement(variant as NonterminalNode);
+        return new ReturnStatement(variant);
       case NonterminalKind.ThrowStatement:
-        return new ThrowStatement(variant as NonterminalNode);
+        return new ThrowStatement(variant);
       case NonterminalKind.EmitStatement:
-        return new EmitStatement(variant as NonterminalNode);
+        return new EmitStatement(variant);
       case NonterminalKind.TryStatement:
-        return new TryStatement(variant as NonterminalNode);
+        return new TryStatement(variant);
       case NonterminalKind.RevertStatement:
-        return new RevertStatement(variant as NonterminalNode);
+        return new RevertStatement(variant);
       case NonterminalKind.AssemblyStatement:
-        return new AssemblyStatement(variant as NonterminalNode);
+        return new AssemblyStatement(variant);
       case NonterminalKind.Block:
-        return new Block(variant as NonterminalNode);
+        return new Block(variant);
       case NonterminalKind.UncheckedBlock:
-        return new UncheckedBlock(variant as NonterminalNode);
+        return new UncheckedBlock(variant);
       case NonterminalKind.TupleDeconstructionStatement:
-        return new TupleDeconstructionStatement(variant as NonterminalNode);
+        return new TupleDeconstructionStatement(variant);
       case NonterminalKind.VariableDeclarationStatement:
-        return new VariableDeclarationStatement(variant as NonterminalNode);
+        return new VariableDeclarationStatement(variant);
       case NonterminalKind.ExpressionStatement:
-        return new ExpressionStatement(variant as NonterminalNode);
+        return new ExpressionStatement(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4544,9 +4544,9 @@ export class TupleMember {
 
     switch (variant.kind) {
       case NonterminalKind.TypedTupleMember:
-        return new TypedTupleMember(variant as NonterminalNode);
+        return new TypedTupleMember(variant);
       case NonterminalKind.UntypedTupleMember:
-        return new UntypedTupleMember(variant as NonterminalNode);
+        return new UntypedTupleMember(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4572,7 +4572,7 @@ export class VariableDeclarationType {
 
     switch (variant.kind) {
       case NonterminalKind.TypeName:
-        return new TypeName(variant as NonterminalNode);
+        return new TypeName(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4618,11 +4618,11 @@ export class ForStatementInitialization {
 
     switch (variant.kind) {
       case NonterminalKind.TupleDeconstructionStatement:
-        return new TupleDeconstructionStatement(variant as NonterminalNode);
+        return new TupleDeconstructionStatement(variant);
       case NonterminalKind.VariableDeclarationStatement:
-        return new VariableDeclarationStatement(variant as NonterminalNode);
+        return new VariableDeclarationStatement(variant);
       case NonterminalKind.ExpressionStatement:
-        return new ExpressionStatement(variant as NonterminalNode);
+        return new ExpressionStatement(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4652,7 +4652,7 @@ export class ForStatementCondition {
 
     switch (variant.kind) {
       case NonterminalKind.ExpressionStatement:
-        return new ExpressionStatement(variant as NonterminalNode);
+        return new ExpressionStatement(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4706,59 +4706,59 @@ export class Expression {
 
     switch (variant.kind) {
       case NonterminalKind.AssignmentExpression:
-        return new AssignmentExpression(variant as NonterminalNode);
+        return new AssignmentExpression(variant);
       case NonterminalKind.ConditionalExpression:
-        return new ConditionalExpression(variant as NonterminalNode);
+        return new ConditionalExpression(variant);
       case NonterminalKind.OrExpression:
-        return new OrExpression(variant as NonterminalNode);
+        return new OrExpression(variant);
       case NonterminalKind.AndExpression:
-        return new AndExpression(variant as NonterminalNode);
+        return new AndExpression(variant);
       case NonterminalKind.EqualityExpression:
-        return new EqualityExpression(variant as NonterminalNode);
+        return new EqualityExpression(variant);
       case NonterminalKind.ComparisonExpression:
-        return new ComparisonExpression(variant as NonterminalNode);
+        return new ComparisonExpression(variant);
       case NonterminalKind.BitwiseOrExpression:
-        return new BitwiseOrExpression(variant as NonterminalNode);
+        return new BitwiseOrExpression(variant);
       case NonterminalKind.BitwiseXorExpression:
-        return new BitwiseXorExpression(variant as NonterminalNode);
+        return new BitwiseXorExpression(variant);
       case NonterminalKind.BitwiseAndExpression:
-        return new BitwiseAndExpression(variant as NonterminalNode);
+        return new BitwiseAndExpression(variant);
       case NonterminalKind.ShiftExpression:
-        return new ShiftExpression(variant as NonterminalNode);
+        return new ShiftExpression(variant);
       case NonterminalKind.AdditiveExpression:
-        return new AdditiveExpression(variant as NonterminalNode);
+        return new AdditiveExpression(variant);
       case NonterminalKind.MultiplicativeExpression:
-        return new MultiplicativeExpression(variant as NonterminalNode);
+        return new MultiplicativeExpression(variant);
       case NonterminalKind.ExponentiationExpression:
-        return new ExponentiationExpression(variant as NonterminalNode);
+        return new ExponentiationExpression(variant);
       case NonterminalKind.PostfixExpression:
-        return new PostfixExpression(variant as NonterminalNode);
+        return new PostfixExpression(variant);
       case NonterminalKind.PrefixExpression:
-        return new PrefixExpression(variant as NonterminalNode);
+        return new PrefixExpression(variant);
       case NonterminalKind.FunctionCallExpression:
-        return new FunctionCallExpression(variant as NonterminalNode);
+        return new FunctionCallExpression(variant);
       case NonterminalKind.CallOptionsExpression:
-        return new CallOptionsExpression(variant as NonterminalNode);
+        return new CallOptionsExpression(variant);
       case NonterminalKind.MemberAccessExpression:
-        return new MemberAccessExpression(variant as NonterminalNode);
+        return new MemberAccessExpression(variant);
       case NonterminalKind.IndexAccessExpression:
-        return new IndexAccessExpression(variant as NonterminalNode);
+        return new IndexAccessExpression(variant);
       case NonterminalKind.NewExpression:
-        return new NewExpression(variant as NonterminalNode);
+        return new NewExpression(variant);
       case NonterminalKind.TupleExpression:
-        return new TupleExpression(variant as NonterminalNode);
+        return new TupleExpression(variant);
       case NonterminalKind.TypeExpression:
-        return new TypeExpression(variant as NonterminalNode);
+        return new TypeExpression(variant);
       case NonterminalKind.ArrayExpression:
-        return new ArrayExpression(variant as NonterminalNode);
+        return new ArrayExpression(variant);
       case NonterminalKind.HexNumberExpression:
-        return new HexNumberExpression(variant as NonterminalNode);
+        return new HexNumberExpression(variant);
       case NonterminalKind.DecimalNumberExpression:
-        return new DecimalNumberExpression(variant as NonterminalNode);
+        return new DecimalNumberExpression(variant);
       case NonterminalKind.StringExpression:
-        return new StringExpression(variant as NonterminalNode);
+        return new StringExpression(variant);
       case NonterminalKind.ElementaryType:
-        return new ElementaryType(variant as NonterminalNode);
+        return new ElementaryType(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4808,9 +4808,9 @@ export class ArgumentsDeclaration {
 
     switch (variant.kind) {
       case NonterminalKind.PositionalArgumentsDeclaration:
-        return new PositionalArgumentsDeclaration(variant as NonterminalNode);
+        return new PositionalArgumentsDeclaration(variant);
       case NonterminalKind.NamedArgumentsDeclaration:
-        return new NamedArgumentsDeclaration(variant as NonterminalNode);
+        return new NamedArgumentsDeclaration(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4853,15 +4853,15 @@ export class StringExpression {
 
     switch (variant.kind) {
       case NonterminalKind.StringLiteral:
-        return new StringLiteral(variant as NonterminalNode);
+        return new StringLiteral(variant);
       case NonterminalKind.StringLiterals:
-        return new StringLiterals(variant as NonterminalNode);
+        return new StringLiterals(variant);
       case NonterminalKind.HexStringLiteral:
-        return new HexStringLiteral(variant as NonterminalNode);
+        return new HexStringLiteral(variant);
       case NonterminalKind.HexStringLiterals:
-        return new HexStringLiterals(variant as NonterminalNode);
+        return new HexStringLiterals(variant);
       case NonterminalKind.UnicodeStringLiterals:
-        return new UnicodeStringLiterals(variant as NonterminalNode);
+        return new UnicodeStringLiterals(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -4944,31 +4944,31 @@ export class YulStatement {
 
     switch (variant.kind) {
       case NonterminalKind.YulBlock:
-        return new YulBlock(variant as NonterminalNode);
+        return new YulBlock(variant);
       case NonterminalKind.YulFunctionDefinition:
-        return new YulFunctionDefinition(variant as NonterminalNode);
+        return new YulFunctionDefinition(variant);
       case NonterminalKind.YulStackAssignmentStatement:
-        return new YulStackAssignmentStatement(variant as NonterminalNode);
+        return new YulStackAssignmentStatement(variant);
       case NonterminalKind.YulIfStatement:
-        return new YulIfStatement(variant as NonterminalNode);
+        return new YulIfStatement(variant);
       case NonterminalKind.YulForStatement:
-        return new YulForStatement(variant as NonterminalNode);
+        return new YulForStatement(variant);
       case NonterminalKind.YulSwitchStatement:
-        return new YulSwitchStatement(variant as NonterminalNode);
+        return new YulSwitchStatement(variant);
       case NonterminalKind.YulLeaveStatement:
-        return new YulLeaveStatement(variant as NonterminalNode);
+        return new YulLeaveStatement(variant);
       case NonterminalKind.YulBreakStatement:
-        return new YulBreakStatement(variant as NonterminalNode);
+        return new YulBreakStatement(variant);
       case NonterminalKind.YulContinueStatement:
-        return new YulContinueStatement(variant as NonterminalNode);
+        return new YulContinueStatement(variant);
       case NonterminalKind.YulVariableAssignmentStatement:
-        return new YulVariableAssignmentStatement(variant as NonterminalNode);
+        return new YulVariableAssignmentStatement(variant);
       case NonterminalKind.YulLabel:
-        return new YulLabel(variant as NonterminalNode);
+        return new YulLabel(variant);
       case NonterminalKind.YulVariableDeclarationStatement:
-        return new YulVariableDeclarationStatement(variant as NonterminalNode);
+        return new YulVariableDeclarationStatement(variant);
       case NonterminalKind.YulExpression:
-        return new YulExpression(variant as NonterminalNode);
+        return new YulExpression(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -5007,7 +5007,7 @@ export class YulAssignmentOperator {
 
     switch (variant.kind) {
       case NonterminalKind.YulColonAndEqual:
-        return new YulColonAndEqual(variant as NonterminalNode);
+        return new YulColonAndEqual(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -5033,7 +5033,7 @@ export class YulStackAssignmentOperator {
 
     switch (variant.kind) {
       case NonterminalKind.YulEqualAndColon:
-        return new YulEqualAndColon(variant as NonterminalNode);
+        return new YulEqualAndColon(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -5055,9 +5055,9 @@ export class YulSwitchCase {
 
     switch (variant.kind) {
       case NonterminalKind.YulDefaultCase:
-        return new YulDefaultCase(variant as NonterminalNode);
+        return new YulDefaultCase(variant);
       case NonterminalKind.YulValueCase:
-        return new YulValueCase(variant as NonterminalNode);
+        return new YulValueCase(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -5079,13 +5079,13 @@ export class YulExpression {
 
     switch (variant.kind) {
       case NonterminalKind.YulFunctionCallExpression:
-        return new YulFunctionCallExpression(variant as NonterminalNode);
+        return new YulFunctionCallExpression(variant);
       case NonterminalKind.YulLiteral:
-        return new YulLiteral(variant as NonterminalNode);
+        return new YulLiteral(variant);
       case NonterminalKind.YulBuiltInFunction:
-        return new YulBuiltInFunction(variant as NonterminalNode);
+        return new YulBuiltInFunction(variant);
       case NonterminalKind.YulPath:
-        return new YulPath(variant as NonterminalNode);
+        return new YulPath(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
@@ -5127,9 +5127,9 @@ export class YulLiteral {
 
     switch (variant.kind) {
       case NonterminalKind.HexStringLiteral:
-        return new HexStringLiteral(variant as NonterminalNode);
+        return new HexStringLiteral(variant);
       case NonterminalKind.StringLiteral:
-        return new StringLiteral(variant as NonterminalNode);
+        return new StringLiteral(variant);
 
       default:
         throw new Error(`Unexpected variant: '${variant.kind}'.`);
