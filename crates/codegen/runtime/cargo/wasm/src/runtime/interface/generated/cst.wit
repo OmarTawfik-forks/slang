@@ -231,12 +231,10 @@ interface cst {
 
     /// Represents an error that occurred while parsing a query.
     record query-error {
-        /// The error message describing what went wrong.
+        /// A human-readable message describing what went wrong.
         message: string,
-        /// The line number where the error occurred.
-        line: u32,
-        /// The column number where the error occurred.
-        column: u32,
+        /// The text range where the error occurred in the query code.
+        text-range: text-range,
     }
 
     /// Represents a match found by executing a query.

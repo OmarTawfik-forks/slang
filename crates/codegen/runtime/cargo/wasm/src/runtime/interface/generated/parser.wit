@@ -20,13 +20,13 @@ interface parser {
         parse: func(kind: nonterminal-kind, input: string) -> parse-output;
     }
 
-    /// Contains information about where the error occurred and what went wrong.
-    resource parse-error {
-        /// Returns the text range where the error occurred in the source code.
-        text-range: func() -> text-range;
+    /// Represents an error that occurred while parsing source code.
+    record parse-error {
+        /// A human-readable message describing what went wrong.
+        message: string,
 
-        /// Returns a human-readable message describing the parsing error.
-        message: func() -> string;
+        /// The text range where the error occurred in the source code.
+        text-range: text-range,
     }
 
     /// The output of a parsing operation.

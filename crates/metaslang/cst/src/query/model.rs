@@ -4,6 +4,7 @@ use std::rc::Rc;
 
 use crate::kinds::{BaseKind, KindTypes, NodeKind};
 use crate::query::{CaptureQuantifier, QueryError};
+use crate::text_index::TextIndex;
 
 #[derive(Clone, Debug)]
 pub struct Query<T: KindTypes> {
@@ -24,8 +25,7 @@ impl<T: KindTypes> Query<T> {
                     if capture_quantifiers.contains_key(&capture.name) {
                         return Err(QueryError {
                             message: format!("Capture name '{}' used more than once", capture.name),
-                            line: 0,
-                            column: 0,
+                            text_range: TextIndex::ZERO..TextIndex::ZERO,
                         });
                     }
                     capture_quantifiers.insert(capture.name.clone(), quantifier);
@@ -69,8 +69,7 @@ impl<T: KindTypes> Query<T> {
                             return Err(QueryError {
                                 message: "Quantification over quantification is not allowed"
                                     .to_string(),
-                                line: 0,
-                                column: 0,
+                                text_range: TextIndex::ZERO..TextIndex::ZERO,
                             })
                         }
                     };

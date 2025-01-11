@@ -3,12 +3,10 @@
 use crate::wasm_crate::utils::{define_wrapper, FromFFI, IntoFFI};
 
 mod ffi {
-    pub use crate::wasm_crate::bindgen::exports::nomic_foundation::slang::cst::{
-        Cursor, Node, TextRange,
-    };
+    pub use crate::wasm_crate::bindgen::exports::nomic_foundation::slang::cst::{Cursor, Node};
     pub use crate::wasm_crate::bindgen::exports::nomic_foundation::slang::parser::{
-        Guest, GuestParseError, GuestParseOutput, GuestParser, NonterminalKind, ParseError,
-        ParseErrorBorrow, ParseOutput, ParseOutputBorrow, Parser, ParserBorrow,
+        Guest, GuestParseOutput, GuestParser, NonterminalKind, ParseError, ParseOutput,
+        ParseOutputBorrow, Parser, ParserBorrow,
     };
 }
 
@@ -18,7 +16,6 @@ mod rust {
 
 impl ffi::Guest for crate::wasm_crate::World {
     type Parser = ParserWrapper;
-    type ParseError = ParseErrorWrapper;
     type ParseOutput = ParseOutputWrapper;
 }
 
@@ -51,19 +48,19 @@ define_wrapper! { Parser {
 
 //================================================
 //
-// resource parse-error
+// record parse-error
 //
 //================================================
 
-define_wrapper! { ParseError {
-    fn text_range(&self) -> ffi::TextRange {
-        self._borrow_ffi().text_range()._into_ffi()
+impl IntoFFI<ffi::ParseError> for rust::ParseError {
+    #[inline]
+    fn _into_ffi(self) -> ffi::ParseError {
+        ffi::ParseError {
+            message: self.message(),
+            text_range: self.text_range()._into_ffi(),
+        }
     }
-
-    fn message(&self) -> String {
-        self._borrow_ffi().message()
-    }
-} }
+}
 
 //================================================
 //

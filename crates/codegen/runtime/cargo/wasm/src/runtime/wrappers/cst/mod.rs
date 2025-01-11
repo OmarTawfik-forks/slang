@@ -373,8 +373,7 @@ impl IntoFFI<ffi::QueryError> for rust::QueryError {
     fn _into_ffi(self) -> ffi::QueryError {
         ffi::QueryError {
             message: self.message,
-            line: self.line.try_into().unwrap(),
-            column: self.column.try_into().unwrap(),
+            text_range: self.text_range._into_ffi(),
         }
     }
 }

@@ -57,7 +57,10 @@ fn test_parsing_error() {
         Ok(_) => panic!("Expected error"),
         Err(e) => {
             assert_eq!(e.message, "Parse error:\nexpected ']' at: \nAlt at: [_\n");
-            assert_eq!((e.line, e.column), (0, 8));
+            assert_eq!(
+                format!("{:?}", e.text_range),
+                "TextIndex { utf8: 8, utf16: 8, line: 0, column: 8 }..TextIndex { utf8: 8, utf16: 8, line: 0, column: 8 }",
+            );
         }
     }
 }
@@ -73,7 +76,10 @@ fn test_parsing_error_with_invalid_edge_label() {
                 e.message,
                 "Parse error:\n'Name' is not a valid edge label at: Name: [_]]\n",
             );
-            assert_eq!((e.line, e.column), (0, 12));
+            assert_eq!(
+                format!("{:?}", e.text_range),
+                "TextIndex { utf8: 12, utf16: 12, line: 0, column: 12 }..TextIndex { utf8: 22, utf16: 22, line: 0, column: 22 }",
+            );
         }
     }
 }
@@ -88,7 +94,10 @@ fn test_parsing_error_with_invalid_node_kind() {
                 e.message,
                 "Parse error:\n'tree_node' is not a valid node kind at: tree_node]]\n",
             );
-            assert_eq!((e.line, e.column), (0, 7));
+            assert_eq!(
+                format!("{:?}", e.text_range),
+                "TextIndex { utf8: 7, utf16: 7, line: 0, column: 7 }..TextIndex { utf8: 18, utf16: 18, line: 0, column: 18 }",
+            );
         }
     }
 }
@@ -103,7 +112,10 @@ fn test_parsing_error_with_kind_beginning_with_underscore() {
                 e.message,
                 "Parse error:\n'_tree_node' is not a valid node kind at: _tree_node]]\n",
             );
-            assert_eq!((e.line, e.column), (0, 7));
+            assert_eq!(
+                format!("{:?}", e.text_range),
+                "TextIndex { utf8: 7, utf16: 7, line: 0, column: 7 }..TextIndex { utf8: 19, utf16: 19, line: 0, column: 19 }",
+            );
         }
     }
 }

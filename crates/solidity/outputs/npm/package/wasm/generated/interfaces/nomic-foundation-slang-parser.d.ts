@@ -2,7 +2,6 @@
 
 export namespace NomicFoundationSlangParser {
   export { Parser };
-  export { ParseError };
   export { ParseOutput };
 }
 import type { Cursor } from "./nomic-foundation-slang-cst.js";
@@ -13,19 +12,18 @@ import type { NonterminalKind } from "./nomic-foundation-slang-cst.js";
 export { NonterminalKind };
 import type { TextRange } from "./nomic-foundation-slang-cst.js";
 export { TextRange };
-
 /**
- * Contains information about where the error occurred and what went wrong.
+ * Represents an error that occurred while parsing source code.
  */
-export class ParseError {
+export interface ParseError {
   /**
-   * Returns the text range where the error occurred in the source code.
+   * A human-readable message describing what went wrong.
    */
-  get textRange(): TextRange;
+  message: string;
   /**
-   * Returns a human-readable message describing the parsing error.
+   * The text range where the error occurred in the source code.
    */
-  get message(): string;
+  textRange: TextRange;
 }
 
 /**

@@ -49,8 +49,20 @@ test("query syntax error", () => {
 expected ']' at: 
 Alt at: [TreeNode @b [DelimitedIdentifier]
 `,
-      line: 0,
-      column: 34,
+      textRange: {
+        start: {
+          utf8: 34,
+          utf16: 34,
+          line: 0,
+          column: 34,
+        },
+        end: {
+          utf8: 34,
+          utf16: 34,
+          line: 0,
+          column: 34,
+        },
+      },
     } satisfies QueryError);
   }
 });

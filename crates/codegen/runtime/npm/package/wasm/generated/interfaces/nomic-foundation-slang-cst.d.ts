@@ -143,23 +143,6 @@ export interface Edge {
   node: Node;
 }
 /**
- * Represents an error that occurred while parsing a query.
- */
-export interface QueryError {
-  /**
-   * The error message describing what went wrong.
-   */
-  message: string;
-  /**
-   * The line number where the error occurred.
-   */
-  line: number;
-  /**
-   * The column number where the error occurred.
-   */
-  column: number;
-}
-/**
  * Represents a match found by executing a query.
  */
 export interface QueryMatch {
@@ -214,6 +197,19 @@ export interface TextRange {
    * Ending (exclusive) position of the range.
    */
   end: TextIndex;
+}
+/**
+ * Represents an error that occurred while parsing a query.
+ */
+export interface QueryError {
+  /**
+   * A human-readable message describing what went wrong.
+   */
+  message: string;
+  /**
+   * The text range where the error occurred in the query code.
+   */
+  textRange: TextRange;
 }
 
 /**
