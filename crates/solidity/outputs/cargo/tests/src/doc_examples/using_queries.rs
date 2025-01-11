@@ -3,7 +3,7 @@ use std::path::Path;
 use anyhow::Result;
 use infra_utils::paths::PathExtensions;
 use semver::Version;
-use slang_solidity::cst::{NonterminalKind, Query, QueryMatchIterator};
+use slang_solidity::cst::{Query, QueryMatchIterator};
 use slang_solidity::parser::{ParseOutput, Parser};
 
 fn parse_doc_input_file<T: AsRef<Path>>(path: T) -> Result<ParseOutput> {
@@ -13,7 +13,7 @@ fn parse_doc_input_file<T: AsRef<Path>>(path: T) -> Result<ParseOutput> {
 
     let parser = Parser::create(Version::new(0, 8, 0))?;
 
-    Ok(parser.parse(NonterminalKind::SourceUnit, source.trim()))
+    Ok(parser.parse_file(source.trim()))
 }
 
 #[test]

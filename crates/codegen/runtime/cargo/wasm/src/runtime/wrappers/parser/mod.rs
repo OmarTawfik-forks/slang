@@ -24,10 +24,6 @@ impl ffi::Guest for crate::wasm_crate::World {
 //================================================
 
 define_wrapper! { Parser {
-    fn root_kind() -> ffi::NonterminalKind {
-        rust::Parser::ROOT_KIND._into_ffi()
-    }
-
     fn create(language_version: String) -> Result<ffi::Parser, String> {
         semver::Version::parse(&language_version)
             .map_err(|_| format!("Invalid semantic version: '{language_version}'"))
@@ -39,8 +35,12 @@ define_wrapper! { Parser {
         self._borrow_ffi().language_version().to_string()
     }
 
-    fn parse(&self, kind: ffi::NonterminalKind, input: String) -> ffi::ParseOutput {
-        self._borrow_ffi().parse(kind._from_ffi(), &input)._into_ffi()
+    fn parse_file(&self, input: String) -> ffi::ParseOutput {
+        self._borrow_ffi().parse_file(&input)._into_ffi()
+    }
+
+    fn parse_nonterminal(&self, kind: ffi::NonterminalKind, input: String) -> ffi::ParseOutput {
+        self._borrow_ffi().parse_nonterminal(kind._from_ffi(), &input)._into_ffi()
     }
 } }
 

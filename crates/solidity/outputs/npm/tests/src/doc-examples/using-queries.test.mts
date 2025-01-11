@@ -2,12 +2,12 @@ import { readRepoFile } from "../utils/files.mjs";
 import assert from "node:assert";
 
 import { Parser } from "@nomicfoundation/slang/parser";
-import { assertIsNonterminalNode, NonterminalKind, Query, QueryMatchIterator } from "@nomicfoundation/slang/cst";
+import { assertIsNonterminalNode, Query, QueryMatchIterator } from "@nomicfoundation/slang/cst";
 
 async function parseDocInputFile(relativePath: string) {
   const source = await readRepoFile("documentation/public/user-guide/inputs", relativePath);
   const parser = Parser.create("0.8.0");
-  return parser.parse(NonterminalKind.SourceUnit, source);
+  return parser.parseFile(source);
 }
 
 test("using queries", async () => {

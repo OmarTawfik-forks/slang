@@ -59,11 +59,6 @@ export class ParseOutput {
  */
 export class Parser {
   /**
-   * Returns the root nonterminal kind for this parser's grammar.
-   * This represents the starting point for parsing a complete source file.
-   */
-  static rootKind(): NonterminalKind;
-  /**
    * Creates a new parser instance for the specified language version.
    */
   static create(languageVersion: string): Parser;
@@ -72,7 +67,11 @@ export class Parser {
    */
   get languageVersion(): string;
   /**
-   * Parses the input string starting from the specified nonterminal kind.
+   * Parses the input string into a complete source file.
    */
-  parse(kind: NonterminalKind, input: string): ParseOutput;
+  parseFile(input: string): ParseOutput;
+  /**
+   * Parses the input string into a nonterminal with the specified kind.
+   */
+  parseNonterminal(kind: NonterminalKind, input: string): ParseOutput;
 }

@@ -10,7 +10,7 @@ import { Parser } from "@slang-private/testlang-npm-package/parser";
 test("simple query", () => {
   const parser = Parser.create("1.0.0");
   const treeSource = `tree [A [B C] D];`;
-  const parseOutput = parser.parse(NonterminalKind.Tree, treeSource);
+  const parseOutput = parser.parseNonterminal(NonterminalKind.Tree, treeSource);
 
   const querySource = `[TreeNodeChild @id [DelimitedIdentifier]]`;
   const query = Query.parse(querySource);

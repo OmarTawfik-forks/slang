@@ -41,7 +41,7 @@ impl InternalCompilationBuilder {
             };
         }
 
-        let parse_output = self.parser.parse(Parser::ROOT_KIND, contents);
+        let parse_output = self.parser.parse_file(contents);
 
         let import_paths = self.imports.extract(parse_output.create_tree_cursor());
 

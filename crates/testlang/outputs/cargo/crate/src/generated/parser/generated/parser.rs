@@ -43,8 +43,6 @@ pub enum ParserInitializationError {
 }
 
 impl Parser {
-    pub const ROOT_KIND: NonterminalKind = NonterminalKind::SourceUnit;
-
     pub fn create(
         language_version: Version,
     ) -> std::result::Result<Self, ParserInitializationError> {
@@ -65,9 +63,34 @@ impl Parser {
 
     pub fn language_version(&self) -> &Version {
         &self.language_version
-    } /********************************************
-       *         Parser Functions
-       ********************************************/
+    }
+
+    pub fn parse_file(&self, input: &str) -> ParseOutput {
+        self.parse_nonterminal(NonterminalKind::SourceUnit, input)
+    }
+    pub fn parse_nonterminal(&self, kind: NonterminalKind, input: &str) -> ParseOutput {
+        match kind {
+            NonterminalKind::AdditionExpression => Self::addition_expression.parse(self, input),
+            NonterminalKind::Expression => Self::expression.parse(self, input),
+            NonterminalKind::Literal => Self::literal.parse(self, input),
+            NonterminalKind::MemberAccessExpression => {
+                Self::member_access_expression.parse(self, input)
+            }
+            NonterminalKind::NegationExpression => Self::negation_expression.parse(self, input),
+            NonterminalKind::SeparatedIdentifiers => Self::separated_identifiers.parse(self, input),
+            NonterminalKind::SourceUnit => Self::source_unit.parse(self, input),
+            NonterminalKind::SourceUnitMember => Self::source_unit_member.parse(self, input),
+            NonterminalKind::SourceUnitMembers => Self::source_unit_members.parse(self, input),
+            NonterminalKind::Tree => Self::tree.parse(self, input),
+            NonterminalKind::TreeNode => Self::tree_node.parse(self, input),
+            NonterminalKind::TreeNodeChild => Self::tree_node_child.parse(self, input),
+            NonterminalKind::TreeNodeChildren => Self::tree_node_children.parse(self, input),
+        }
+    }
+
+    /********************************************
+     *         Parser Functions
+     ********************************************/
 
     #[allow(unused_assignments, unused_parens)]
     fn addition_expression(&self, input: &mut ParserContext<'_>) -> ParserResult {
@@ -645,26 +668,6 @@ impl Parser {
             input,
             scan_choice!(input, scan_chars!(input, ' '), scan_chars!(input, '\t'))
         )
-    }
-
-    pub fn parse(&self, kind: NonterminalKind, input: &str) -> ParseOutput {
-        match kind {
-            NonterminalKind::AdditionExpression => Self::addition_expression.parse(self, input),
-            NonterminalKind::Expression => Self::expression.parse(self, input),
-            NonterminalKind::Literal => Self::literal.parse(self, input),
-            NonterminalKind::MemberAccessExpression => {
-                Self::member_access_expression.parse(self, input)
-            }
-            NonterminalKind::NegationExpression => Self::negation_expression.parse(self, input),
-            NonterminalKind::SeparatedIdentifiers => Self::separated_identifiers.parse(self, input),
-            NonterminalKind::SourceUnit => Self::source_unit.parse(self, input),
-            NonterminalKind::SourceUnitMember => Self::source_unit_member.parse(self, input),
-            NonterminalKind::SourceUnitMembers => Self::source_unit_members.parse(self, input),
-            NonterminalKind::Tree => Self::tree.parse(self, input),
-            NonterminalKind::TreeNode => Self::tree_node.parse(self, input),
-            NonterminalKind::TreeNodeChild => Self::tree_node_child.parse(self, input),
-            NonterminalKind::TreeNodeChildren => Self::tree_node_children.parse(self, input),
-        }
     }
 }
 
