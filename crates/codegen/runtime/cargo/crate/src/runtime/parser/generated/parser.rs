@@ -46,7 +46,7 @@ impl Parser {
     pub fn create(
         language_version: Version,
     ) -> std::result::Result<Self, ParserInitializationError> {
-        if LanguageFacts::SUPPORTED_VERSIONS
+        if LanguageFacts::ALL_VERSIONS
             .binary_search(&language_version)
             .is_ok()
         {

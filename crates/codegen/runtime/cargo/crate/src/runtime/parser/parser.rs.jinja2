@@ -51,7 +51,7 @@ impl Parser {
     pub const ROOT_KIND: NonterminalKind = NonterminalKind::{{ model.kinds.root_kind }};
 
     pub fn create(language_version: Version) -> std::result::Result<Self, ParserInitializationError> {
-        if LanguageFacts::SUPPORTED_VERSIONS.binary_search(&language_version).is_ok() {
+        if LanguageFacts::ALL_VERSIONS.binary_search(&language_version).is_ok() {
             Ok(Self {
                 {%- if not rendering_in_stubs -%}
                     {%- for version in model.breaking_language_versions %}

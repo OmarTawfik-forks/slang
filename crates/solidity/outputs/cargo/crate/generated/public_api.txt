@@ -975,5 +975,6 @@ pub fn slang_solidity::parser::Parser::fmt(&self, f: &mut core::fmt::Formatter<'
 pub mod slang_solidity::utils
 pub struct slang_solidity::utils::LanguageFacts
 impl slang_solidity::utils::LanguageFacts
-pub const slang_solidity::utils::LanguageFacts::NAME: &'static str
-pub const slang_solidity::utils::LanguageFacts::SUPPORTED_VERSIONS: &'static [semver::Version]
+pub const slang_solidity::utils::LanguageFacts::ALL_VERSIONS: &'static [semver::Version]
+pub const slang_solidity::utils::LanguageFacts::EARLIEST_VERSION: semver::Version
+pub const slang_solidity::utils::LanguageFacts::LATEST_VERSION: semver::Version

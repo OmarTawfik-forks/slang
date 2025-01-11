@@ -154,7 +154,7 @@ fn extract_compiler_version(compiler: &str) -> Option<Version> {
         panic!("Unrecognized compiler/version: '{compiler}'");
     };
 
-    if &version < LanguageFacts::SUPPORTED_VERSIONS.first().unwrap() {
+    if version < LanguageFacts::EARLIEST_VERSION {
         // Version is too early:
         return None;
     }
