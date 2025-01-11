@@ -100,6 +100,16 @@ impl IntoFFI<ffi::Node> for rust::Node {
     }
 }
 
+impl FromFFI<rust::Node> for ffi::Node {
+    #[inline]
+    fn _from_ffi(self) -> rust::Node {
+        match self {
+            ffi::Node::Nonterminal(node) => rust::Node::Nonterminal(node._from_ffi()),
+            ffi::Node::Terminal(node) => rust::Node::Terminal(node._from_ffi()),
+        }
+    }
+}
+
 //================================================
 //
 // resource nonterminal-node
@@ -107,6 +117,12 @@ impl IntoFFI<ffi::Node> for rust::Node {
 //================================================
 
 define_rc_wrapper! { NonterminalNode {
+    fn new(kind: ffi::NonterminalKind, children: Vec<ffi::Edge>) -> NonterminalNodeWrapper {
+        let children = children.into_iter().map(FromFFI::_from_ffi).collect();
+
+        NonterminalNodeWrapper(rust::NonterminalNode::new(kind._from_ffi(), children))
+    }
+
     fn id(&self) -> u32 {
         self._borrow_ffi().id().try_into().unwrap()
     }
@@ -147,6 +163,10 @@ define_rc_wrapper! { NonterminalNode {
 //================================================
 
 define_rc_wrapper! { TerminalNode {
+    fn new(kind: ffi::TerminalKind, text: String) -> TerminalNodeWrapper {
+        TerminalNodeWrapper(rust::TerminalNode::new(kind._from_ffi(), text))
+    }
+
     fn id(&self) -> u32 {
         self._borrow_ffi().id().try_into().unwrap()
     }
@@ -188,6 +208,16 @@ impl IntoFFI<ffi::Edge> for rust::Edge {
         ffi::Edge {
             label: self.label.map(IntoFFI::_into_ffi),
             node: self.node._into_ffi(),
+        }
+    }
+}
+
+impl FromFFI<rust::Edge> for ffi::Edge {
+    #[inline]
+    fn _from_ffi(self) -> rust::Edge {
+        rust::Edge {
+            label: self.label.map(FromFFI::_from_ffi),
+            node: self.node._from_ffi(),
         }
     }
 }

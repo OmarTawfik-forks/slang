@@ -53,17 +53,11 @@ impl<T: KindTypes> std::ops::Deref for Edge<T> {
 
 impl<T: KindTypes> Node<T> {
     pub fn nonterminal(kind: T::NonterminalKind, children: Vec<Edge<T>>) -> Self {
-        let text_len = children.iter().map(|edge| edge.text_len()).sum();
-
-        Self::Nonterminal(Rc::new(NonterminalNode {
-            kind,
-            text_len,
-            children,
-        }))
+        Self::Nonterminal(NonterminalNode::new(kind, children))
     }
 
     pub fn terminal(kind: T::TerminalKind, text: String) -> Self {
-        Self::Terminal(Rc::new(TerminalNode { kind, text }))
+        Self::Terminal(TerminalNode::new(kind, text))
     }
 
     /// Returns a unique identifier of the node. It is not reproducable over parses
@@ -215,6 +209,16 @@ impl<T: KindTypes> From<Rc<TerminalNode<T>>> for Node<T> {
 }
 
 impl<T: KindTypes> NonterminalNode<T> {
+    pub fn new(kind: T::NonterminalKind, children: Vec<Edge<T>>) -> Rc<Self> {
+        let text_len = children.iter().map(|edge| edge.text_len()).sum();
+
+        Rc::new(Self {
+            kind,
+            text_len,
+            children,
+        })
+    }
+
     /// Returns a unique identifier of the node. It is not reproducable over parses
     /// and cannot be used in a persistent/serialised sense.
     pub fn id(self: &Rc<Self>) -> usize {
@@ -254,6 +258,10 @@ impl<T: KindTypes> NonterminalNode<T> {
 }
 
 impl<T: KindTypes> TerminalNode<T> {
+    pub fn new(kind: T::TerminalKind, text: String) -> Rc<Self> {
+        Rc::new(Self { kind, text })
+    }
+
     /// Returns a unique identifier of the node. It is not reproducable over parses
     /// and cannot be used in a persistent/serialised sense.
     pub fn id(self: &Rc<Self>) -> usize {
