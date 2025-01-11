@@ -110,6 +110,11 @@ pub enum TerminalKind {
 }
 
 impl crate::cst::TerminalKindExtensions for TerminalKind {
+    fn is_identifier(&self) -> bool {
+        matches!(
+                self,| Self::Identifier)
+    }
+
     fn is_trivia(&self) -> bool {
         matches!(self, |Self::EndOfLine| Self::MultiLineComment
             | Self::SingleLineComment

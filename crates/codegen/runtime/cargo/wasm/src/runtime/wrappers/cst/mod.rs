@@ -63,6 +63,10 @@ enum_to_enum!(TerminalKind);
 pub struct TerminalKindExtensionsWrapper;
 
 impl ffi::GuestTerminalKindExtensions for TerminalKindExtensionsWrapper {
+    fn is_identifier(kind: ffi::TerminalKind) -> bool {
+        crate::rust_crate::cst::TerminalKindExtensions::is_identifier(&kind._from_ffi())
+    }
+
     fn is_trivia(kind: ffi::TerminalKind) -> bool {
         crate::rust_crate::cst::TerminalKindExtensions::is_trivia(&kind._from_ffi())
     }

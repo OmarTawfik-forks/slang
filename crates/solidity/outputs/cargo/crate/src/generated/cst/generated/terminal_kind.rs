@@ -2543,6 +2543,10 @@ pub enum TerminalKind {
 }
 
 impl crate::cst::TerminalKindExtensions for TerminalKind {
+    fn is_identifier(&self) -> bool {
+        matches!(self, |Self::Identifier| Self::YulIdentifier)
+    }
+
     fn is_trivia(&self) -> bool {
         matches!(self, |Self::EndOfLine| Self::MultiLineComment
             | Self::MultiLineNatSpecComment

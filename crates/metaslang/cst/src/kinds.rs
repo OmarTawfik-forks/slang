@@ -29,6 +29,10 @@ where
 }
 
 pub trait TerminalKindExtensions: BaseKind {
+    fn is_identifier(&self) -> bool {
+        false
+    }
+
     fn is_trivia(&self) -> bool {
         false
     }

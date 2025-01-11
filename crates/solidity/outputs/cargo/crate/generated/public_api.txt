@@ -891,6 +891,7 @@ impl core::str::traits::FromStr for slang_solidity::cst::TerminalKind
 pub type slang_solidity::cst::TerminalKind::Err = strum::ParseError
 pub fn slang_solidity::cst::TerminalKind::from_str(s: &str) -> core::result::Result<slang_solidity::cst::TerminalKind, <Self as core::str::traits::FromStr>::Err>
 impl metaslang_cst::kinds::TerminalKindExtensions for slang_solidity::cst::TerminalKind
+pub fn slang_solidity::cst::TerminalKind::is_identifier(&self) -> bool
 pub fn slang_solidity::cst::TerminalKind::is_trivia(&self) -> bool
 pub fn slang_solidity::cst::TerminalKind::is_valid(&self) -> bool
 impl serde::ser::Serialize for slang_solidity::cst::TerminalKind

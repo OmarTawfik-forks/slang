@@ -80,6 +80,7 @@ pub type metaslang_cst::kinds::KindTypes::NonterminalKind: metaslang_cst::kinds:
 pub type metaslang_cst::kinds::KindTypes::TerminalKind: metaslang_cst::kinds::TerminalKindExtensions
 pub trait metaslang_cst::kinds::NonterminalKindExtensions: metaslang_cst::kinds::BaseKind
 pub trait metaslang_cst::kinds::TerminalKindExtensions: metaslang_cst::kinds::BaseKind
+pub fn metaslang_cst::kinds::TerminalKindExtensions::is_identifier(&self) -> bool
 pub fn metaslang_cst::kinds::TerminalKindExtensions::is_trivia(&self) -> bool
 pub fn metaslang_cst::kinds::TerminalKindExtensions::is_valid(&self) -> bool
 pub mod metaslang_cst::nodes

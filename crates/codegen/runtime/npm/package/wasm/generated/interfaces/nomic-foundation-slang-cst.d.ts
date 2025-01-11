@@ -470,11 +470,15 @@ export class QueryMatchIterator {
  */
 export class TerminalKindExtensions {
   /**
-   * Returns true if the terminal is a trivia token. i.e. whitespace, comments, etc...
+   * Returns `true` if the terminal is an identifier token.
+   */
+  static isIdentifier(kind: TerminalKind): boolean;
+  /**
+   * Returns `true` if the terminal is a trivia token. i.e. whitespace, comments, etc...
    */
   static isTrivia(kind: TerminalKind): boolean;
   /**
-   * Returns true if the terminal is a valid token in the language grammar.
+   * Returns `true` if the terminal is a valid token in the language grammar.
    */
   static isValid(kind: TerminalKind): boolean;
 }
