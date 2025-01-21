@@ -41,6 +41,8 @@
           };
         });
 
+        public readonly kind = NonterminalKind.{{ sequence.parent_type }};
+
         /**
         * Constructs a new AST node of type `{{ sequence.parent_type }}`, given a nonterminal CST node of the same kind.
         */
@@ -50,7 +52,7 @@
            */
           public readonly cst: NonterminalNode
         ) {
-          assertKind(this.cst.kind, NonterminalKind.{{ sequence.parent_type }});
+          assertKind(this.cst.kind, this.kind);
         }
 
         {% for field in sequence.fields %}
@@ -118,6 +120,8 @@
           {%- endif %}
         });
 
+        public readonly kind = NonterminalKind.{{ choice.parent_type }};
+
         /**
         * Constructs a new AST node of type `{{ choice.parent_type }}`, given a nonterminal CST node of the same kind.
         */
@@ -127,7 +131,7 @@
            */
           public readonly cst: NonterminalNode
         ) {
-          assertKind(this.cst.kind, NonterminalKind.{{ choice.parent_type }});
+          assertKind(this.cst.kind, this.kind);
         }
 
         /**
@@ -163,7 +167,9 @@
             return items as TerminalNode[];
           {%- endif -%}
         });
-          
+
+        public readonly kind = NonterminalKind.{{ repeated.parent_type }};
+
         /**
         * Constructs a new AST node of type `{{ repeated.parent_type }}`, given a nonterminal CST node of the same kind.
         */
@@ -173,7 +179,7 @@
            */
           public readonly cst: NonterminalNode
         ) {
-          assertKind(this.cst.kind, NonterminalKind.{{ repeated.parent_type }});
+          assertKind(this.cst.kind, this.kind);
         }
 
         /**
@@ -219,6 +225,8 @@
           };
         });
 
+        public readonly kind = NonterminalKind.{{ separated.parent_type }};
+
         /**
         * Constructs a new AST node of type `{{ separated.parent_type }}`, given a nonterminal CST node of the same kind.
         */
@@ -228,7 +236,7 @@
            */
           public readonly cst: NonterminalNode
         ) {
-          assertKind(this.cst.kind, NonterminalKind.{{ separated.parent_type }});
+          assertKind(this.cst.kind, this.kind);
         }
 
         /**
