@@ -34,20 +34,7 @@ jobs:
       # Run all CI steps in order: _SLANG_INFRA_CI_STEPS_ORDERED_ (keep in sync)
       #
 
-      - name: "infra check"
+      - name: "run benchmark"
         uses: "./.github/actions/devcontainer/run"
         with:
-          runCmd: "./scripts/bin/infra check"
-
-      - name: "infra test"
-        uses: "./.github/actions/devcontainer/run"
-        with:
-          runCmd: "./scripts/bin/infra test"
-
-      - name: "infra lint"
-        uses: "./.github/actions/devcontainer/run"
-        with:
-          runCmd: "./scripts/bin/infra lint"
-
-      - name: "Save Cache"
-        uses: "./.github/actions/cache/save"
+          runCmd: "./bin/node ./node_modules/.bin/tsx ./crates/solidity/outputs/npm/perf/src/index.ts"

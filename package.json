@@ -5,6 +5,7 @@
     "crates/codegen/runtime/npm/package",
     "crates/infra/cli",
     "crates/solidity/outputs/npm/package",
+    "crates/solidity/outputs/npm/perf",
     "crates/solidity/outputs/npm/tests",
     "crates/solidity/testing/perf",
     "crates/testlang/outputs/npm/package",

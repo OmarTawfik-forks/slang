@@ -1,0 +1,15 @@
+{
+  "extends": "../../../../../tsconfig.json",
+
+  "include": ["./**/*"],
+
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "ESNext",
+
+    /* Projects */
+    "composite": true,
+    "incremental": true,
+    "tsBuildInfoFile": "target/tsc/.tsbuildinfo"
+  }
+}
