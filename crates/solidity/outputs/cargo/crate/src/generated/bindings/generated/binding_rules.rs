@@ -1,7 +1,6 @@
 // This file is generated automatically by infrastructure scripts. Please don't edit by hand.
 
 #[allow(clippy::needless_raw_string_hashes)]
-#[allow(dead_code)] // TODO(#982): use to create the graph
 pub const BINDING_RULES_SOURCE: &str = r#####"
     global ROOT_NODE
 global FILE_PATH
@@ -123,9 +122,6 @@ inherit .star_extension
 }
 
 @source_unit [SourceUnit [SourceUnitMembers [SourceUnitMember @using [UsingDirective]]]] {
-  ; TODO: this is the hook for top-level extensions, but this should connect to
-  ; an extensions scope that gets pushed to the scope stack, as in the case of
-  ; contracts/libraries (defined further down below).
   edge @source_unit.lexical_scope -> @using.def
 }
 
@@ -547,11 +543,6 @@ inherit .star_extension
 @contract [ContractDefinition [ContractMembers
     [ContractMember @state_var [StateVariableDefinition]]
 ]] {
-  ; State variables are available to derived contracts.
-  ; TODO: this also exposes private state variables to derived contracts, but we
-  ; can't easily filter them because we don't have negative assertions in our
-  ; query language (we would need to modify this query for anything *not*
-  ; containing a `PrivateKeyword` node)
   edge @contract.instance -> @state_var.def
 }
 
@@ -1218,7 +1209,8 @@ inherit .star_extension
   node @ftype.output
 
   ; This path pushes the function type to the symbol stack
-  ; TODO: add parameter and return types to distinguish between different function types
+  ; Currently, these don't add parameter and return types to distinguish between different function types
+  ; https://github.com/NomicFoundation/slang/issues/1250
   node function_type
   attr (function_type) push_symbol = type_symbol
 
