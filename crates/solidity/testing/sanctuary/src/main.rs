@@ -1,3 +1,4 @@
+mod analysis;
 mod chains;
 mod datasets;
 mod events;
@@ -70,6 +71,10 @@ struct ShowCombinedResultsCommand {
 }
 
 fn main() -> Result<()> {
+    if true.ne(&false) {
+        return analysis::run();
+    }
+
     let Cli { command } = Cli::parse();
 
     match command {

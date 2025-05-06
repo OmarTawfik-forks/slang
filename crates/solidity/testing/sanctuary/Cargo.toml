@@ -8,7 +8,10 @@ publish = false
 [dependencies]
 anyhow = { workspace = true }
 clap = { workspace = true }
+codegen_language_definition = { workspace = true }
 console = { workspace = true }
+csv = { workspace = true }
+indexmap = { workspace = true }
 indicatif = { workspace = true }
 infra_utils = { workspace = true }
 itertools = { workspace = true }
@@ -19,7 +22,11 @@ regex = { workspace = true }
 semver = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
-slang_solidity = { workspace = true, features = ["__private_ariadne_errors", "__experimental_bindings_api"] }
+slang_solidity = { workspace = true, features = [
+  "__private_ariadne_errors",
+  "__experimental_bindings_api",
+] }
+solidity_language = { workspace = true }
 strum_macros = { workspace = true }
 url = { workspace = true }
 

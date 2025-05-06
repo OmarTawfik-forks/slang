@@ -1,0 +1,408 @@
+version,area,direction,description
+0.4.12,Builtins,ForwardsIncompatible,Builtin Function `create2` is introduced.
+0.4.12,Builtins,ForwardsIncompatible,Builtin Function `keccak256` is introduced.
+0.4.12,Builtins,ForwardsIncompatible,Builtin Function `staticcall` is introduced.
+0.4.14,Keywords,BackwardsIncompatible,"A variation of the keyword `FixedKeyword` is now reserved, and can not be used as an identifier."
+0.4.14,Keywords,BackwardsIncompatible,"A variation of the keyword `UfixedKeyword` is now reserved, and can not be used as an identifier."
+0.4.14,Keywords,BackwardsIncompatible,"A variation of the keyword `YulFixedKeyword` is now reserved, and can not be used as an identifier."
+0.4.14,Keywords,BackwardsIncompatible,"A variation of the keyword `YulUfixedKeyword` is now reserved, and can not be used as an identifier."
+0.4.16,Nodes,ForwardsIncompatible,Keyword `PureKeyword` is introduced.
+0.4.16,Nodes,ForwardsIncompatible,Keyword `ViewKeyword` is introduced.
+0.4.16,Children,ForwardsIncompatible,Child `PureKeyword` of node `FunctionAttribute` is introduced.
+0.4.16,Children,ForwardsIncompatible,Child `PureKeyword` of node `FunctionTypeAttribute` is introduced.
+0.4.16,Children,ForwardsIncompatible,Child `PureKeyword` of node `UnnamedFunctionAttribute` is introduced.
+0.4.16,Children,ForwardsIncompatible,Child `ViewKeyword` of node `FunctionAttribute` is introduced.
+0.4.16,Children,ForwardsIncompatible,Child `ViewKeyword` of node `FunctionTypeAttribute` is introduced.
+0.4.16,Children,ForwardsIncompatible,Child `ViewKeyword` of node `UnnamedFunctionAttribute` is introduced.
+0.4.17,Builtins,ForwardsIncompatible,Builtin Field `bytes4 selector` of type `%ExternalFunction` is introduced.
+0.4.21,Nodes,ForwardsIncompatible,Keyword `EmitKeyword` is introduced.
+0.4.21,Nodes,ForwardsIncompatible,Nonterminal `EmitStatement` is introduced.
+0.4.21,Children,ForwardsIncompatible,Child `EmitStatement` of node `Statement` is introduced.
+0.4.22,Nodes,ForwardsIncompatible,Keyword `ConstructorKeyword` is introduced.
+0.4.22,Nodes,ForwardsIncompatible,Nonterminal `ConstructorAttribute` is introduced.
+0.4.22,Nodes,ForwardsIncompatible,Nonterminal `ConstructorAttributes` is introduced.
+0.4.22,Nodes,ForwardsIncompatible,Nonterminal `ConstructorDefinition` is introduced.
+0.4.22,Children,ForwardsIncompatible,Child `ConstructorDefinition` of node `ContractMember` is introduced.
+0.4.22,Builtins,ForwardsIncompatible,Builtin Function `blockhash` is introduced.
+0.4.22,Builtins,ForwardsIncompatible,Builtin Function `gasleft` is introduced.
+0.4.22,Builtins,ForwardsIncompatible,Builtin Function `require` is introduced.
+0.4.22,Builtins,ForwardsIncompatible,Builtin Function `revert` is introduced.
+0.4.22,Builtins,ForwardsIncompatible,Builtin Type Function `encode(%Any[] valuesToEncode) returns bytes memory` of type `%AbiType` is introduced.
+0.4.22,Builtins,ForwardsIncompatible,Builtin Type Function `encodePacked(%Any[] valuesToEncode) returns bytes memory` of type `%AbiType` is introduced.
+0.4.22,Builtins,ForwardsIncompatible,"Builtin Type Function `encodeWithSelector(bytes4 selector, %Any[] functionArgumentsTuple) returns bytes memory` of type `%AbiType` is introduced."
+0.4.22,Builtins,ForwardsIncompatible,"Builtin Type Function `encodeWithSignature(string memory signature, %Any[] valuesToEncode) returns bytes memory` of type `%AbiType` is introduced."
+0.4.25,Nodes,ForwardsIncompatible,A variation of the token `DoubleQuotedStringLiteral` is introduced.
+0.4.25,Nodes,ForwardsIncompatible,A variation of the token `SingleQuotedStringLiteral` is introduced.
+0.4.25,Nodes,BackwardsIncompatible,A variation of the token `DoubleQuotedStringLiteral` is deprecated.
+0.4.25,Nodes,BackwardsIncompatible,A variation of the token `SingleQuotedStringLiteral` is deprecated.
+0.5.0,Nodes,ForwardsIncompatible,A variation of the token `DecimalLiteral` is introduced.
+0.5.0,Nodes,ForwardsIncompatible,Keyword `CallDataKeyword` is introduced.
+0.5.0,Nodes,BackwardsIncompatible,A variation of the operator `PrefixExpression` is deprecated.
+0.5.0,Nodes,BackwardsIncompatible,A variation of the token `DecimalLiteral` is deprecated.
+0.5.0,Nodes,BackwardsIncompatible,A variation of the token `HexLiteral` is deprecated.
+0.5.0,Nodes,BackwardsIncompatible,Keyword `ThrowKeyword` is deprecated.
+0.5.0,Nodes,BackwardsIncompatible,Keyword `VarKeyword` is deprecated.
+0.5.0,Nodes,BackwardsIncompatible,Keyword `YearsKeyword` is deprecated.
+0.5.0,Nodes,BackwardsIncompatible,Nonterminal `ThrowStatement` is deprecated.
+0.5.0,Nodes,BackwardsIncompatible,Nonterminal `YulEqualAndColon` is deprecated.
+0.5.0,Nodes,BackwardsIncompatible,Nonterminal `YulLabel` is deprecated.
+0.5.0,Nodes,BackwardsIncompatible,Nonterminal `YulStackAssignmentOperator` is deprecated.
+0.5.0,Nodes,BackwardsIncompatible,Nonterminal `YulStackAssignmentStatement` is deprecated.
+0.5.0,Nodes,BackwardsIncompatible,Token `EqualColon` is deprecated.
+0.5.0,Children,ForwardsIncompatible,Child `CallDataKeyword` of node `StorageLocation` is introduced.
+0.5.0,Children,ForwardsIncompatible,Child `payable_keyword` of node `AddressType` is introduced.
+0.5.0,Children,BackwardsIncompatible,Child `ConstantKeyword` of node `FunctionAttribute` is deprecated.
+0.5.0,Children,BackwardsIncompatible,Child `ConstantKeyword` of node `FunctionTypeAttribute` is deprecated.
+0.5.0,Children,BackwardsIncompatible,Child `ConstantKeyword` of node `UnnamedFunctionAttribute` is deprecated.
+0.5.0,Children,BackwardsIncompatible,Child `InternalKeyword` of node `UnnamedFunctionAttribute` is deprecated.
+0.5.0,Children,BackwardsIncompatible,Child `PrivateKeyword` of node `UnnamedFunctionAttribute` is deprecated.
+0.5.0,Children,BackwardsIncompatible,Child `PublicKeyword` of node `UnnamedFunctionAttribute` is deprecated.
+0.5.0,Children,BackwardsIncompatible,Child `ThrowStatement` of node `Statement` is deprecated.
+0.5.0,Children,BackwardsIncompatible,Child `VarKeyword` of node `VariableDeclarationType` is deprecated.
+0.5.0,Children,BackwardsIncompatible,Child `YearsKeyword` of node `NumberUnit` is deprecated.
+0.5.0,Children,BackwardsIncompatible,Child `YulLabel` of node `YulStatement` is deprecated.
+0.5.0,Children,BackwardsIncompatible,Child `YulStackAssignmentStatement` of node `YulStatement` is deprecated.
+0.5.0,Children,BackwardsIncompatible,Child `unit` of node `HexNumberExpression` is deprecated.
+0.5.0,Children,BackwardsIncompatible,Child `var_keyword` of node `TupleDeconstructionStatement` is deprecated.
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `AliasKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `ApplyKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `AutoKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `CallDataKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `ConstructorKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `CopyOfKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `DefineKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `EmitKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `ImmutableKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `ImplementsKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `MacroKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `MutableKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `OverrideKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `PartialKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `PromiseKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `ReferenceKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `SealedKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `SizeOfKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `SupportsKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `TypeDefKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `UncheckedKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulAliasKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulApplyKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulAutoKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulCallDataKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulConstructorKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulCopyOfKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulDefineKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulEmitKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulImmutableKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulImplementsKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulMacroKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulMutableKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulOverrideKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulPartialKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulPromiseKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulReferenceKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulSealedKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulSizeOfKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulSupportsKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulTypeDefKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Keywords,BackwardsIncompatible,"Keyword `YulUncheckedKeyword` is now reserved, and can not be used as an identifier."
+0.5.0,Builtins,ForwardsIncompatible,Builtin Function `extcodehash` is introduced.
+0.5.0,Builtins,ForwardsIncompatible,"Builtin Type Function `call(bytes memory) returns bool, bytes memory` of type `address` is introduced."
+0.5.0,Builtins,ForwardsIncompatible,"Builtin Type Function `decode(bytes memory encodedData, %Type[] encodedTypesTuple) returns %Any[]` of type `%AbiType` is introduced."
+0.5.0,Builtins,ForwardsIncompatible,"Builtin Type Function `delegatecall(bytes memory) returns bool, bytes memory` of type `address` is introduced."
+0.5.0,Builtins,ForwardsIncompatible,"Builtin Type Function `staticcall(bytes memory) returns bool, bytes memory` of type `address` is introduced."
+0.5.0,Builtins,ForwardsIncompatible,Builtin Type `address payable` is introduced.
+0.5.0,Builtins,BackwardsIncompatible,Builtin Field `uint256 gas` of type `%MessageType` is deprecated.
+0.5.0,Builtins,BackwardsIncompatible,Builtin Function `jump` is deprecated.
+0.5.0,Builtins,BackwardsIncompatible,Builtin Function `jumpi` is deprecated.
+0.5.0,Builtins,BackwardsIncompatible,Builtin Function `sha3` is deprecated.
+0.5.0,Builtins,BackwardsIncompatible,Builtin Function `sha3` is deprecated.
+0.5.0,Builtins,BackwardsIncompatible,Builtin Function `suicide` is deprecated.
+0.5.0,Builtins,BackwardsIncompatible,Builtin Function `suicide` is deprecated.
+0.5.0,Builtins,BackwardsIncompatible,Builtin Type Function `blockhash(uint) returns bytes32` of type `%BlockType` is deprecated.
+0.5.0,Builtins,BackwardsIncompatible,Builtin Type Function `call(bytes memory) returns bool` of type `address` is deprecated.
+0.5.0,Builtins,BackwardsIncompatible,"Builtin Type Function `callcode(bytes memory) returns bool, bytes memory` of type `address` is deprecated."
+0.5.0,Builtins,BackwardsIncompatible,Builtin Type Function `delegatecall(bytes memory) returns bool` of type `address` is deprecated.
+0.5.0,Builtins,BackwardsIncompatible,Builtin Type Function `transfer(uint256 amount)` of type `address` is deprecated.
+0.5.0,Bindings,BackwardsIncompatible,Functions with the same name as the containing contract are no longer considered constructors.
+0.5.0,Bindings,BackwardsIncompatible,Scoping rules changed from Javascript-style to C99 style.
+0.5.0,Bindings,BackwardsIncompatible,"`this` no longer works as an `address` type, deprecating member access like `this.balance`."
+0.5.3,Nodes,ForwardsIncompatible,Keyword `TypeKeyword` is introduced.
+0.5.3,Nodes,ForwardsIncompatible,Nonterminal `TypeExpression` is introduced.
+0.5.3,Children,ForwardsIncompatible,Child `TypeExpression` of node `Expression` is introduced.
+0.5.3,Builtins,ForwardsIncompatible,Builtin Field `bytes creationCode` of type `%ContractTypeType` is introduced.
+0.5.3,Builtins,ForwardsIncompatible,Builtin Field `bytes runtimeCode` of type `%ContractTypeType` is introduced.
+0.5.5,Nodes,BackwardsIncompatible,Nonterminal `YulColonAndEqual` is deprecated.
+0.5.5,Children,BackwardsIncompatible,Child `YulColonAndEqual` of node `YulAssignmentOperator` is deprecated.
+0.5.8,Nodes,ForwardsIncompatible,A variation of the token `YulIdentifier` is introduced.
+0.5.10,Keywords,ForwardsIncompatible,"Keyword `YulBoolKeyword` is now unreserved, and can be used as an identifier."
+0.5.14,Nodes,ForwardsIncompatible,Nonterminal `HexStringLiterals` is introduced.
+0.5.14,Nodes,ForwardsIncompatible,Nonterminal `StringLiterals` is introduced.
+0.5.14,Children,ForwardsIncompatible,Child `HexStringLiterals` of node `StringExpression` is introduced.
+0.5.14,Children,ForwardsIncompatible,Child `StringLiterals` of node `StringExpression` is introduced.
+0.5.14,Children,BackwardsIncompatible,Child `HexStringLiteral` of node `StringExpression` is deprecated.
+0.5.14,Children,BackwardsIncompatible,Child `StringLiteral` of node `StringExpression` is deprecated.
+0.6.0,Nodes,ForwardsIncompatible,Keyword `AbstractKeyword` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Keyword `CatchKeyword` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Keyword `OverrideKeyword` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Keyword `TryKeyword` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Keyword `VirtualKeyword` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Keyword `YulLeaveKeyword` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `CatchClauseError` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `CatchClause` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `CatchClauses` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `FallbackFunctionAttribute` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `FallbackFunctionAttributes` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `FallbackFunctionDefinition` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `OverridePathsDeclaration` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `OverridePaths` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `OverrideSpecifier` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `ReceiveFunctionAttribute` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `ReceiveFunctionAttributes` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `ReceiveFunctionDefinition` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `TryStatement` is introduced.
+0.6.0,Nodes,ForwardsIncompatible,Nonterminal `YulLeaveStatement` is introduced.
+0.6.0,Nodes,BackwardsIncompatible,Nonterminal `UnnamedFunctionAttribute` is deprecated.
+0.6.0,Nodes,BackwardsIncompatible,Nonterminal `UnnamedFunctionAttributes` is deprecated.
+0.6.0,Nodes,BackwardsIncompatible,Nonterminal `UnnamedFunctionDefinition` is deprecated.
+0.6.0,Children,ForwardsIncompatible,Child `EnumDefinition` of node `SourceUnitMember` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `FallbackFunctionDefinition` of node `ContractMember` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `OverrideKeyword` of node `ConstructorAttribute` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `OverrideSpecifier` of node `FunctionAttribute` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `OverrideSpecifier` of node `ModifierAttribute` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `OverrideSpecifier` of node `StateVariableAttribute` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `PayableKeyword` of node `Expression` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `ReceiveFunctionDefinition` of node `ContractMember` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `StructDefinition` of node `SourceUnitMember` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `TryStatement` of node `Statement` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `VirtualKeyword` of node `ConstructorAttribute` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `VirtualKeyword` of node `FunctionAttribute` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `VirtualKeyword` of node `ModifierAttribute` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `YulLeaveStatement` of node `YulStatement` is introduced.
+0.6.0,Children,ForwardsIncompatible,Child `abstract_keyword` of node `ContractDefinition` is introduced.
+0.6.0,Children,BackwardsIncompatible,Child `PureKeyword` of node `UnnamedFunctionAttribute` is deprecated.
+0.6.0,Children,BackwardsIncompatible,Child `UnnamedFunctionDefinition` of node `ContractMember` is deprecated.
+0.6.0,Children,BackwardsIncompatible,Child `ViewKeyword` of node `UnnamedFunctionAttribute` is deprecated.
+0.6.0,Keywords,BackwardsIncompatible,"Keyword `FallbackKeyword` is now reserved, and can not be used as an identifier."
+0.6.0,Keywords,BackwardsIncompatible,"Keyword `ReceiveKeyword` is now reserved, and can not be used as an identifier."
+0.6.0,Keywords,BackwardsIncompatible,"Keyword `VirtualKeyword` is now reserved, and can not be used as an identifier."
+0.6.0,Keywords,BackwardsIncompatible,"Keyword `YulFallbackKeyword` is now reserved, and can not be used as an identifier."
+0.6.0,Keywords,BackwardsIncompatible,"Keyword `YulReceiveKeyword` is now reserved, and can not be used as an identifier."
+0.6.0,Keywords,BackwardsIncompatible,"Keyword `YulVirtualKeyword` is now reserved, and can not be used as an identifier."
+0.6.0,Builtins,ForwardsIncompatible,Builtin Type Function `push(%ValueType element)` of type `%Array` is introduced.
+0.6.0,Builtins,ForwardsIncompatible,Builtin Type Function `push() returns %ValueType` of type `%Array` is introduced.
+0.6.0,Builtins,ForwardsIncompatible,Builtin Type `Error` is introduced.
+0.6.0,Builtins,ForwardsIncompatible,Builtin Type `Panic` is introduced.
+0.6.0,Builtins,BackwardsIncompatible,Builtin Type Function `push(%ValueType element) returns uint` of type `%Array` is deprecated.
+0.6.2,Nodes,ForwardsIncompatible,Keyword `YulFalseKeyword` is introduced.
+0.6.2,Nodes,ForwardsIncompatible,Keyword `YulTrueKeyword` is introduced.
+0.6.2,Nodes,ForwardsIncompatible,Nonterminal `CallOptions` is introduced.
+0.6.2,Nodes,ForwardsIncompatible,Operator `CallOptionsExpression` is introduced.
+0.6.2,Children,ForwardsIncompatible,Child `YulFalseKeyword` of node `YulLiteral` is introduced.
+0.6.2,Children,ForwardsIncompatible,Child `YulTrueKeyword` of node `YulLiteral` is introduced.
+0.6.2,Builtins,ForwardsIncompatible,Builtin Type `%CallOptions` is introduced.
+0.6.5,Nodes,ForwardsIncompatible,Keyword `ImmutableKeyword` is introduced.
+0.6.5,Children,ForwardsIncompatible,Child `ImmutableKeyword` of node `StateVariableAttribute` is introduced.
+0.6.5,Keywords,ForwardsIncompatible,"Keyword `YulVarKeyword` is now unreserved, and can be used as an identifier."
+0.6.7,Children,BackwardsIncompatible,Child `OverrideKeyword` of node `ConstructorAttribute` is deprecated.
+0.6.7,Children,BackwardsIncompatible,Child `VirtualKeyword` of node `ConstructorAttribute` is deprecated.
+0.6.7,Builtins,ForwardsIncompatible,Builtin Field `bytes4 interfaceId` of type `%ContractTypeType` is introduced.
+0.6.7,Builtins,ForwardsIncompatible,Builtin Field `bytes4 interfaceId` of type `%InterfaceTypeType` is introduced.
+0.6.8,Keywords,ForwardsIncompatible,"Keyword `YulInKeyword` is now unreserved, and can be used as an identifier."
+0.6.8,Builtins,ForwardsIncompatible,Builtin Field `int max` of type `%IntTypeType` is introduced.
+0.6.8,Builtins,ForwardsIncompatible,Builtin Field `int min` of type `%IntTypeType` is introduced.
+0.6.11,Nodes,ForwardsIncompatible,Keyword `GweiKeyword` is introduced.
+0.6.11,Children,ForwardsIncompatible,Child `GweiKeyword` of node `NumberUnit` is introduced.
+0.7.0,Nodes,ForwardsIncompatible,Nonterminal `UnicodeStringLiteral` is introduced.
+0.7.0,Nodes,ForwardsIncompatible,Nonterminal `UnicodeStringLiterals` is introduced.
+0.7.0,Nodes,ForwardsIncompatible,Token `DoubleQuotedUnicodeStringLiteral` is introduced.
+0.7.0,Nodes,ForwardsIncompatible,Token `SingleQuotedUnicodeStringLiteral` is introduced.
+0.7.0,Nodes,BackwardsIncompatible,A variation of the token `DoubleQuotedStringLiteral` is deprecated.
+0.7.0,Nodes,BackwardsIncompatible,A variation of the token `SingleQuotedStringLiteral` is deprecated.
+0.7.0,Nodes,BackwardsIncompatible,A variation of the token `YulIdentifier` is deprecated.
+0.7.0,Nodes,BackwardsIncompatible,Keyword `FinneyKeyword` is deprecated.
+0.7.0,Nodes,BackwardsIncompatible,Keyword `SzaboKeyword` is deprecated.
+0.7.0,Children,ForwardsIncompatible,Child `UnicodeStringLiterals` of node `StringExpression` is introduced.
+0.7.0,Children,BackwardsIncompatible,Child `FinneyKeyword` of node `NumberUnit` is deprecated.
+0.7.0,Children,BackwardsIncompatible,Child `SzaboKeyword` of node `NumberUnit` is deprecated.
+0.7.0,Keywords,ForwardsIncompatible,"Keyword `FinneyKeyword` is now unreserved, and can be used as an identifier."
+0.7.0,Keywords,ForwardsIncompatible,"Keyword `SzaboKeyword` is now unreserved, and can be used as an identifier."
+0.7.0,Keywords,ForwardsIncompatible,"Keyword `YulFinneyKeyword` is now unreserved, and can be used as an identifier."
+0.7.0,Keywords,ForwardsIncompatible,"Keyword `YulSzaboKeyword` is now unreserved, and can be used as an identifier."
+0.7.0,Keywords,BackwardsIncompatible,"Keyword `GweiKeyword` is now reserved, and can not be used as an identifier."
+0.7.0,Keywords,BackwardsIncompatible,"Keyword `YulGweiKeyword` is now reserved, and can not be used as an identifier."
+0.7.0,Builtins,ForwardsIncompatible,Added new `.slot` and `.offset` properties to storage variables in Yul.
+0.7.0,Builtins,BackwardsIncompatible,Builtin Type Function `gas(uint amount) returns function()` of type `%ExternalFunction` is deprecated.
+0.7.0,Builtins,BackwardsIncompatible,Builtin Type Function `gas(uint amount) returns function()` of type `%Function` is deprecated.
+0.7.0,Builtins,BackwardsIncompatible,Builtin Type Function `value(uint amount) returns function()` of type `%ExternalFunction` is deprecated.
+0.7.0,Builtins,BackwardsIncompatible,Builtin Type Function `value(uint amount) returns function()` of type `%Function` is deprecated.
+0.7.0,Builtins,BackwardsIncompatible,Builtin Variable `uint now` is deprecated.
+0.7.0,Bindings,BackwardsIncompatible,Accessing slot/offset values for storage variable `foo` in Yul using `foo_slot` and `foo_offset` is deprecated.
+0.7.0,Bindings,BackwardsIncompatible,`using` directives in contracts no apply to sub-contracts.
+0.7.1,Children,ForwardsIncompatible,Child `FunctionDefinition` of node `SourceUnitMember` is introduced.
+0.7.1,Keywords,ForwardsIncompatible,"A variation of the keyword `YulFixedKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"A variation of the keyword `YulUfixedKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulAbstractKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulAfterKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulAliasKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulAnonymousKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulApplyKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulAsKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulAssemblyKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulAutoKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulBytesKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulCallDataKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulCatchKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulConstantKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulConstructorKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulContractKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulCopyOfKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulDaysKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulDefineKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulDeleteKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulDoKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulElseKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulEmitKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulEnumKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulEtherKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulEventKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulExternalKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulFallbackKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulFinalKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulGweiKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulHoursKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulImmutableKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulImplementsKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulImportKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulIndexedKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulInlineKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulIntKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulInterfaceKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulInternalKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulIsKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulLibraryKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulMacroKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulMappingKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulMatchKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulMemoryKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulMinutesKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulModifierKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulMutableKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulNewKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulNullKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulOfKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulOverrideKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulPartialKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulPayableKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulPragmaKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulPrivateKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulPromiseKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulPublicKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulPureKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulReceiveKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulReferenceKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulRelocatableKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulReturnsKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulSealedKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulSecondsKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulSizeOfKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulStaticKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulStorageKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulStringKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulStructKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulSupportsKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulThrowKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulTryKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulTypeDefKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulTypeKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulTypeOfKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulUintKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulUncheckedKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulUsingKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulViewKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulVirtualKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulWeeksKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulWeiKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulWhileKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,ForwardsIncompatible,"Keyword `YulYearsKeyword` is now unreserved, and can be used as an identifier."
+0.7.1,Keywords,BackwardsIncompatible,"Keyword `YulLeaveKeyword` is now reserved, and can not be used as an identifier."
+0.7.4,Nodes,ForwardsIncompatible,Nonterminal `ConstantDefinition` is introduced.
+0.7.4,Children,ForwardsIncompatible,Child `ConstantDefinition` of node `SourceUnitMember` is introduced.
+0.8.0,Nodes,ForwardsIncompatible,A variation of the operator `ExponentiationExpression` is introduced.
+0.8.0,Nodes,ForwardsIncompatible,Keyword `UncheckedKeyword` is introduced.
+0.8.0,Nodes,ForwardsIncompatible,Nonterminal `UncheckedBlock` is introduced.
+0.8.0,Nodes,BackwardsIncompatible,A variation of the operator `ExponentiationExpression` is deprecated.
+0.8.0,Nodes,BackwardsIncompatible,Keyword `ByteKeyword` is deprecated.
+0.8.0,Children,ForwardsIncompatible,Child `UncheckedBlock` of node `Statement` is introduced.
+0.8.0,Children,BackwardsIncompatible,Child `ByteKeyword` of node `ElementaryType` is deprecated.
+0.8.0,Keywords,BackwardsIncompatible,"Keyword `SuperKeyword` is now reserved, and can not be used as an identifier."
+0.8.0,Keywords,BackwardsIncompatible,"Keyword `ThisKeyword` is now reserved, and can not be used as an identifier."
+0.8.0,Keywords,BackwardsIncompatible,"Keyword `YulSuperKeyword` is now reserved, and can not be used as an identifier."
+0.8.0,Keywords,BackwardsIncompatible,"Keyword `YulThisKeyword` is now reserved, and can not be used as an identifier."
+0.8.0,Builtins,ForwardsIncompatible,Builtin Field `address origin` of type `%TransactionType` is introduced.
+0.8.0,Builtins,ForwardsIncompatible,Builtin Field `address sender` of type `%MessageType` is introduced.
+0.8.0,Builtins,ForwardsIncompatible,Builtin Field `bytes code` of type `address payable` is introduced.
+0.8.0,Builtins,ForwardsIncompatible,Builtin Field `bytes code` of type `address` is introduced.
+0.8.0,Builtins,ForwardsIncompatible,Builtin Field `bytes32 codehash` of type `address payable` is introduced.
+0.8.0,Builtins,ForwardsIncompatible,Builtin Field `bytes32 codehash` of type `address` is introduced.
+0.8.0,Builtins,ForwardsIncompatible,Builtin Field `uint chainid` of type `%BlockType` is introduced.
+0.8.0,Builtins,BackwardsIncompatible,Builtin Field `address payable origin` of type `%TransactionType` is deprecated.
+0.8.0,Builtins,BackwardsIncompatible,Builtin Field `address payable sender` of type `%MessageType` is deprecated.
+0.8.0,Builtins,BackwardsIncompatible,Builtin Function `log0` is deprecated.
+0.8.0,Builtins,BackwardsIncompatible,Builtin Function `log1` is deprecated.
+0.8.0,Builtins,BackwardsIncompatible,Builtin Function `log2` is deprecated.
+0.8.0,Builtins,BackwardsIncompatible,Builtin Function `log3` is deprecated.
+0.8.0,Builtins,BackwardsIncompatible,Builtin Function `log4` is deprecated.
+0.8.2,Builtins,ForwardsIncompatible,Builtin Field `address address` of type `%ExternalFunction` is introduced.
+0.8.4,Nodes,ForwardsIncompatible,Keyword `ErrorKeyword` is introduced.
+0.8.4,Nodes,ForwardsIncompatible,Keyword `RevertKeyword` is introduced.
+0.8.4,Nodes,ForwardsIncompatible,Nonterminal `ErrorDefinition` is introduced.
+0.8.4,Nodes,ForwardsIncompatible,Nonterminal `ErrorParameter` is introduced.
+0.8.4,Nodes,ForwardsIncompatible,Nonterminal `ErrorParametersDeclaration` is introduced.
+0.8.4,Nodes,ForwardsIncompatible,Nonterminal `ErrorParameters` is introduced.
+0.8.4,Nodes,ForwardsIncompatible,Nonterminal `RevertStatement` is introduced.
+0.8.4,Children,ForwardsIncompatible,Child `ErrorDefinition` of node `ContractMember` is introduced.
+0.8.4,Children,ForwardsIncompatible,Child `ErrorDefinition` of node `SourceUnitMember` is introduced.
+0.8.4,Children,ForwardsIncompatible,Child `RevertStatement` of node `Statement` is introduced.
+0.8.4,Builtins,ForwardsIncompatible,Builtin Type `%ErrorType` is introduced.
+0.8.7,Builtins,ForwardsIncompatible,Builtin Field `uint basefee` of type `%BlockType` is introduced.
+0.8.7,Builtins,ForwardsIncompatible,Builtin Function `basefee` is introduced.
+0.8.8,Nodes,ForwardsIncompatible,Nonterminal `UserDefinedValueTypeDefinition` is introduced.
+0.8.8,Children,ForwardsIncompatible,Child `UserDefinedValueTypeDefinition` of node `ContractMember` is introduced.
+0.8.8,Children,ForwardsIncompatible,Child `UserDefinedValueTypeDefinition` of node `SourceUnitMember` is introduced.
+0.8.8,Builtins,ForwardsIncompatible,Builtin Type `%UserDefinedValueType` is introduced.
+0.8.8,Builtins,ForwardsIncompatible,`type(Enum)` expressions now have members `min` and `max`.
+0.8.11,Builtins,ForwardsIncompatible,"Builtin Type Function `encodeCall(function() functionPointer, %Any[] functionArgumentsTuple) returns bytes memory` of type `%AbiType` is introduced."
+0.8.13,Nodes,ForwardsIncompatible,Keyword `GlobalKeyword` is introduced.
+0.8.13,Nodes,ForwardsIncompatible,Nonterminal `AssemblyFlagsDeclaration` is introduced.
+0.8.13,Nodes,ForwardsIncompatible,Nonterminal `AssemblyFlags` is introduced.
+0.8.13,Nodes,ForwardsIncompatible,Nonterminal `UsingDeconstructionSymbol` is introduced.
+0.8.13,Nodes,ForwardsIncompatible,Nonterminal `UsingDeconstructionSymbols` is introduced.
+0.8.13,Nodes,ForwardsIncompatible,Nonterminal `UsingDeconstruction` is introduced.
+0.8.13,Children,ForwardsIncompatible,Child `UsingDeconstruction` of node `UsingClause` is introduced.
+0.8.13,Children,ForwardsIncompatible,Child `UsingDirective` of node `SourceUnitMember` is introduced.
+0.8.13,Children,ForwardsIncompatible,Child `flags` of node `AssemblyStatement` is introduced.
+0.8.13,Children,ForwardsIncompatible,Child `global_keyword` of node `UsingDirective` is introduced.
+0.8.18,Children,ForwardsIncompatible,Child `name` of node `MappingKey` is introduced.
+0.8.18,Children,ForwardsIncompatible,Child `name` of node `MappingValue` is introduced.
+0.8.18,Builtins,ForwardsIncompatible,Builtin Field `uint prevrandao` of type `%BlockType` is introduced.
+0.8.18,Builtins,ForwardsIncompatible,Builtin Function `prevrandao` is introduced.
+0.8.18,Builtins,BackwardsIncompatible,Builtin Function `difficulty` is deprecated.
+0.8.19,Nodes,ForwardsIncompatible,Nonterminal `UsingAlias` is introduced.
+0.8.19,Nodes,ForwardsIncompatible,Nonterminal `UsingOperator` is introduced.
+0.8.19,Children,ForwardsIncompatible,Child `alias` of node `UsingDeconstructionSymbol` is introduced.
+0.8.22,Children,ForwardsIncompatible,Child `EventDefinition` of node `SourceUnitMember` is introduced.
+0.8.24,Builtins,ForwardsIncompatible,Builtin Field `uint blobbasefee` of type `%BlockType` is introduced.
+0.8.24,Builtins,ForwardsIncompatible,Builtin Function `blobbasefee` is introduced.
+0.8.24,Builtins,ForwardsIncompatible,Builtin Function `blobhash` is introduced.
+0.8.24,Builtins,ForwardsIncompatible,Builtin Function `blobhash` is introduced.
+0.8.24,Builtins,ForwardsIncompatible,Builtin Function `mcopy` is introduced.
+0.8.24,Builtins,ForwardsIncompatible,Builtin Function `tload` is introduced.
+0.8.24,Builtins,ForwardsIncompatible,Builtin Function `tstore` is introduced.
+0.8.26,Builtins,ForwardsIncompatible,Builtin Function `require` is introduced.
+0.8.27,Nodes,ForwardsIncompatible,Keyword `TransientKeyword` is introduced.
+0.8.27,Children,ForwardsIncompatible,Child `TransientKeyword` of node `StateVariableAttribute` is introduced.
+0.8.29,Nodes,ForwardsIncompatible,Keyword `AtKeyword` is introduced.
+0.8.29,Nodes,ForwardsIncompatible,Keyword `LayoutKeyword` is introduced.
+0.8.29,Nodes,ForwardsIncompatible,Nonterminal `StorageLayoutSpecifier` is introduced.
+0.8.29,Children,ForwardsIncompatible,Child `StorageLayoutSpecifier` of node `ContractSpecifier` is introduced.
