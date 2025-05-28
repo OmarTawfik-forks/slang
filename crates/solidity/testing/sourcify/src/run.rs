@@ -1,3 +1,5 @@
+use std::cmp::max;
+
 use anyhow::{bail, Result};
 use rayon::iter::{ParallelBridge, ParallelIterator};
 use slang_solidity::compilation::CompilationUnit;
@@ -63,6 +65,25 @@ fn run_test(contract: &Contract, events: &Events, opts: &TestOptions) {
     let test_outcome = match contract.create_compilation_unit() {
         Ok(unit) => {
             let mut test_outcome = run_parser_check(contract, &unit, events);
+
+            for file in contract.create_compilation_unit().unwrap().files() {
+                let mut max_depth = 0;
+                let mut cursor = file.create_tree_cursor();
+                while cursor.go_to_next() {
+                    max_depth = max(max_depth, cursor.depth());
+                }
+                events.max_depth(
+                    format!(
+                        "'{}' -> '{}'",
+                        contract.name,
+                        contract
+                            .import_resolver
+                            .get_virtual_path(file.id())
+                            .unwrap()
+                    ),
+                    max_depth,
+                );
+            }
 
             if opts.check_infer_version && test_outcome == TestOutcome::Passed {
                 test_outcome = run_version_inference_check(contract, &unit, events);

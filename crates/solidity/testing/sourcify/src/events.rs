@@ -1,4 +1,4 @@
-use std::cmp;
+use std::cmp::{self, max};
 
 use console::Color;
 use indicatif::ProgressBar;
@@ -29,6 +29,8 @@ pub struct Events {
     failed: ProgressBar,
     unresolved: ProgressBar,
     incompatible: ProgressBar,
+
+    max_depth: ProgressBar,
 }
 
 impl Events {
@@ -51,6 +53,7 @@ impl Events {
         let failed = reporter.add_counter("❌ Failed", Color::Red, 0);
         let unresolved = reporter.add_counter("❔ Unresolved", Color::White, 0);
         let incompatible = reporter.add_counter("❕ Incompatible", Color::White, 0);
+        let max_depth = reporter.add_counter("🤿 Max Depth", Color::White, 0);
 
         reporter.add_blank();
 
@@ -66,6 +69,7 @@ impl Events {
             failed,
             unresolved,
             incompatible,
+            max_depth,
         }
     }
 
@@ -139,6 +143,22 @@ impl Events {
         self.test_error(message);
     }
 
+    pub fn max_depth(&self, file_id: impl AsRef<str>, max_depth: usize) {
+        let file_id = file_id.as_ref();
+        let max_depth = max_depth as u64;
+
+        if max_depth <= self.max_depth.position() {
+            return;
+        }
+
+        self.reporter
+            .println(format!("Increased max depth ({max_depth}) -> {file_id}"));
+
+        self.max_depth.update(|state| {
+            state.set_pos(max(state.pos(), max_depth));
+        });
+    }
+
     pub fn bindings_error(&self, message: impl AsRef<str>) {
         self.test_error(message);
     }
@@ -155,6 +175,7 @@ impl Events {
             unresolved: self.unresolved.position(),
             incompatible: self.incompatible.position(),
             elapsed: self.all_archives.elapsed(),
+            max_depth: self.max_depth.position(),
         }
     }
 }

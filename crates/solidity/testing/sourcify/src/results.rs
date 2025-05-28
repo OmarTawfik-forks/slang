@@ -1,3 +1,4 @@
+use std::cmp::max;
 use std::collections::BTreeMap;
 use std::time::Duration;
 
@@ -13,6 +14,7 @@ pub struct ShardResults {
     pub unresolved: u64,
     pub incompatible: u64,
     pub elapsed: Duration,
+    pub max_depth: u64,
 }
 
 #[derive(Debug)]
@@ -71,8 +73,8 @@ impl<'de> Visitor<'de> for AllResultsVisitor {
 
 pub fn display_all_results(all_results: &AllResults) {
     let mut totals = ShardResults::default();
-    println!("Shard ID | Source files |       Passed |       Failed | Incompatible |    Not found | Elapsed");
-    println!("------------------------------------------------------------------------------------------------");
+    println!("Shard ID | Source files |       Passed |       Failed | Incompatible |    Not found |      Elapsed | Max Depth");
+    println!("--------------------------------------------------------------------------------------------------------------");
     for (shard_index, shard_results) in &all_results.shards {
         println!(
             "{shard_index:<8} | \
@@ -81,13 +83,15 @@ pub fn display_all_results(all_results: &AllResults) {
              {failed:>12} | \
              {unresolved:>12} | \
              {incompatible:>12} | \
-             {elapsed}",
-            source_files = format!("{}", HumanCount(shard_results.source_files)),
-            passed = format!("{}", HumanCount(shard_results.passed)),
-            failed = format!("{}", HumanCount(shard_results.failed)),
-            unresolved = format!("{}", HumanCount(shard_results.unresolved)),
-            incompatible = format!("{}", HumanCount(shard_results.incompatible)),
+             {elapsed:>12} | \
+             {max_depth}",
+            source_files = HumanCount(shard_results.source_files),
+            passed = HumanCount(shard_results.passed),
+            failed = HumanCount(shard_results.failed),
+            unresolved = HumanCount(shard_results.unresolved),
+            incompatible = HumanCount(shard_results.incompatible),
             elapsed = FormattedDuration(shard_results.elapsed),
+            max_depth = HumanCount(shard_results.max_depth),
         );
         totals.source_files += shard_results.source_files;
         totals.passed += shard_results.passed;
@@ -95,6 +99,7 @@ pub fn display_all_results(all_results: &AllResults) {
         totals.unresolved += shard_results.unresolved;
         totals.incompatible += shard_results.incompatible;
         totals.elapsed += shard_results.elapsed;
+        totals.max_depth = max(totals.max_depth, shard_results.max_depth);
     }
     println!("------------------------------------------------------------------------------------------------");
     println!(
@@ -104,12 +109,14 @@ pub fn display_all_results(all_results: &AllResults) {
          {failed:>12} | \
          {unresolved:>12} | \
          {incompatible:>12} | \
-         {elapsed}",
-        source_files = format!("{}", HumanCount(totals.source_files)),
-        passed = format!("{}", HumanCount(totals.passed)),
-        failed = format!("{}", HumanCount(totals.failed)),
-        unresolved = format!("{}", HumanCount(totals.unresolved)),
-        incompatible = format!("{}", HumanCount(totals.incompatible)),
+         {elapsed:>12} | \
+         {max_depth}",
+        source_files = HumanCount(totals.source_files),
+        passed = HumanCount(totals.passed),
+        failed = HumanCount(totals.failed),
+        unresolved = HumanCount(totals.unresolved),
+        incompatible = HumanCount(totals.incompatible),
         elapsed = FormattedDuration(totals.elapsed),
+        max_depth = HumanCount(totals.max_depth),
     );
 }
