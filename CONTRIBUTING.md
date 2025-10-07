@@ -19,7 +19,7 @@ Currently, the repository has the following projects:
             - `generator/`: Generates Rust source code from language definitions
             - `cargo/crate`: Rust crate runtime code which gets copied over into generated language code.
             - `cargo/wasm`: WASM bindings and runtime.
-            - `language/definition`: Building blocks for how languages can be defined
+    - `language/`: Building blocks for how languages can be defined
     - `metaslang/`:
         - `cst/`: A generic library for building, navigating and querying concrete syntax trees
         - `bindings/`: Computes semantic language bindings from parsed source code

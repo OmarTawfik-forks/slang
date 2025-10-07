@@ -1,8 +1,8 @@
 use anyhow::Result;
-use codegen_language_definition::model::Language;
 use codegen_runtime_generator::ir::{IrModel, ModelWithBuilder, ModelWithTransformer};
 use infra_utils::cargo::CargoWorkspace;
 use infra_utils::codegen::{CodegenFileSystem, CodegenRuntime};
+use language_definition::model::Language;
 
 pub fn generate_passes(
     fs: &mut CodegenFileSystem,
