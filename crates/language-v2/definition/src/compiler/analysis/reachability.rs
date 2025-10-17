@@ -3,7 +3,7 @@ use std::rc::Rc;
 
 use crate::compiler::analysis::Analysis;
 use crate::compiler::version_set::VersionSet;
-use crate::model::{Identifier, SpannedTriviaParser};
+use crate::model::{Identifier, SpannedItem, SpannedTriviaParser};
 
 pub(crate) fn analyze_reachability(analysis: &mut Analysis) {
     check_unreachabable_items(analysis);
@@ -14,6 +14,24 @@ fn check_unused_versions(analysis: &mut Analysis) {
     for (name, metadata) in &analysis.metadata {
         if name == &*analysis.language.root_item {
             continue;
+        }
+
+        match metadata.item {
+            SpannedItem::Struct { .. }
+            | SpannedItem::Enum { .. }
+            | SpannedItem::Repeated { .. }
+            | SpannedItem::Separated { .. }
+            | SpannedItem::Precedence { .. } => {
+                // check below
+            }
+
+            SpannedItem::Trivia { .. }
+            | SpannedItem::Keyword { .. }
+            | SpannedItem::Token { .. }
+            | SpannedItem::Fragment { .. } => {
+                // Skip terminals, as they are not versioned:
+                continue;
+            }
         }
 
         let unused_in = metadata.defined_in.difference(&metadata.used_in);
@@ -45,6 +63,27 @@ fn check_unreachabable_items(analysis: &mut Analysis) {
     }
 
     for metadata in analysis.metadata.values() {
+        match metadata.item {
+            SpannedItem::Struct { .. }
+            | SpannedItem::Enum { .. }
+            | SpannedItem::Repeated { .. }
+            | SpannedItem::Separated { .. }
+            | SpannedItem::Precedence { .. } => {
+                // check below
+            }
+
+            SpannedItem::Trivia { .. }
+            | SpannedItem::Token { .. }
+            | SpannedItem::Fragment { .. } => {
+                // check below
+            }
+
+            SpannedItem::Keyword { .. } => {
+                // Skip keywords, as they can just exist to be reserved against identifiers:
+                continue;
+            }
+        }
+
         if !metadata.defined_in.is_empty() && !visited.contains(&*metadata.name) {
             analysis
                 .errors

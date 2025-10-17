@@ -87,19 +87,14 @@ impl Language {
                         add_spec(&prim.enabled);
                     }
                 }
+                Item::Trivia { .. } => {}
                 Item::Keyword { item } => {
                     for definition in &item.definitions {
-                        add_spec(&definition.enabled);
                         add_spec(&definition.reserved);
                     }
                 }
-                Item::Token { item } => {
-                    for definition in &item.definitions {
-                        add_spec(&definition.enabled);
-                    }
-                }
-                Item::Fragment { item } => add_spec(&item.enabled),
-                Item::Trivia { .. } => {}
+                Item::Token { .. } => {}
+                Item::Fragment { .. } => {}
             }
         }
 

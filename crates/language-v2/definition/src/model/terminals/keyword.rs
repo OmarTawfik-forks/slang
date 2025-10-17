@@ -24,9 +24,6 @@ impl KeywordItem {
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 #[derive_spanned_type(Clone, Debug, ParseInputTokens, WriteOutputTokens)]
 pub struct KeywordDefinition {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub enabled: Option<VersionSpecifier>,
-
     /// When the keyword is reserved, i.e. can't be used in other position (e.g. as a name)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reserved: Option<VersionSpecifier>,
