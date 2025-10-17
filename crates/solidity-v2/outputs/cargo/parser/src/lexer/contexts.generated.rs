@@ -1,16 +1,83 @@
 // This file is generated automatically by infrastructure scripts. Please don't edit by hand.
 
-use logos::Logos;
+use std::ops::Range;
+
+use logos::{Lexer, Logos};
 use semver::Version;
 
 use crate::lexer::lexeme_kind::LexemeKind;
 
-pub struct LexerExtras {
-    pub language_version: Version,
+#[derive(Clone, Copy, Debug)]
+pub enum ContextKind {
+    Default,
+    Pragma,
+    Yul,
+}
+
+pub struct ContextExtras {
+    language_version: Version,
+}
+
+pub enum ContextWrapper<'source> {
+    Default(Lexer<'source, DefaultContext>),
+    Pragma(Lexer<'source, PragmaContext>),
+    Yul(Lexer<'source, YulContext>),
+}
+
+impl<'source> ContextWrapper<'source> {
+    pub fn new(kind: ContextKind, source: &'source str, extras: ContextExtras) -> Self {
+        match kind {
+            ContextKind::Default => {
+                Self::Default(DefaultContext::lexer_with_extras(source, extras))
+            }
+            ContextKind::Pragma => Self::Pragma(PragmaContext::lexer_with_extras(source, extras)),
+            ContextKind::Yul => Self::Yul(YulContext::lexer_with_extras(source, extras)),
+        }
+    }
+
+    pub fn morph(self, kind: ContextKind) -> Self {
+        match self {
+            Self::Default(lexer) => match kind {
+                ContextKind::Default => Self::Default(lexer.morph()),
+                ContextKind::Pragma => Self::Pragma(lexer.morph()),
+                ContextKind::Yul => Self::Yul(lexer.morph()),
+            },
+            Self::Pragma(lexer) => match kind {
+                ContextKind::Default => Self::Default(lexer.morph()),
+                ContextKind::Pragma => Self::Pragma(lexer.morph()),
+                ContextKind::Yul => Self::Yul(lexer.morph()),
+            },
+            Self::Yul(lexer) => match kind {
+                ContextKind::Default => Self::Default(lexer.morph()),
+                ContextKind::Pragma => Self::Pragma(lexer.morph()),
+                ContextKind::Yul => Self::Yul(lexer.morph()),
+            },
+        }
+    }
+
+    pub fn next(&mut self) -> Option<(Result<LexemeKind, ()>, Range<usize>)> {
+        match self {
+            Self::Default(lexer) => match lexer.next() {
+                Some(Ok(DefaultContext::Lexeme(kind))) => Some((Ok(kind), lexer.span())),
+                Some(Err(())) => Some((Err(()), lexer.span())),
+                None => None,
+            },
+            Self::Pragma(lexer) => match lexer.next() {
+                Some(Ok(PragmaContext::Lexeme(kind))) => Some((Ok(kind), lexer.span())),
+                Some(Err(())) => Some((Err(()), lexer.span())),
+                None => None,
+            },
+            Self::Yul(lexer) => match lexer.next() {
+                Some(Ok(YulContext::Lexeme(kind))) => Some((Ok(kind), lexer.span())),
+                Some(Err(())) => Some((Err(()), lexer.span())),
+                None => None,
+            },
+        }
+    }
 }
 
 #[derive(Logos, Debug)]
-#[logos(extras = LexerExtras)]
+#[logos(extras = ContextExtras)]
 pub enum DefaultContext {
     #[regex(r#"abicoder"#, |_| { LexemeKind::AbicoderKeyword_Unreserved }, priority = 3000001)]
     #[regex(r#"v1"#, |_| { LexemeKind::AbicoderV1Keyword_Unreserved }, priority = 3000002)]
@@ -213,7 +280,7 @@ pub enum DefaultContext {
 }
 
 #[derive(Logos, Debug)]
-#[logos(extras = LexerExtras)]
+#[logos(extras = ContextExtras)]
 pub enum PragmaContext {
     #[regex(r#"(([0-9]|x|X|\*)+)"#, |_| { LexemeKind::VersionSpecifier }, priority = 2000001)]
     #[regex(r#"'(([0-9]|x|X|\*)+)(\.(([0-9]|x|X|\*)+))*'"#, |_| { LexemeKind::SingleQuotedVersionLiteral }, priority = 2000002)]
@@ -228,7 +295,7 @@ pub enum PragmaContext {
 }
 
 #[derive(Logos, Debug)]
-#[logos(extras = LexerExtras)]
+#[logos(extras = ContextExtras)]
 pub enum YulContext {
     #[regex(r#"((_|\$|[a-z]|[A-Z]))(((((_|\$|[a-z]|[A-Z]))|[0-9]))|\.)*"#, |_| { LexemeKind::YulIdentifier }, priority = 2000001)]
     #[regex(r#"0|([1-9][0-9]*)"#, |_| { LexemeKind::YulDecimalLiteral }, priority = 2000002)]

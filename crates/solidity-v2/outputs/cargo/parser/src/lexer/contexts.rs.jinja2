@@ -1,15 +1,64 @@
-use logos::Logos;
+use std::ops::Range;
+
+use logos::{Lexer, Logos};
 use semver::Version;
 
 use crate::lexer::lexeme_kind::LexemeKind;
 
-pub struct LexerExtras {
-  pub language_version: Version,
+#[derive(Clone, Copy, Debug)]
+pub enum ContextKind {
+    {%- for context in model.parser.lexer.contexts %}
+        {{ context.name }},
+    {%- endfor -%}
+}
+
+pub struct ContextExtras {
+    language_version: Version,
+}
+
+pub enum ContextWrapper<'source> {
+    {%- for context in model.parser.lexer.contexts %}
+        {{ context.name }}(Lexer<'source, {{ context.name }}Context>),
+    {%- endfor -%}
+}
+
+impl<'source> ContextWrapper<'source> {
+    pub fn new(kind: ContextKind, source: &'source str, extras: ContextExtras) -> Self {
+        match kind {
+            {% for context in model.parser.lexer.contexts %}
+                ContextKind::{{ context.name }} => Self::{{ context.name }}({{ context.name }}Context::lexer_with_extras(source, extras)),
+            {%- endfor -%}
+        }
+    }
+
+    pub fn morph(self, kind: ContextKind) -> Self {
+        match self {
+            {%- for context in model.parser.lexer.contexts %}
+                Self::{{ context.name }}(lexer) => match kind {
+                    {%- for context in model.parser.lexer.contexts %}
+                        ContextKind::{{ context.name }} => Self::{{ context.name }}(lexer.morph()),
+                    {%- endfor -%}
+                },
+            {%- endfor -%}
+        }
+    }
+
+    pub fn next(&mut self) -> Option<(Result<LexemeKind, ()>, Range<usize>)> {
+        match self {
+            {%- for context in model.parser.lexer.contexts %}
+                Self::{{ context.name }}(lexer) => match lexer.next() {
+                    Some(Ok({{ context.name }}Context::Lexeme(kind))) => Some((Ok(kind), lexer.span())),
+                    Some(Err(())) => Some((Err(()), lexer.span())),
+                    None => None,
+                },
+            {%- endfor -%}
+        }
+    }
 }
 
 {% for context in model.parser.lexer.contexts %}
     #[derive(Logos, Debug)]
-    #[logos(extras = LexerExtras)]
+    #[logos(extras = ContextExtras)]
     pub enum {{ context.name }}Context {
         {% for lexeme in context.lexemes -%}
             {%- if lexeme.type == "Trivia" -%}
