@@ -1,0 +1,7 @@
+#[derive(Debug)]
+#[allow(non_camel_case_types)]
+pub enum LexemeKind {
+    {% for kind in model.parser.lexer.lexeme_kinds -%}
+        {{ kind }},
+    {% endfor %}
+}

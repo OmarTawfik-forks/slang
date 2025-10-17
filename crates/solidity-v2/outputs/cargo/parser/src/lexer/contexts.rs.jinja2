@@ -1,0 +1,44 @@
+use logos::Logos;
+use semver::Version;
+
+use crate::lexer::lexeme_kind::LexemeKind;
+
+pub struct LexerExtras {
+  pub language_version: Version,
+}
+
+{% for context in model.parser.lexer.contexts %}
+    #[derive(Logos, Debug)]
+    #[logos(extras = LexerExtras)]
+    pub enum {{ context.name }}Context {
+        {% for lexeme in context.lexemes -%}
+            {%- if lexeme.type == "Trivia" -%}
+                #[regex(r#"{{ lexeme.regex }}"#, |_| { LexemeKind::{{ lexeme.kind }} }, priority = {{ 1000000 + loop.index }})]
+            {%- elif lexeme.type == "Token" -%}
+                #[regex(r#"{{ lexeme.regex }}"#, |_| { LexemeKind::{{ lexeme.kind }} }, priority = {{ 2000000 + loop.index }})]
+            {%- elif lexeme.type == "Keyword" -%}
+                #[regex(r#"{{ lexeme.regex }}"#,
+                    {{- " " -}}
+                    {%- if lexeme.reserved.type -%}
+                        {%- if lexeme.reserved.type == "Never" -%}
+                            |_| { LexemeKind::{{ lexeme.kind }}_Unreserved }
+                        {%- elif lexeme.reserved.type == "From" -%}
+                            |lexer| { if Version::parse("{{ lexeme.reserved.from }}").unwrap() <= lexer.extras.language_version { LexemeKind::{{ lexeme.kind }}_Reserved } else { LexemeKind::{{ lexeme.kind }}_Unreserved } }
+                        {%- elif lexeme.reserved.type == "Till" -%}
+                            |lexer| { if lexer.extras.language_version < Version::parse("{{ lexeme.reserved.till }}").unwrap() { LexemeKind::{{ lexeme.kind }}_Reserved } else { LexemeKind::{{ lexeme.kind }}_Unreserved } }
+                        {%- elif lexeme.reserved.type == "Range" -%}
+                            |lexer| { if Version::parse("{{ lexeme.reserved.from }}").unwrap() <= lexer.extras.language_version && lexer.extras.language_version < Version::parse("{{ lexeme.reserved.till }}").unwrap() { LexemeKind::{{ lexeme.kind }}_Reserved } else { LexemeKind::{{ lexeme.kind }}_Unreserved } }
+                        {%- else -%}
+                            {{ throw(message = "Unrecognized lexeme.reserved type: " ~ lexeme.reserved.type) }}
+                        {%- endif -%}
+                    {%- else -%}
+                        |_| { LexemeKind::{{ lexeme.kind }}_Reserved }
+                    {%- endif -%}
+                , priority = {{ 3000000 + loop.index }})]
+            {%- else -%}
+                {{ throw(message = "Unrecognized lexeme type: " ~ lexeme.type) }}
+            {%- endif -%}
+        {%- endfor %}
+        Lexeme(LexemeKind),
+    }
+{% endfor %}

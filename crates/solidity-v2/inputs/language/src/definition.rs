@@ -410,17 +410,24 @@ language_v2_macros::compile!(Language(
                         ),
                         Trivia(
                             name = SingleLineComment,
-                            scanner = Sequence([Atom("//"), ZeroOrMore(Not(['\r', '\n']))])
+                            scanner = Sequence([
+                                Atom("//"),
+                                ZeroOrMore(Not(['\r', '\n']))
+                            ])
                         ),
                         Trivia(
                             name = MultiLineComment,
+                            // https://stackoverflow.com/a/36328890
                             scanner = Sequence([
                                 Atom("/*"),
-                                ZeroOrMore(Choice([
-                                    Not(['*']),
-                                    Sequence([OneOrMore(Atom("*")), Not(['/'])])
+                                ZeroOrMore(Not(['*'])),
+                                OneOrMore(Atom("*")),
+                                ZeroOrMore(Sequence([
+                                    Not(['/', '*']),
+                                    ZeroOrMore(Not(['*'])),
+                                    OneOrMore(Atom("*"))
                                 ])),
-                                Sequence([OneOrMore(Atom("*")), Atom("/")])
+                                Atom("/")
                             ])
                         ),
                         Trivia(
@@ -429,13 +436,17 @@ language_v2_macros::compile!(Language(
                         ),
                         Trivia(
                             name = MultiLineNatSpecComment,
+                            // https://stackoverflow.com/a/36328890
                             scanner = Sequence([
                                 Atom("/**"),
-                                ZeroOrMore(Choice([
-                                    Not(['*']),
-                                    Sequence([OneOrMore(Atom("*")), Not(['/'])])
+                                ZeroOrMore(Not(['*'])),
+                                OneOrMore(Atom("*")),
+                                ZeroOrMore(Sequence([
+                                    Not(['/', '*']),
+                                    ZeroOrMore(Not(['*'])),
+                                    OneOrMore(Atom("*"))
                                 ])),
-                                Sequence([OneOrMore(Atom("*")), Atom("/")])
+                                Atom("/")
                             ])
                         )
                     ]
