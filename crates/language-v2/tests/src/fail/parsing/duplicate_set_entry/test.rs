@@ -13,7 +13,7 @@ language_v2_macros::compile!(Language(
             title = "Topic One",
             items = [Token(
                 name = Bar,
-                definitions = [TokenDefinition(scanner = Atom("bar"))]
+                definitions = [TokenDefinition(Atom("bar"))]
             )]
         )]
     )],

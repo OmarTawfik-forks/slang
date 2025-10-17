@@ -220,21 +220,11 @@ fn calculate_defined_in(analysis: &mut Analysis, item: &SpannedItem) -> VersionS
         SpannedItem::Precedence { item } => {
             try_add_specifier(&item.enabled);
         }
-        SpannedItem::Trivia { item: _ } => {
+        SpannedItem::Trivia { .. }
+        | SpannedItem::Keyword { .. }
+        | SpannedItem::Token { .. }
+        | SpannedItem::Fragment { .. } => {
             try_add_specifier(&None);
-        }
-        SpannedItem::Keyword { item } => {
-            for definition in &item.definitions {
-                try_add_specifier(&definition.enabled);
-            }
-        }
-        SpannedItem::Token { item } => {
-            for definition in &item.definitions {
-                try_add_specifier(&definition.enabled);
-            }
-        }
-        SpannedItem::Fragment { item } => {
-            try_add_specifier(&item.enabled);
         }
     }
 

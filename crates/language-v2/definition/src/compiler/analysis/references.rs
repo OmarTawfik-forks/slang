@@ -306,13 +306,7 @@ fn check_keyword(analysis: &mut Analysis, item: &SpannedKeywordItem, enablement:
     check_reference(analysis, Some(name), identifier, enablement, &[Token]);
 
     for definition in definitions {
-        let SpannedKeywordDefinition {
-            enabled,
-            reserved,
-            value: _,
-        } = definition;
-
-        let _ = update_enablement(analysis, enablement, enabled.as_ref());
+        let SpannedKeywordDefinition { reserved, value: _ } = definition;
 
         if let Some(reserved) = reserved {
             check_version_specifier(analysis, reserved);
@@ -324,24 +318,16 @@ fn check_token(analysis: &mut Analysis, item: &SpannedTokenItem, enablement: &Ve
     let SpannedTokenItem { name, definitions } = item;
 
     for definition in definitions {
-        let SpannedTokenDefinition { enabled, scanner } = definition;
+        let SpannedTokenDefinition { scanner } = definition;
 
-        let enablement = update_enablement(analysis, enablement, enabled.as_ref());
-
-        check_scanner(analysis, Some(name), scanner, &enablement);
+        check_scanner(analysis, Some(name), scanner, enablement);
     }
 }
 
 fn check_fragment(analysis: &mut Analysis, item: &SpannedFragmentItem, enablement: &VersionSet) {
-    let SpannedFragmentItem {
-        name,
-        enabled,
-        scanner,
-    } = item;
+    let SpannedFragmentItem { name, scanner } = item;
 
-    let enablement = update_enablement(analysis, enablement, enabled.as_ref());
-
-    check_scanner(analysis, Some(name), scanner, &enablement);
+    check_scanner(analysis, Some(name), scanner, enablement);
 }
 
 fn check_scanner(

@@ -3,7 +3,7 @@
 language_v2_macros::compile!(Language(
     name = Foo,
     binding_rules_file = "bindings/rules.msgb",
-    root_item = Bar,
+    root_item = Foo,
     leading_trivia = Sequence([]),
     trailing_trivia = Sequence([]),
     versions = ["1.0.0", "2.0.0", "3.0.0"],
@@ -13,13 +13,11 @@ language_v2_macros::compile!(Language(
             title = "Topic One",
             items = [
                 Struct(
-                    name = Bar,
-                    fields = (field_1 = Optional(reference = Baz, enabled = From("2.0.0")))
+                    name = Foo,
+                    fields = (field_1 = Optional(reference = Bar, enabled = From("2.0.0")))
                 ),
-                Token(
-                    name = Baz,
-                    definitions = [TokenDefinition(scanner = Atom("baz"))]
-                )
+                Struct(name = Bar, fields = (field_1 = Optional(reference = Baz))),
+                Token(name = Baz, definitions = [TokenDefinition(Atom("baz"))])
             ]
         )]
     )],
