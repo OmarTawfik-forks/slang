@@ -1,7 +1,15 @@
 // This file is generated automatically by infrastructure scripts. Please don't edit by hand.
 
+use std::ops::Range;
+
 #[derive(Debug)]
-#[allow(non_camel_case_types)]
+pub struct Lexeme {
+    pub kind: LexemeKind,
+    pub range: Range<usize>,
+}
+
+#[derive(Debug)]
+#[allow(clippy::upper_case_acronyms, non_camel_case_types)]
 pub enum LexemeKind {
     UNRECOGNIZED,
 

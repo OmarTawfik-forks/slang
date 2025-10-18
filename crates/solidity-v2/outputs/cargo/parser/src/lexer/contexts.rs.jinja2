@@ -1,9 +1,7 @@
-use std::ops::Range;
-
 use logos::{Lexer, Logos};
 use semver::Version;
 
-use crate::lexer::lexeme_kind::LexemeKind;
+use crate::lexer::lexemes::{Lexeme, LexemeKind};
 
 #[derive(Clone, Copy, Debug)]
 pub enum ContextKind {
@@ -13,7 +11,7 @@ pub enum ContextKind {
 }
 
 pub struct ContextExtras {
-    language_version: Version,
+    pub language_version: Version,
 }
 
 pub enum ContextWrapper<'source> {
@@ -26,33 +24,44 @@ impl<'source> ContextWrapper<'source> {
     pub fn new(kind: ContextKind, source: &'source str, extras: ContextExtras) -> Self {
         match kind {
             {% for context in model.parser.lexer.contexts %}
-                ContextKind::{{ context.name }} => Self::{{ context.name }}({{ context.name }}Context::lexer_with_extras(source, extras)),
+                ContextKind::{{ context.name }} => Self::{{ context.name }}(
+                    {{ context.name }}Context::lexer_with_extras(source, extras)
+                ),
             {%- endfor -%}
         }
     }
 
-    pub fn morph(self, kind: ContextKind) -> Self {
+    #[must_use]
+    pub fn switch_kind(self, kind: ContextKind) -> Self {
         match self {
-            {%- for context in model.parser.lexer.contexts %}
-                Self::{{ context.name }}(lexer) => match kind {
-                    {%- for context in model.parser.lexer.contexts %}
-                        ContextKind::{{ context.name }} => Self::{{ context.name }}(lexer.morph()),
+            {%- for old_context in model.parser.lexer.contexts %}
+                Self::{{ old_context.name }}(lexer) => match kind {
+                    {%- for new_context in model.parser.lexer.contexts %}
+                        ContextKind::{{ new_context.name }} => {
+                            {%- if old_context.name == new_context.name -%}
+                                Self::{{ new_context.name }}(lexer)
+                            {%- else -%}
+                                Self::{{ new_context.name }}(lexer.morph())
+                            {%- endif -%}
+                        },
                     {%- endfor -%}
                 },
             {%- endfor -%}
         }
     }
 
-    pub fn next(&mut self) -> Option<(Result<LexemeKind, ()>, Range<usize>)> {
-        match self {
+    pub fn next_lexeme(&mut self) -> Option<Lexeme> {
+        let (kind, range) = match self {
             {%- for context in model.parser.lexer.contexts %}
                 Self::{{ context.name }}(lexer) => match lexer.next() {
-                    Some(Ok({{ context.name }}Context::Lexeme(kind))) => Some((Ok(kind), lexer.span())),
-                    Some(Err(())) => Some((Err(()), lexer.span())),
-                    None => None,
+                    Some(Ok({{ context.name }}Context::Lexeme(kind))) => (kind, lexer.span()),
+                    Some(Err(())) => (LexemeKind::UNRECOGNIZED, lexer.span()),
+                    None => return None,
                 },
             {%- endfor -%}
-        }
+        };
+
+        Some(Lexeme { kind, range } )
     }
 }
 

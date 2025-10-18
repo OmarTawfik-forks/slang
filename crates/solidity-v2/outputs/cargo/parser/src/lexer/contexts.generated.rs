@@ -1,11 +1,9 @@
 // This file is generated automatically by infrastructure scripts. Please don't edit by hand.
 
-use std::ops::Range;
-
 use logos::{Lexer, Logos};
 use semver::Version;
 
-use crate::lexer::lexeme_kind::LexemeKind;
+use crate::lexer::lexemes::{Lexeme, LexemeKind};
 
 #[derive(Clone, Copy, Debug)]
 pub enum ContextKind {
@@ -15,7 +13,7 @@ pub enum ContextKind {
 }
 
 pub struct ContextExtras {
-    language_version: Version,
+    pub language_version: Version,
 }
 
 pub enum ContextWrapper<'source> {
@@ -35,44 +33,47 @@ impl<'source> ContextWrapper<'source> {
         }
     }
 
-    pub fn morph(self, kind: ContextKind) -> Self {
+    #[must_use]
+    pub fn switch_kind(self, kind: ContextKind) -> Self {
         match self {
             Self::Default(lexer) => match kind {
-                ContextKind::Default => Self::Default(lexer.morph()),
+                ContextKind::Default => Self::Default(lexer),
                 ContextKind::Pragma => Self::Pragma(lexer.morph()),
                 ContextKind::Yul => Self::Yul(lexer.morph()),
             },
             Self::Pragma(lexer) => match kind {
                 ContextKind::Default => Self::Default(lexer.morph()),
-                ContextKind::Pragma => Self::Pragma(lexer.morph()),
+                ContextKind::Pragma => Self::Pragma(lexer),
                 ContextKind::Yul => Self::Yul(lexer.morph()),
             },
             Self::Yul(lexer) => match kind {
                 ContextKind::Default => Self::Default(lexer.morph()),
                 ContextKind::Pragma => Self::Pragma(lexer.morph()),
-                ContextKind::Yul => Self::Yul(lexer.morph()),
+                ContextKind::Yul => Self::Yul(lexer),
             },
         }
     }
 
-    pub fn next(&mut self) -> Option<(Result<LexemeKind, ()>, Range<usize>)> {
-        match self {
+    pub fn next_lexeme(&mut self) -> Option<Lexeme> {
+        let (kind, range) = match self {
             Self::Default(lexer) => match lexer.next() {
-                Some(Ok(DefaultContext::Lexeme(kind))) => Some((Ok(kind), lexer.span())),
-                Some(Err(())) => Some((Err(()), lexer.span())),
-                None => None,
+                Some(Ok(DefaultContext::Lexeme(kind))) => (kind, lexer.span()),
+                Some(Err(())) => (LexemeKind::UNRECOGNIZED, lexer.span()),
+                None => return None,
             },
             Self::Pragma(lexer) => match lexer.next() {
-                Some(Ok(PragmaContext::Lexeme(kind))) => Some((Ok(kind), lexer.span())),
-                Some(Err(())) => Some((Err(()), lexer.span())),
-                None => None,
+                Some(Ok(PragmaContext::Lexeme(kind))) => (kind, lexer.span()),
+                Some(Err(())) => (LexemeKind::UNRECOGNIZED, lexer.span()),
+                None => return None,
             },
             Self::Yul(lexer) => match lexer.next() {
-                Some(Ok(YulContext::Lexeme(kind))) => Some((Ok(kind), lexer.span())),
-                Some(Err(())) => Some((Err(()), lexer.span())),
-                None => None,
+                Some(Ok(YulContext::Lexeme(kind))) => (kind, lexer.span()),
+                Some(Err(())) => (LexemeKind::UNRECOGNIZED, lexer.span()),
+                None => return None,
             },
-        }
+        };
+
+        Some(Lexeme { kind, range })
     }
 }
 
