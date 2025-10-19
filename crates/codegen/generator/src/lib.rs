@@ -9,9 +9,11 @@ use std::collections::BTreeSet;
 use std::path::Path;
 
 use anyhow::Result;
+use codegen_v2_parser::ParserModel as ParserModelV2;
 use infra_utils::cargo::CargoWorkspace;
 use infra_utils::codegen::{CodegenFileSystem, CodegenRuntime};
 use language_definition::model::Language;
+use language_v2_definition::model::Language as LanguageV2;
 use semver::Version;
 use serde::Serialize;
 
@@ -29,6 +31,16 @@ impl RuntimeGenerator {
         dir: &Path,
     ) -> Result<()> {
         let model = RuntimeModel::from_language(language)?;
+        CodegenRuntime::render_templates_in_place(fs, dir, model)
+    }
+
+    pub fn generate_templates_in_place_v2(
+        language: &LanguageV2,
+        fs: &mut CodegenFileSystem,
+        dir: &Path,
+    ) -> Result<()> {
+        let model = RuntimeModelV2::from_language(language);
+
         CodegenRuntime::render_templates_in_place(fs, dir, model)
     }
 }
@@ -59,6 +71,19 @@ impl RuntimeModel {
             parser: ParserModel::from_language(language),
             kinds: KindsModel::from_language(language),
         })
+    }
+}
+
+#[derive(Serialize)]
+struct RuntimeModelV2 {
+    parser: ParserModelV2,
+}
+
+impl RuntimeModelV2 {
+    fn from_language(language: &LanguageV2) -> Self {
+        Self {
+            parser: ParserModelV2::from_language(language),
+        }
     }
 }
 

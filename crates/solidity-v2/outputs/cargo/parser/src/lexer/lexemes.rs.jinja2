@@ -1,0 +1,17 @@
+use std::ops::Range;
+
+#[derive(Debug)]
+pub struct Lexeme {
+    pub kind: LexemeKind,
+    pub range: Range<usize>,
+}
+
+#[derive(Debug, PartialEq)]
+#[allow(clippy::upper_case_acronyms, non_camel_case_types)]
+pub enum LexemeKind {
+    UNRECOGNIZED,
+
+    {% for kind in model.parser.lexer.lexeme_kinds -%}
+        {{ kind }},
+    {% endfor %}
+}
