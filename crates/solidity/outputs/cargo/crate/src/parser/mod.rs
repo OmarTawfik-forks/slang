@@ -10,6 +10,8 @@ mod parser;
 mod parser_support;
 mod scanner_macros;
 
+pub use lexer::*;
 pub use parse_error::ParseError;
 pub use parse_output::ParseOutput;
 pub use parser::{Parser, ParserInitializationError};
+pub use parser_support::ParserContext;

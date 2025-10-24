@@ -3606,6 +3606,7 @@ version = "1.3.0"
 dependencies = [
  "logos",
  "semver 1.0.26",
+ "slang_solidity",
 ]
 
 [[package]]

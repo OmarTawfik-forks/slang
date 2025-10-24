@@ -9,3 +9,4 @@ mod tests;
 
 pub use contexts::ContextKind;
 pub use definition::Lexer;
+pub use lexemes::{Lexeme, LexemeKind};

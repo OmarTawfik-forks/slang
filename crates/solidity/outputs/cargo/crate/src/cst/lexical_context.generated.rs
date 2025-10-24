@@ -3,20 +3,20 @@
 /// The lexical context of the scanner.
 #[repr(u8)]
 #[derive(strum_macros::FromRepr, Clone, Copy)]
-pub(crate) enum LexicalContext {
+pub enum LexicalContext {
     Default,
     Pragma,
     Yul,
 }
 
 /// Marker trait for type-level [`LexicalContext`] variants.
-pub(crate) trait IsLexicalContext {
+pub trait IsLexicalContext {
     /// Returns a run-time [`LexicalContext`] value.
     fn value() -> LexicalContext;
 }
 
 #[allow(non_snake_case)]
-pub(crate) mod LexicalContextType {
+pub mod LexicalContextType {
     pub struct Default;
 
     impl super::IsLexicalContext for Default {

@@ -1,4 +1,3 @@
-#![deny(missing_docs)]
 //! Slang is intended to be a modular Solidity compiler, specifically targeting code analysis and developer tooling.
 //! This means servicing tools with domain-specific APIs and, in general, facilitating working with and analyzing the
 //! Solidity source code. If you're in the editor writing Solidity or performing linting or additional validation,

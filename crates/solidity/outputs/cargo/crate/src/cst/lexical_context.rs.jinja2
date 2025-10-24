@@ -2,20 +2,20 @@
 /// The lexical context of the scanner.
 {% if model.kinds.lexical_contexts|length <= 256 -%} #[repr(u8)] {% else -%} #[repr(u16)] {% endif %}
 #[derive(strum_macros::FromRepr, Clone, Copy)]
-pub(crate) enum LexicalContext {
+pub enum LexicalContext {
     {%- for context_name in model.kinds.lexical_contexts %}
         {{ context_name }},
     {%- endfor %}
 }
 
 /// Marker trait for type-level [`LexicalContext`] variants.
-pub(crate) trait IsLexicalContext {
+pub trait IsLexicalContext {
     /// Returns a run-time [`LexicalContext`] value.
     fn value() -> LexicalContext;
 }
 
 #[allow(non_snake_case)]
-pub(crate) mod LexicalContextType {
+pub mod LexicalContextType {
     {%- for context_name in model.kinds.lexical_contexts %}
         pub struct {{ context_name }};
 

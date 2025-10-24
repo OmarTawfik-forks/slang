@@ -14,7 +14,7 @@ mod rewriter;
 mod terminal_kind;
 
 pub use edge_label::EdgeLabel;
-pub(crate) use lexical_context::{IsLexicalContext, LexicalContext, LexicalContextType};
+pub use lexical_context::*;
 pub use metaslang_cst::kinds::TerminalKindExtensions;
 pub(crate) use metaslang_cst::kinds::{EdgeLabelExtensions, NonterminalKindExtensions};
 pub use nonterminal_kind::NonterminalKind;
