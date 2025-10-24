@@ -6,7 +6,12 @@ use crate::sourcify::Contract;
 pub(super) fn run(contract: &Contract, unit: &CompilationUnit, events: &Events) -> TestOutcome {
     let mut test_outcome = TestOutcome::Passed;
     for file in unit.files() {
-        if !file.errors().is_empty() {
+        if file.errors().is_empty() {
+            slang_solidity_v2_parser::lexer::sourcify::compare_with_v1_output(
+                contract.version.clone(),
+                file.tree(),
+            );
+        } else {
             let source = contract.read_file(file.id()).unwrap();
             let source_name = contract
                 .import_resolver

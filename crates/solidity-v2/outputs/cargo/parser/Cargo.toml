@@ -21,6 +21,7 @@ categories = ["compilers", "parsing", "parser-implementations"]
 [dependencies]
 logos = { workspace = true }
 semver = { workspace = true }
+slang_solidity = { workspace = true }
 
 [lints]
 workspace = true
