@@ -16,7 +16,7 @@ pub trait Transformer {
         let members = self.transform_source_unit_members(&source.members);
 
         Rc::new(output::SourceUnitStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             members,
         })
     }
@@ -28,7 +28,7 @@ pub trait Transformer {
         let pragma = self.transform_pragma(&source.pragma);
 
         Rc::new(output::PragmaDirectiveStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             pragma,
         })
     }
@@ -40,7 +40,7 @@ pub trait Transformer {
         let version = self.transform_abicoder_version(&source.version);
 
         Rc::new(output::AbicoderPragmaStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             version,
         })
     }
@@ -52,7 +52,7 @@ pub trait Transformer {
         let feature = self.transform_experimental_feature(&source.feature);
 
         Rc::new(output::ExperimentalPragmaStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             feature,
         })
     }
@@ -61,7 +61,7 @@ pub trait Transformer {
         let sets = self.transform_version_expression_sets(&source.sets);
 
         Rc::new(output::VersionPragmaStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             sets,
         })
     }
@@ -71,7 +71,7 @@ pub trait Transformer {
         let end = self.transform_version_literal(&source.end);
 
         Rc::new(output::VersionRangeStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             start,
             end,
         })
@@ -85,7 +85,7 @@ pub trait Transformer {
         let literal = self.transform_version_literal(&source.literal);
 
         Rc::new(output::VersionTermStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             operator,
             literal,
         })
@@ -98,7 +98,7 @@ pub trait Transformer {
         let clause = self.transform_import_clause(&source.clause);
 
         Rc::new(output::ImportDirectiveStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             clause,
         })
     }
@@ -111,7 +111,7 @@ pub trait Transformer {
             .map(|value| self.transform_import_alias(value));
 
         Rc::new(output::PathImportStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             path,
             alias,
         })
@@ -122,7 +122,7 @@ pub trait Transformer {
         let path = self.transform_string_literal(&source.path);
 
         Rc::new(output::NamedImportStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             alias,
             path,
         })
@@ -136,7 +136,7 @@ pub trait Transformer {
         let path = self.transform_string_literal(&source.path);
 
         Rc::new(output::ImportDeconstructionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             symbols,
             path,
         })
@@ -153,7 +153,7 @@ pub trait Transformer {
             .map(|value| self.transform_import_alias(value));
 
         Rc::new(output::ImportDeconstructionSymbolStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             alias,
         })
@@ -163,7 +163,7 @@ pub trait Transformer {
         let identifier = Rc::clone(&source.identifier);
 
         Rc::new(output::ImportAliasStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             identifier,
         })
     }
@@ -177,7 +177,7 @@ pub trait Transformer {
         let global_keyword = source.global_keyword.as_ref().map(Rc::clone);
 
         Rc::new(output::UsingDirectiveStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             clause,
             target,
             global_keyword,
@@ -191,7 +191,7 @@ pub trait Transformer {
         let symbols = self.transform_using_deconstruction_symbols(&source.symbols);
 
         Rc::new(output::UsingDeconstructionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             symbols,
         })
     }
@@ -207,7 +207,7 @@ pub trait Transformer {
             .map(|value| self.transform_using_alias(value));
 
         Rc::new(output::UsingDeconstructionSymbolStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             alias,
         })
@@ -217,7 +217,7 @@ pub trait Transformer {
         let operator = self.transform_using_operator(&source.operator);
 
         Rc::new(output::UsingAliasStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             operator,
         })
     }
@@ -234,7 +234,7 @@ pub trait Transformer {
         let types = self.transform_inheritance_types(&source.types);
 
         Rc::new(output::InheritanceSpecifierStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             types,
         })
     }
@@ -250,7 +250,7 @@ pub trait Transformer {
             .map(|value| self.transform_arguments_declaration(value));
 
         Rc::new(output::InheritanceTypeStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             type_name,
             arguments,
         })
@@ -263,7 +263,7 @@ pub trait Transformer {
         let expression = self.transform_expression(&source.expression);
 
         Rc::new(output::StorageLayoutSpecifierStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             expression,
         })
     }
@@ -280,7 +280,7 @@ pub trait Transformer {
         let members = self.transform_interface_members(&source.members);
 
         Rc::new(output::InterfaceDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             inheritance,
             members,
@@ -295,7 +295,7 @@ pub trait Transformer {
         let members = self.transform_library_members(&source.members);
 
         Rc::new(output::LibraryDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             members,
         })
@@ -309,7 +309,7 @@ pub trait Transformer {
         let members = self.transform_struct_members(&source.members);
 
         Rc::new(output::StructDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             members,
         })
@@ -320,7 +320,7 @@ pub trait Transformer {
         let name = Rc::clone(&source.name);
 
         Rc::new(output::StructMemberStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             type_name,
             name,
         })
@@ -334,7 +334,7 @@ pub trait Transformer {
         let members = self.transform_enum_members(&source.members);
 
         Rc::new(output::EnumDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             members,
         })
@@ -349,7 +349,7 @@ pub trait Transformer {
         let value = self.transform_expression(&source.value);
 
         Rc::new(output::ConstantDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             type_name,
             name,
             value,
@@ -369,7 +369,7 @@ pub trait Transformer {
             .map(|value| self.transform_state_variable_definition_value(value));
 
         Rc::new(output::StateVariableDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             type_name,
             attributes,
             name,
@@ -384,7 +384,7 @@ pub trait Transformer {
         let value = self.transform_expression(&source.value);
 
         Rc::new(output::StateVariableDefinitionValueStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             value,
         })
     }
@@ -403,7 +403,7 @@ pub trait Transformer {
         let body = self.transform_function_body(&source.body);
 
         Rc::new(output::FunctionDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             parameters,
             attributes,
@@ -419,7 +419,7 @@ pub trait Transformer {
         let parameters = self.transform_parameters(&source.parameters);
 
         Rc::new(output::ParametersDeclarationStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             parameters,
         })
     }
@@ -433,7 +433,7 @@ pub trait Transformer {
         let name = source.name.as_ref().map(Rc::clone);
 
         Rc::new(output::ParameterStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             type_name,
             storage_location,
             name,
@@ -450,7 +450,7 @@ pub trait Transformer {
             .map(|value| self.transform_override_paths_declaration(value));
 
         Rc::new(output::OverrideSpecifierStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             overridden,
         })
     }
@@ -462,7 +462,7 @@ pub trait Transformer {
         let paths = self.transform_override_paths(&source.paths);
 
         Rc::new(output::OverridePathsDeclarationStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             paths,
         })
     }
@@ -474,7 +474,7 @@ pub trait Transformer {
         let variables = self.transform_parameters_declaration(&source.variables);
 
         Rc::new(output::ReturnsDeclarationStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             variables,
         })
     }
@@ -488,7 +488,7 @@ pub trait Transformer {
         let body = self.transform_block(&source.body);
 
         Rc::new(output::ConstructorDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             parameters,
             attributes,
             body,
@@ -504,7 +504,7 @@ pub trait Transformer {
         let body = self.transform_function_body(&source.body);
 
         Rc::new(output::UnnamedFunctionDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             parameters,
             attributes,
             body,
@@ -524,7 +524,7 @@ pub trait Transformer {
         let body = self.transform_function_body(&source.body);
 
         Rc::new(output::FallbackFunctionDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             parameters,
             attributes,
             returns,
@@ -541,7 +541,7 @@ pub trait Transformer {
         let body = self.transform_function_body(&source.body);
 
         Rc::new(output::ReceiveFunctionDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             parameters,
             attributes,
             body,
@@ -561,7 +561,7 @@ pub trait Transformer {
         let body = self.transform_function_body(&source.body);
 
         Rc::new(output::ModifierDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             parameters,
             attributes,
@@ -580,7 +580,7 @@ pub trait Transformer {
             .map(|value| self.transform_arguments_declaration(value));
 
         Rc::new(output::ModifierInvocationStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             arguments,
         })
@@ -595,7 +595,7 @@ pub trait Transformer {
         let anonymous_keyword = source.anonymous_keyword.as_ref().map(Rc::clone);
 
         Rc::new(output::EventDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             parameters,
             anonymous_keyword,
@@ -609,7 +609,7 @@ pub trait Transformer {
         let parameters = self.transform_event_parameters(&source.parameters);
 
         Rc::new(output::EventParametersDeclarationStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             parameters,
         })
     }
@@ -623,7 +623,7 @@ pub trait Transformer {
         let name = source.name.as_ref().map(Rc::clone);
 
         Rc::new(output::EventParameterStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             type_name,
             indexed_keyword,
             name,
@@ -638,7 +638,7 @@ pub trait Transformer {
         let value_type = self.transform_elementary_type(&source.value_type);
 
         Rc::new(output::UserDefinedValueTypeDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             value_type,
         })
@@ -652,7 +652,7 @@ pub trait Transformer {
         let members = self.transform_error_parameters_declaration(&source.members);
 
         Rc::new(output::ErrorDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             members,
         })
@@ -665,7 +665,7 @@ pub trait Transformer {
         let parameters = self.transform_error_parameters(&source.parameters);
 
         Rc::new(output::ErrorParametersDeclarationStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             parameters,
         })
     }
@@ -678,7 +678,7 @@ pub trait Transformer {
         let name = source.name.as_ref().map(Rc::clone);
 
         Rc::new(output::ErrorParameterStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             type_name,
             name,
         })
@@ -695,7 +695,7 @@ pub trait Transformer {
             .map(|value| self.transform_expression(value));
 
         Rc::new(output::ArrayTypeNameStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             operand,
             index,
         })
@@ -710,7 +710,7 @@ pub trait Transformer {
             .map(|value| self.transform_returns_declaration(value));
 
         Rc::new(output::FunctionTypeStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             parameters,
             attributes,
             returns,
@@ -722,7 +722,7 @@ pub trait Transformer {
         let value_type = self.transform_mapping_value(&source.value_type);
 
         Rc::new(output::MappingTypeStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             key_type,
             value_type,
         })
@@ -733,7 +733,7 @@ pub trait Transformer {
         let name = source.name.as_ref().map(Rc::clone);
 
         Rc::new(output::MappingKeyStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             key_type,
             name,
         })
@@ -744,7 +744,7 @@ pub trait Transformer {
         let name = source.name.as_ref().map(Rc::clone);
 
         Rc::new(output::MappingValueStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             type_name,
             name,
         })
@@ -754,7 +754,7 @@ pub trait Transformer {
         let payable_keyword = source.payable_keyword.as_ref().map(Rc::clone);
 
         Rc::new(output::AddressTypeStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             payable_keyword,
         })
     }
@@ -763,7 +763,7 @@ pub trait Transformer {
         let statements = self.transform_statements(&source.statements);
 
         Rc::new(output::BlockStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             statements,
         })
     }
@@ -775,7 +775,7 @@ pub trait Transformer {
         let block = self.transform_block(&source.block);
 
         Rc::new(output::UncheckedBlockStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             block,
         })
     }
@@ -787,7 +787,7 @@ pub trait Transformer {
         let expression = self.transform_expression(&source.expression);
 
         Rc::new(output::ExpressionStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             expression,
         })
     }
@@ -807,7 +807,7 @@ pub trait Transformer {
         let body = self.transform_yul_block(&source.body);
 
         Rc::new(output::AssemblyStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             label,
             flags,
             body,
@@ -821,7 +821,7 @@ pub trait Transformer {
         let flags = self.transform_assembly_flags(&source.flags);
 
         Rc::new(output::AssemblyFlagsDeclarationStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             flags,
         })
     }
@@ -835,7 +835,7 @@ pub trait Transformer {
         let expression = self.transform_expression(&source.expression);
 
         Rc::new(output::TupleDeconstructionStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             var_keyword,
             elements,
             expression,
@@ -852,7 +852,7 @@ pub trait Transformer {
             .map(|value| self.transform_tuple_member(value));
 
         Rc::new(output::TupleDeconstructionElementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             member,
         })
     }
@@ -869,7 +869,7 @@ pub trait Transformer {
         let name = Rc::clone(&source.name);
 
         Rc::new(output::TypedTupleMemberStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             type_name,
             storage_location,
             name,
@@ -887,7 +887,7 @@ pub trait Transformer {
         let name = Rc::clone(&source.name);
 
         Rc::new(output::UntypedTupleMemberStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             storage_location,
             name,
         })
@@ -909,7 +909,7 @@ pub trait Transformer {
             .map(|value| self.transform_variable_declaration_value(value));
 
         Rc::new(output::VariableDeclarationStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             variable_type,
             storage_location,
             name,
@@ -924,7 +924,7 @@ pub trait Transformer {
         let expression = self.transform_expression(&source.expression);
 
         Rc::new(output::VariableDeclarationValueStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             expression,
         })
     }
@@ -938,7 +938,7 @@ pub trait Transformer {
             .map(|value| self.transform_else_branch(value));
 
         Rc::new(output::IfStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             condition,
             body,
             else_branch,
@@ -949,7 +949,7 @@ pub trait Transformer {
         let body = self.transform_statement(&source.body);
 
         Rc::new(output::ElseBranchStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             body,
         })
     }
@@ -964,7 +964,7 @@ pub trait Transformer {
         let body = self.transform_statement(&source.body);
 
         Rc::new(output::ForStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             initialization,
             condition,
             iterator,
@@ -980,7 +980,7 @@ pub trait Transformer {
         let body = self.transform_statement(&source.body);
 
         Rc::new(output::WhileStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             condition,
             body,
         })
@@ -994,7 +994,7 @@ pub trait Transformer {
         let condition = self.transform_expression(&source.condition);
 
         Rc::new(output::DoWhileStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             body,
             condition,
         })
@@ -1005,7 +1005,7 @@ pub trait Transformer {
         source: &input::ContinueStatement,
     ) -> output::ContinueStatement {
         Rc::new(output::ContinueStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
         })
     }
 
@@ -1014,7 +1014,7 @@ pub trait Transformer {
         source: &input::BreakStatement,
     ) -> output::BreakStatement {
         Rc::new(output::BreakStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
         })
     }
 
@@ -1028,7 +1028,7 @@ pub trait Transformer {
             .map(|value| self.transform_expression(value));
 
         Rc::new(output::ReturnStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             expression,
         })
     }
@@ -1038,7 +1038,7 @@ pub trait Transformer {
         let arguments = self.transform_arguments_declaration(&source.arguments);
 
         Rc::new(output::EmitStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             event,
             arguments,
         })
@@ -1054,7 +1054,7 @@ pub trait Transformer {
         let catch_clauses = self.transform_catch_clauses(&source.catch_clauses);
 
         Rc::new(output::TryStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             expression,
             returns,
             body,
@@ -1070,7 +1070,7 @@ pub trait Transformer {
         let body = self.transform_block(&source.body);
 
         Rc::new(output::CatchClauseStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             error,
             body,
         })
@@ -1084,7 +1084,7 @@ pub trait Transformer {
         let parameters = self.transform_parameters_declaration(&source.parameters);
 
         Rc::new(output::CatchClauseErrorStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             parameters,
         })
@@ -1101,7 +1101,7 @@ pub trait Transformer {
         let arguments = self.transform_arguments_declaration(&source.arguments);
 
         Rc::new(output::RevertStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             error,
             arguments,
         })
@@ -1112,7 +1112,7 @@ pub trait Transformer {
         source: &input::ThrowStatement,
     ) -> output::ThrowStatement {
         Rc::new(output::ThrowStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
         })
     }
 
@@ -1125,7 +1125,7 @@ pub trait Transformer {
         let right_operand = self.transform_expression(&source.right_operand);
 
         Rc::new(output::AssignmentExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             left_operand,
             operator,
             right_operand,
@@ -1141,7 +1141,7 @@ pub trait Transformer {
         let false_expression = self.transform_expression(&source.false_expression);
 
         Rc::new(output::ConditionalExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             operand,
             true_expression,
             false_expression,
@@ -1153,7 +1153,7 @@ pub trait Transformer {
         let right_operand = self.transform_expression(&source.right_operand);
 
         Rc::new(output::OrExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             left_operand,
             right_operand,
         })
@@ -1164,7 +1164,7 @@ pub trait Transformer {
         let right_operand = self.transform_expression(&source.right_operand);
 
         Rc::new(output::AndExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             left_operand,
             right_operand,
         })
@@ -1179,7 +1179,7 @@ pub trait Transformer {
         let right_operand = self.transform_expression(&source.right_operand);
 
         Rc::new(output::EqualityExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             left_operand,
             operator,
             right_operand,
@@ -1195,7 +1195,7 @@ pub trait Transformer {
         let right_operand = self.transform_expression(&source.right_operand);
 
         Rc::new(output::InequalityExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             left_operand,
             operator,
             right_operand,
@@ -1210,7 +1210,7 @@ pub trait Transformer {
         let right_operand = self.transform_expression(&source.right_operand);
 
         Rc::new(output::BitwiseOrExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             left_operand,
             right_operand,
         })
@@ -1224,7 +1224,7 @@ pub trait Transformer {
         let right_operand = self.transform_expression(&source.right_operand);
 
         Rc::new(output::BitwiseXorExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             left_operand,
             right_operand,
         })
@@ -1238,7 +1238,7 @@ pub trait Transformer {
         let right_operand = self.transform_expression(&source.right_operand);
 
         Rc::new(output::BitwiseAndExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             left_operand,
             right_operand,
         })
@@ -1253,7 +1253,7 @@ pub trait Transformer {
         let right_operand = self.transform_expression(&source.right_operand);
 
         Rc::new(output::ShiftExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             left_operand,
             operator,
             right_operand,
@@ -1269,7 +1269,7 @@ pub trait Transformer {
         let right_operand = self.transform_expression(&source.right_operand);
 
         Rc::new(output::AdditiveExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             left_operand,
             operator,
             right_operand,
@@ -1285,7 +1285,7 @@ pub trait Transformer {
         let right_operand = self.transform_expression(&source.right_operand);
 
         Rc::new(output::MultiplicativeExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             left_operand,
             operator,
             right_operand,
@@ -1301,7 +1301,7 @@ pub trait Transformer {
         let right_operand = self.transform_expression(&source.right_operand);
 
         Rc::new(output::ExponentiationExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             left_operand,
             operator,
             right_operand,
@@ -1316,7 +1316,7 @@ pub trait Transformer {
         let operator = Rc::clone(&source.operator);
 
         Rc::new(output::PostfixExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             operand,
             operator,
         })
@@ -1330,7 +1330,7 @@ pub trait Transformer {
         let operand = self.transform_expression(&source.operand);
 
         Rc::new(output::PrefixExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             operator,
             operand,
         })
@@ -1344,7 +1344,7 @@ pub trait Transformer {
         let arguments = self.transform_arguments_declaration(&source.arguments);
 
         Rc::new(output::FunctionCallExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             operand,
             arguments,
         })
@@ -1358,7 +1358,7 @@ pub trait Transformer {
         let options = self.transform_call_options(&source.options);
 
         Rc::new(output::CallOptionsExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             operand,
             options,
         })
@@ -1372,7 +1372,7 @@ pub trait Transformer {
         let member = Rc::clone(&source.member);
 
         Rc::new(output::MemberAccessExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             operand,
             member,
         })
@@ -1393,7 +1393,7 @@ pub trait Transformer {
             .map(|value| self.transform_index_access_end(value));
 
         Rc::new(output::IndexAccessExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             operand,
             start,
             end,
@@ -1410,7 +1410,7 @@ pub trait Transformer {
             .map(|value| self.transform_expression(value));
 
         Rc::new(output::IndexAccessEndStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             end,
         })
     }
@@ -1422,7 +1422,7 @@ pub trait Transformer {
         let arguments = self.transform_positional_arguments(&source.arguments);
 
         Rc::new(output::PositionalArgumentsDeclarationStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             arguments,
         })
     }
@@ -1437,7 +1437,7 @@ pub trait Transformer {
             .map(|value| self.transform_named_argument_group(value));
 
         Rc::new(output::NamedArgumentsDeclarationStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             arguments,
         })
     }
@@ -1449,7 +1449,7 @@ pub trait Transformer {
         let arguments = self.transform_named_arguments(&source.arguments);
 
         Rc::new(output::NamedArgumentGroupStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             arguments,
         })
     }
@@ -1459,7 +1459,7 @@ pub trait Transformer {
         let value = self.transform_expression(&source.value);
 
         Rc::new(output::NamedArgumentStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             value,
         })
@@ -1472,7 +1472,7 @@ pub trait Transformer {
         let type_name = self.transform_type_name(&source.type_name);
 
         Rc::new(output::TypeExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             type_name,
         })
     }
@@ -1481,7 +1481,7 @@ pub trait Transformer {
         let type_name = self.transform_type_name(&source.type_name);
 
         Rc::new(output::NewExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             type_name,
         })
     }
@@ -1493,7 +1493,7 @@ pub trait Transformer {
         let items = self.transform_tuple_values(&source.items);
 
         Rc::new(output::TupleExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             items,
         })
     }
@@ -1505,7 +1505,7 @@ pub trait Transformer {
             .map(|value| self.transform_expression(value));
 
         Rc::new(output::TupleValueStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             expression,
         })
     }
@@ -1517,7 +1517,7 @@ pub trait Transformer {
         let items = self.transform_array_values(&source.items);
 
         Rc::new(output::ArrayExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             items,
         })
     }
@@ -1533,7 +1533,7 @@ pub trait Transformer {
             .map(|value| self.transform_number_unit(value));
 
         Rc::new(output::HexNumberExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             literal,
             unit,
         })
@@ -1550,7 +1550,7 @@ pub trait Transformer {
             .map(|value| self.transform_number_unit(value));
 
         Rc::new(output::DecimalNumberExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             literal,
             unit,
         })
@@ -1560,7 +1560,7 @@ pub trait Transformer {
         let statements = self.transform_yul_statements(&source.statements);
 
         Rc::new(output::YulBlockStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             statements,
         })
     }
@@ -1578,7 +1578,7 @@ pub trait Transformer {
         let body = self.transform_yul_block(&source.body);
 
         Rc::new(output::YulFunctionDefinitionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             name,
             parameters,
             returns,
@@ -1593,7 +1593,7 @@ pub trait Transformer {
         let parameters = self.transform_yul_parameters(&source.parameters);
 
         Rc::new(output::YulParametersDeclarationStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             parameters,
         })
     }
@@ -1605,7 +1605,7 @@ pub trait Transformer {
         let variables = self.transform_yul_variable_names(&source.variables);
 
         Rc::new(output::YulReturnsDeclarationStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             variables,
         })
     }
@@ -1621,7 +1621,7 @@ pub trait Transformer {
             .map(|value| self.transform_yul_variable_declaration_value(value));
 
         Rc::new(output::YulVariableDeclarationStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             variables,
             value,
         })
@@ -1635,7 +1635,7 @@ pub trait Transformer {
         let expression = self.transform_yul_expression(&source.expression);
 
         Rc::new(output::YulVariableDeclarationValueStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             assignment,
             expression,
         })
@@ -1650,7 +1650,7 @@ pub trait Transformer {
         let expression = self.transform_yul_expression(&source.expression);
 
         Rc::new(output::YulVariableAssignmentStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             variables,
             assignment,
             expression,
@@ -1662,7 +1662,7 @@ pub trait Transformer {
         source: &input::YulColonAndEqual,
     ) -> output::YulColonAndEqual {
         Rc::new(output::YulColonAndEqualStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
         })
     }
 
@@ -1674,7 +1674,7 @@ pub trait Transformer {
         let variable = Rc::clone(&source.variable);
 
         Rc::new(output::YulStackAssignmentStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             assignment,
             variable,
         })
@@ -1685,7 +1685,7 @@ pub trait Transformer {
         source: &input::YulEqualAndColon,
     ) -> output::YulEqualAndColon {
         Rc::new(output::YulEqualAndColonStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
         })
     }
 
@@ -1697,7 +1697,7 @@ pub trait Transformer {
         let body = self.transform_yul_block(&source.body);
 
         Rc::new(output::YulIfStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             condition,
             body,
         })
@@ -1713,7 +1713,7 @@ pub trait Transformer {
         let body = self.transform_yul_block(&source.body);
 
         Rc::new(output::YulForStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             initialization,
             condition,
             iterator,
@@ -1729,7 +1729,7 @@ pub trait Transformer {
         let cases = self.transform_yul_switch_cases(&source.cases);
 
         Rc::new(output::YulSwitchStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             expression,
             cases,
         })
@@ -1742,7 +1742,7 @@ pub trait Transformer {
         let body = self.transform_yul_block(&source.body);
 
         Rc::new(output::YulDefaultCaseStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             body,
         })
     }
@@ -1752,7 +1752,7 @@ pub trait Transformer {
         let body = self.transform_yul_block(&source.body);
 
         Rc::new(output::YulValueCaseStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             value,
             body,
         })
@@ -1763,7 +1763,7 @@ pub trait Transformer {
         source: &input::YulLeaveStatement,
     ) -> output::YulLeaveStatement {
         Rc::new(output::YulLeaveStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
         })
     }
 
@@ -1772,7 +1772,7 @@ pub trait Transformer {
         source: &input::YulBreakStatement,
     ) -> output::YulBreakStatement {
         Rc::new(output::YulBreakStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
         })
     }
 
@@ -1781,7 +1781,7 @@ pub trait Transformer {
         source: &input::YulContinueStatement,
     ) -> output::YulContinueStatement {
         Rc::new(output::YulContinueStatementStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
         })
     }
 
@@ -1789,7 +1789,7 @@ pub trait Transformer {
         let label = Rc::clone(&source.label);
 
         Rc::new(output::YulLabelStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             label,
         })
     }
@@ -1802,7 +1802,7 @@ pub trait Transformer {
         let arguments = self.transform_yul_arguments(&source.arguments);
 
         Rc::new(output::YulFunctionCallExpressionStruct {
-            node_id: source.node_id,
+            node: Rc::clone(&source.node),
             operand,
             arguments,
         })

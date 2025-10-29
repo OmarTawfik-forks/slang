@@ -10,21 +10,21 @@ use crate::utils::versions::{VERSION_0_5_0, VERSION_0_7_0};
 
 impl Visitor for Pass {
     fn enter_source_unit(&mut self, node: &input_ir::SourceUnit) -> bool {
-        self.enter_scope_for_node_id(node.node_id);
+        self.enter_scope_for_node_id(node.id());
         true
     }
 
     fn leave_source_unit(&mut self, node: &input_ir::SourceUnit) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_contract_definition(&mut self, node: &input_ir::ContractDefinition) -> bool {
         // Push the contract scope to visit the contract members
-        self.enter_scope_for_node_id(node.node_id);
+        self.enter_scope_for_node_id(node.id());
         for member in &node.members {
             input_ir::visitor::accept_contract_member(member, self);
         }
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
 
         // But any reference in the inheritance types and the storage layout
         // specifier should resolve in the parent scope
@@ -41,21 +41,21 @@ impl Visitor for Pass {
     }
 
     fn enter_interface_definition(&mut self, node: &input_ir::InterfaceDefinition) -> bool {
-        self.enter_scope_for_node_id(node.node_id);
+        self.enter_scope_for_node_id(node.id());
         true
     }
 
     fn leave_interface_definition(&mut self, node: &input_ir::InterfaceDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_library_definition(&mut self, node: &input_ir::LibraryDefinition) -> bool {
-        self.enter_scope_for_node_id(node.node_id);
+        self.enter_scope_for_node_id(node.id());
         true
     }
 
     fn leave_library_definition(&mut self, node: &input_ir::LibraryDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_function_definition(&mut self, node: &input_ir::FunctionDefinition) -> bool {
@@ -66,22 +66,22 @@ impl Visitor for Pass {
             }
         }
 
-        self.enter_scope_for_node_id(node.node_id);
+        self.enter_scope_for_node_id(node.id());
         true
     }
 
     fn leave_function_definition(&mut self, node: &input_ir::FunctionDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_modifier_definition(&mut self, node: &input_ir::ModifierDefinition) -> bool {
         // TODO(validation): modifiers are not allowed inside interfaces since 0.8.8
-        self.enter_scope_for_node_id(node.node_id);
+        self.enter_scope_for_node_id(node.id());
         true
     }
 
     fn leave_modifier_definition(&mut self, node: &input_ir::ModifierDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_constructor_definition(&mut self, node: &input_ir::ConstructorDefinition) -> bool {
@@ -93,12 +93,12 @@ impl Visitor for Pass {
             }
         }
 
-        self.enter_scope_for_node_id(node.node_id);
+        self.enter_scope_for_node_id(node.id());
         true
     }
 
     fn leave_constructor_definition(&mut self, node: &input_ir::ConstructorDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_fallback_function_definition(
@@ -113,12 +113,12 @@ impl Visitor for Pass {
             }
         }
 
-        self.enter_scope_for_node_id(node.node_id);
+        self.enter_scope_for_node_id(node.id());
         true
     }
 
     fn leave_fallback_function_definition(&mut self, node: &input_ir::FallbackFunctionDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_receive_function_definition(
@@ -133,12 +133,12 @@ impl Visitor for Pass {
             }
         }
 
-        self.enter_scope_for_node_id(node.node_id);
+        self.enter_scope_for_node_id(node.id());
         true
     }
 
     fn leave_receive_function_definition(&mut self, node: &input_ir::ReceiveFunctionDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_unnamed_function_definition(
@@ -153,56 +153,56 @@ impl Visitor for Pass {
             }
         }
 
-        self.enter_scope_for_node_id(node.node_id);
+        self.enter_scope_for_node_id(node.id());
         true
     }
 
     fn leave_unnamed_function_definition(&mut self, node: &input_ir::UnnamedFunctionDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_block(&mut self, node: &input_ir::Block) -> bool {
         if self.language_version >= VERSION_0_5_0 {
-            self.enter_scope_for_node_id(node.node_id);
+            self.enter_scope_for_node_id(node.id());
         }
         true
     }
 
     fn leave_block(&mut self, node: &input_ir::Block) {
         if self.language_version >= VERSION_0_5_0 {
-            self.leave_scope_for_node_id(node.node_id);
+            self.leave_scope_for_node_id(node.id());
         }
     }
 
     fn enter_for_statement(&mut self, node: &input_ir::ForStatement) -> bool {
         if self.language_version >= VERSION_0_5_0 {
-            self.enter_scope_for_node_id(node.node_id);
+            self.enter_scope_for_node_id(node.id());
         }
         true
     }
 
     fn leave_for_statement(&mut self, node: &input_ir::ForStatement) {
         if self.language_version >= VERSION_0_5_0 {
-            self.leave_scope_for_node_id(node.node_id);
+            self.leave_scope_for_node_id(node.id());
         }
     }
 
     fn enter_yul_block(&mut self, node: &input_ir::YulBlock) -> bool {
-        self.enter_scope_for_node_id(node.node_id);
+        self.enter_scope_for_node_id(node.id());
         true
     }
 
     fn leave_yul_block(&mut self, node: &input_ir::YulBlock) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_yul_function_definition(&mut self, node: &input_ir::YulFunctionDefinition) -> bool {
-        self.enter_scope_for_node_id(node.node_id);
+        self.enter_scope_for_node_id(node.id());
         true
     }
 
     fn leave_yul_function_definition(&mut self, node: &input_ir::YulFunctionDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_expression(&mut self, node: &input_ir::Expression) -> bool {
@@ -220,7 +220,7 @@ impl Visitor for Pass {
     fn leave_hex_number_expression(&mut self, node: &input_ir::HexNumberExpression) {
         let kind = Self::hex_number_literal_kind(node);
         let type_id = self.types.register_type(Type::Literal(kind));
-        self.binder.set_node_type(node.node_id, Some(type_id));
+        self.binder.set_node_type(node.id(), Some(type_id));
     }
 
     fn leave_decimal_number_expression(&mut self, node: &input_ir::DecimalNumberExpression) {
@@ -230,7 +230,7 @@ impl Visitor for Pass {
             Type::Literal(LiteralKind::DecimalInteger)
         };
         let type_id = self.types.register_type(type_);
-        self.binder.set_node_type(node.node_id, Some(type_id));
+        self.binder.set_node_type(node.id(), Some(type_id));
     }
 
     fn leave_string_expression(&mut self, node: &input_ir::StringExpression) {
@@ -245,7 +245,7 @@ impl Visitor for Pass {
         let type_id = self.typing_of_expression(&node.left_operand).as_type_id();
         // TODO(validation): check that the type of right_operand can be applied
         // to the left by means of the operator
-        self.binder.set_node_type(node.node_id, type_id);
+        self.binder.set_node_type(node.id(), type_id);
     }
 
     fn leave_conditional_expression(&mut self, node: &input_ir::ConditionalExpression) {
@@ -276,7 +276,7 @@ impl Visitor for Pass {
             }
             _ => None,
         };
-        self.binder.set_node_type(node.node_id, type_id);
+        self.binder.set_node_type(node.id(), type_id);
     }
 
     fn leave_or_expression(&mut self, _node: &input_ir::OrExpression) {
@@ -298,38 +298,38 @@ impl Visitor for Pass {
     fn leave_bitwise_or_expression(&mut self, node: &input_ir::BitwiseOrExpression) {
         let type_id =
             self.type_of_integer_binary_expression(&node.left_operand, &node.right_operand);
-        self.binder.set_node_type(node.node_id, type_id);
+        self.binder.set_node_type(node.id(), type_id);
     }
 
     fn leave_bitwise_xor_expression(&mut self, node: &input_ir::BitwiseXorExpression) {
         let type_id =
             self.type_of_integer_binary_expression(&node.left_operand, &node.right_operand);
-        self.binder.set_node_type(node.node_id, type_id);
+        self.binder.set_node_type(node.id(), type_id);
     }
 
     fn leave_bitwise_and_expression(&mut self, node: &input_ir::BitwiseAndExpression) {
         let type_id =
             self.type_of_integer_binary_expression(&node.left_operand, &node.right_operand);
-        self.binder.set_node_type(node.node_id, type_id);
+        self.binder.set_node_type(node.id(), type_id);
     }
 
     fn leave_shift_expression(&mut self, node: &input_ir::ShiftExpression) {
         let type_id = self.typing_of_expression(&node.left_operand).as_type_id();
         // TODO(validation): check that the left operand is an integer and the
         // right operand is an _unsigned_ integer
-        self.binder.set_node_type(node.node_id, type_id);
+        self.binder.set_node_type(node.id(), type_id);
     }
 
     fn leave_additive_expression(&mut self, node: &input_ir::AdditiveExpression) {
         let type_id =
             self.type_of_integer_binary_expression(&node.left_operand, &node.right_operand);
-        self.binder.set_node_type(node.node_id, type_id);
+        self.binder.set_node_type(node.id(), type_id);
     }
 
     fn leave_multiplicative_expression(&mut self, node: &input_ir::MultiplicativeExpression) {
         let type_id =
             self.type_of_integer_binary_expression(&node.left_operand, &node.right_operand);
-        self.binder.set_node_type(node.node_id, type_id);
+        self.binder.set_node_type(node.id(), type_id);
     }
 
     fn leave_exponentiation_expression(&mut self, node: &input_ir::ExponentiationExpression) {
@@ -348,13 +348,13 @@ impl Visitor for Pass {
                 type_id = Some(self.types.uint256());
             }
         }
-        self.binder.set_node_type(node.node_id, type_id);
+        self.binder.set_node_type(node.id(), type_id);
     }
 
     fn leave_postfix_expression(&mut self, node: &input_ir::PostfixExpression) {
         // TODO(validation): check that the operand is an integer
         let type_id = self.typing_of_expression(&node.operand).as_type_id();
-        self.binder.set_node_type(node.node_id, type_id);
+        self.binder.set_node_type(node.id(), type_id);
     }
 
     fn leave_prefix_expression(&mut self, node: &input_ir::PrefixExpression) {
@@ -374,7 +374,7 @@ impl Visitor for Pass {
             TerminalKind::DeleteKeyword => Some(self.types.void()),
             _ => None,
         };
-        self.binder.set_node_type(node.node_id, type_id);
+        self.binder.set_node_type(node.id(), type_id);
     }
 
     fn leave_tuple_expression(&mut self, node: &input_ir::TupleExpression) {
@@ -400,7 +400,7 @@ impl Visitor for Pass {
             let type_id = self.types.register_type(Type::Tuple { types });
             Typing::Resolved(type_id)
         };
-        self.binder.set_node_typing(node.node_id, typing);
+        self.binder.set_node_typing(node.id(), typing);
     }
 
     fn leave_member_access_expression(&mut self, node: &input_ir::MemberAccessExpression) {
@@ -437,7 +437,7 @@ impl Visitor for Pass {
         }
 
         // store the typing
-        self.binder.set_node_typing(node.node_id, typing);
+        self.binder.set_node_typing(node.id(), typing);
 
         let reference = Reference::new(Rc::clone(&node.member), resolution);
         self.binder.insert_reference(reference);
@@ -505,7 +505,7 @@ impl Visitor for Pass {
             }
             _ => Typing::Unresolved,
         };
-        self.binder.set_node_typing(node.node_id, typing);
+        self.binder.set_node_typing(node.id(), typing);
     }
 
     fn leave_array_expression(&mut self, node: &input_ir::ArrayExpression) {
@@ -528,7 +528,7 @@ impl Visitor for Pass {
                 Typing::Unresolved
             }
         };
-        self.binder.set_node_typing(node.node_id, typing);
+        self.binder.set_node_typing(node.id(), typing);
     }
 
     fn leave_function_call_expression(&mut self, node: &input_ir::FunctionCallExpression) {
@@ -550,7 +550,7 @@ impl Visitor for Pass {
                 }
             }
         };
-        self.binder.set_node_typing(node.node_id, typing);
+        self.binder.set_node_typing(node.id(), typing);
     }
 
     fn enter_call_options_expression(&mut self, node: &input_ir::CallOptionsExpression) -> bool {
@@ -568,7 +568,7 @@ impl Visitor for Pass {
 
     fn leave_call_options_expression(&mut self, node: &input_ir::CallOptionsExpression) {
         let typing = self.typing_of_expression(&node.operand);
-        self.binder.set_node_typing(node.node_id, typing);
+        self.binder.set_node_typing(node.id(), typing);
     }
 
     fn enter_yul_path(&mut self, items: &input_ir::YulPath) -> bool {
@@ -647,11 +647,11 @@ impl Visitor for Pass {
         // initialization block. This is mainly so references in the condition
         // can resolve against the initialization block. The iterator and body
         // should be already properly linked from construction.
-        self.enter_scope_for_node_id(node.initialization.node_id);
+        self.enter_scope_for_node_id(node.initialization.id());
         input_ir::visitor::accept_yul_expression(&node.condition, self);
         input_ir::visitor::accept_yul_block(&node.iterator, self);
         input_ir::visitor::accept_yul_block(&node.body, self);
-        self.leave_scope_for_node_id(node.initialization.node_id);
+        self.leave_scope_for_node_id(node.initialization.id());
 
         // We already visited our children
         false
@@ -777,7 +777,7 @@ impl Visitor for Pass {
         if self.language_version >= VERSION_0_5_0 {
             // in Solidity >= 0.5.0 we need to update the scope so further
             // resolutions can access this variable definition
-            self.replace_scope_for_node_id(node.node_id);
+            self.replace_scope_for_node_id(node.id());
             // NOTE: ensure following code does not need to perform resolution
         }
 
@@ -793,7 +793,7 @@ impl Visitor for Pass {
                     .map_or(Typing::Unresolved, |type_id| {
                         Typing::Resolved(self.types.reified_type(type_id))
                     });
-                self.binder.fixup_node_typing(node.node_id, typing);
+                self.binder.fixup_node_typing(node.id(), typing);
             }
         }
     }
@@ -805,7 +805,7 @@ impl Visitor for Pass {
         if self.language_version >= VERSION_0_5_0 {
             // in Solidity >= 0.5.0 we need to update the scope so further
             // resolutions can access these variable definitions
-            self.replace_scope_for_node_id(node.node_id);
+            self.replace_scope_for_node_id(node.id());
             // NOTE: ensure following code does not need to perform resolution
         }
 
@@ -833,7 +833,7 @@ impl Visitor for Pass {
             if let input_ir::TupleMember::UntypedTupleMember(untyped_tuple_member) = member {
                 let typing = Typing::Resolved(self.types.reified_type(element_type_id));
                 self.binder
-                    .fixup_node_typing(untyped_tuple_member.node_id, typing);
+                    .fixup_node_typing(untyped_tuple_member.id(), typing);
             }
         }
     }

@@ -177,11 +177,11 @@ impl Pass {
     // definitions for named ones and return the constructed parameters scope ID
     // to link with the enclosing function definition
     fn collect_parameters(&mut self, parameters: &input_ir::ParametersDeclaration) -> ScopeId {
-        let mut scope = ParametersScope::new(parameters.node_id);
+        let mut scope = ParametersScope::new(parameters.id());
         for parameter in &parameters.parameters {
-            scope.add_parameter(parameter.name.as_ref(), parameter.node_id);
+            scope.add_parameter(parameter.name.as_ref(), parameter.id());
             if let Some(name) = &parameter.name {
-                let definition = Definition::new_parameter(parameter.node_id, name);
+                let definition = Definition::new_parameter(parameter.id(), name);
                 self.binder.insert_definition_no_scope(definition);
             }
         }
@@ -193,11 +193,11 @@ impl Pass {
         &mut self,
         parameters: &input_ir::ErrorParametersDeclaration,
     ) -> ScopeId {
-        let mut scope = ParametersScope::new(parameters.node_id);
+        let mut scope = ParametersScope::new(parameters.id());
         for parameter in &parameters.parameters {
-            scope.add_parameter(parameter.name.as_ref(), parameter.node_id);
+            scope.add_parameter(parameter.name.as_ref(), parameter.id());
             if let Some(name) = &parameter.name {
-                let definition = Definition::new_parameter(parameter.node_id, name);
+                let definition = Definition::new_parameter(parameter.id(), name);
                 self.binder.insert_definition_no_scope(definition);
             }
         }
@@ -209,11 +209,11 @@ impl Pass {
         &mut self,
         parameters: &input_ir::EventParametersDeclaration,
     ) -> ScopeId {
-        let mut scope = ParametersScope::new(parameters.node_id);
+        let mut scope = ParametersScope::new(parameters.id());
         for parameter in &parameters.parameters {
-            scope.add_parameter(parameter.name.as_ref(), parameter.node_id);
+            scope.add_parameter(parameter.name.as_ref(), parameter.id());
             if let Some(name) = &parameter.name {
-                let definition = Definition::new_parameter(parameter.node_id, name);
+                let definition = Definition::new_parameter(parameter.id(), name);
                 self.binder.insert_definition_no_scope(definition);
             }
         }
@@ -230,7 +230,7 @@ impl Pass {
     ) {
         for parameter in parameters {
             if let Some(name) = &parameter.name {
-                let definition = Definition::new_parameter(parameter.node_id, name);
+                let definition = Definition::new_parameter(parameter.id(), name);
                 self.binder.insert_definition_in_scope(definition, scope_id);
             }
         }
@@ -254,64 +254,63 @@ impl Visitor for Pass {
         let Some(current_file) = &self.current_file else {
             unreachable!("visiting SourceUnit without a current file being set");
         };
-        let scope = Scope::new_file(node.node_id, current_file.id());
+        let scope = Scope::new_file(node.id(), current_file.id());
         self.enter_scope(scope);
 
         true
     }
 
     fn leave_source_unit(&mut self, node: &input_ir::SourceUnit) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_contract_definition(&mut self, node: &input_ir::ContractDefinition) -> bool {
-        let definition = Definition::new_contract(node.node_id, &node.name);
+        let definition = Definition::new_contract(node.id(), &node.name);
         self.insert_definition_in_current_scope(definition);
 
-        let scope = Scope::new_contract(node.node_id, self.current_scope_id());
+        let scope = Scope::new_contract(node.id(), self.current_scope_id());
         self.enter_scope(scope);
 
         true
     }
 
     fn leave_contract_definition(&mut self, node: &input_ir::ContractDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_library_definition(&mut self, node: &input_ir::LibraryDefinition) -> bool {
-        let definition = Definition::new_library(node.node_id, &node.name);
+        let definition = Definition::new_library(node.id(), &node.name);
         self.insert_definition_in_current_scope(definition);
 
-        let scope = Scope::new_contract(node.node_id, self.current_scope_id());
+        let scope = Scope::new_contract(node.id(), self.current_scope_id());
         self.enter_scope(scope);
 
         true
     }
 
     fn leave_library_definition(&mut self, node: &input_ir::LibraryDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_interface_definition(&mut self, node: &input_ir::InterfaceDefinition) -> bool {
-        let definition = Definition::new_interface(node.node_id, &node.name);
+        let definition = Definition::new_interface(node.id(), &node.name);
         self.insert_definition_in_current_scope(definition);
 
-        let scope = Scope::new_contract(node.node_id, self.current_scope_id());
+        let scope = Scope::new_contract(node.id(), self.current_scope_id());
         self.enter_scope(scope);
 
         true
     }
 
     fn leave_interface_definition(&mut self, node: &input_ir::InterfaceDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_path_import(&mut self, node: &input_ir::PathImport) -> bool {
         let imported_file_id = self.resolve_import_path(&node.path);
 
         if let Some(alias) = &node.alias {
-            let definition =
-                Definition::new_import(node.node_id, &alias.identifier, imported_file_id);
+            let definition = Definition::new_import(node.id(), &alias.identifier, imported_file_id);
             self.insert_definition_in_current_scope(definition);
         } else if let Some(imported_file_id) = imported_file_id {
             self.current_file_scope()
@@ -325,7 +324,7 @@ impl Visitor for Pass {
         let imported_file_id = self.resolve_import_path(&node.path);
 
         let definition =
-            Definition::new_import(node.node_id, &node.alias.identifier, imported_file_id);
+            Definition::new_import(node.id(), &node.alias.identifier, imported_file_id);
         self.insert_definition_in_current_scope(definition);
 
         false
@@ -341,7 +340,7 @@ impl Visitor for Pass {
                 &symbol.name
             };
             let definition = Definition::new_imported_symbol(
-                symbol.node_id,
+                symbol.id(),
                 identifier,
                 symbol.name.unparse(),
                 imported_file_id.clone(),
@@ -383,7 +382,7 @@ impl Visitor for Pass {
                     FunctionVisibility::Internal
                 });
             let definition =
-                Definition::new_function(node.node_id, name, parameters_scope_id, visibility);
+                Definition::new_function(node.id(), name, parameters_scope_id, visibility);
 
             let current_scope_node_id = self.current_scope().node_id();
             let enclosing_definition = self.binder.find_definition_by_id(current_scope_node_id);
@@ -414,7 +413,7 @@ impl Visitor for Pass {
         }
 
         let function_scope =
-            Scope::new_function(node.node_id, self.current_scope_id(), parameters_scope_id);
+            Scope::new_function(node.id(), self.current_scope_id(), parameters_scope_id);
         let function_scope_id = self.enter_scope(function_scope);
 
         if let Some(returns_declaration) = &node.returns {
@@ -428,14 +427,14 @@ impl Visitor for Pass {
     }
 
     fn leave_function_definition(&mut self, node: &input_ir::FunctionDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_modifier_definition(&mut self, node: &input_ir::ModifierDefinition) -> bool {
-        let definition = Definition::new_modifier(node.node_id, &node.name);
+        let definition = Definition::new_modifier(node.id(), &node.name);
         self.insert_definition_in_current_scope(definition);
 
-        let modifier_scope = Scope::new_modifier(node.node_id, self.current_scope_id());
+        let modifier_scope = Scope::new_modifier(node.id(), self.current_scope_id());
         let modifier_scope_id = self.enter_scope(modifier_scope);
         if let Some(parameters) = &node.parameters {
             self.collect_named_parameters_into_scope(&parameters.parameters, modifier_scope_id);
@@ -445,7 +444,7 @@ impl Visitor for Pass {
     }
 
     fn leave_modifier_definition(&mut self, node: &input_ir::ModifierDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_constructor_definition(&mut self, node: &input_ir::ConstructorDefinition) -> bool {
@@ -456,14 +455,14 @@ impl Visitor for Pass {
         self.register_constructor_parameters(parameters_scope_id);
 
         let function_scope =
-            Scope::new_function(node.node_id, self.current_scope_id(), parameters_scope_id);
+            Scope::new_function(node.id(), self.current_scope_id(), parameters_scope_id);
         self.enter_scope(function_scope);
 
         true
     }
 
     fn leave_constructor_definition(&mut self, node: &input_ir::ConstructorDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_fallback_function_definition(
@@ -477,7 +476,7 @@ impl Visitor for Pass {
         let parameters_scope_id = self.collect_parameters(&node.parameters);
 
         let function_scope =
-            Scope::new_function(node.node_id, self.current_scope_id(), parameters_scope_id);
+            Scope::new_function(node.id(), self.current_scope_id(), parameters_scope_id);
         let function_scope_id = self.enter_scope(function_scope);
 
         if let Some(returns_declaration) = &node.returns {
@@ -491,7 +490,7 @@ impl Visitor for Pass {
     }
 
     fn leave_fallback_function_definition(&mut self, node: &input_ir::FallbackFunctionDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_receive_function_definition(
@@ -507,14 +506,14 @@ impl Visitor for Pass {
         let parameters_scope_id = self.collect_parameters(&node.parameters);
 
         let function_scope =
-            Scope::new_function(node.node_id, self.current_scope_id(), parameters_scope_id);
+            Scope::new_function(node.id(), self.current_scope_id(), parameters_scope_id);
         self.enter_scope(function_scope);
 
         true
     }
 
     fn leave_receive_function_definition(&mut self, node: &input_ir::ReceiveFunctionDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_unnamed_function_definition(
@@ -528,21 +527,21 @@ impl Visitor for Pass {
         let parameters_scope_id = self.collect_parameters(&node.parameters);
 
         let function_scope =
-            Scope::new_function(node.node_id, self.current_scope_id(), parameters_scope_id);
+            Scope::new_function(node.id(), self.current_scope_id(), parameters_scope_id);
         self.enter_scope(function_scope);
 
         true
     }
 
     fn leave_unnamed_function_definition(&mut self, node: &input_ir::UnnamedFunctionDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_enum_definition(&mut self, node: &input_ir::EnumDefinition) -> bool {
-        let definition = Definition::new_enum(node.node_id, &node.name);
+        let definition = Definition::new_enum(node.id(), &node.name);
         self.insert_definition_in_current_scope(definition);
 
-        let enum_scope = Scope::new_enum(node.node_id);
+        let enum_scope = Scope::new_enum(node.id());
         let enum_scope_id = self.binder.insert_scope(enum_scope);
         for member in &node.members {
             let definition = Definition::new_enum_member(member.id(), member);
@@ -554,13 +553,13 @@ impl Visitor for Pass {
     }
 
     fn enter_struct_definition(&mut self, node: &input_ir::StructDefinition) -> bool {
-        let definition = Definition::new_struct(node.node_id, &node.name);
+        let definition = Definition::new_struct(node.id(), &node.name);
         self.insert_definition_in_current_scope(definition);
 
-        let struct_scope = Scope::new_struct(node.node_id);
+        let struct_scope = Scope::new_struct(node.id());
         let struct_scope_id = self.binder.insert_scope(struct_scope);
         for member in &node.members {
-            let definition = Definition::new_struct_member(member.node_id, &member.name);
+            let definition = Definition::new_struct_member(member.id(), &member.name);
             self.binder
                 .insert_definition_in_scope(definition, struct_scope_id);
         }
@@ -570,7 +569,7 @@ impl Visitor for Pass {
 
     fn enter_error_definition(&mut self, node: &input_ir::ErrorDefinition) -> bool {
         let parameters_scope_id = self.collect_error_parameters(&node.members);
-        let definition = Definition::new_error(node.node_id, &node.name, parameters_scope_id);
+        let definition = Definition::new_error(node.id(), &node.name, parameters_scope_id);
         self.insert_definition_in_current_scope(definition);
 
         false
@@ -578,7 +577,7 @@ impl Visitor for Pass {
 
     fn enter_event_definition(&mut self, node: &input_ir::EventDefinition) -> bool {
         let parameters_scope_id = self.collect_event_parameters(&node.parameters);
-        let definition = Definition::new_event(node.node_id, &node.name, parameters_scope_id);
+        let definition = Definition::new_event(node.id(), &node.name, parameters_scope_id);
         self.insert_definition_in_current_scope(definition);
 
         false
@@ -598,7 +597,7 @@ impl Visitor for Pass {
         // Public state variables define a getter, so we don't register them as
         // constants here
         let definition = if is_constant && !is_public {
-            Definition::new_constant(node.node_id, &node.name)
+            Definition::new_constant(node.id(), &node.name)
         } else {
             // TODO(validation): only one visibility keyword is allowed
             let visibility = node.attributes.iter().fold(
@@ -616,7 +615,7 @@ impl Visitor for Pass {
                     _ => previous,
                 },
             );
-            Definition::new_state_variable(node.node_id, &node.name, visibility)
+            Definition::new_state_variable(node.id(), &node.name, visibility)
         };
         self.insert_definition_in_current_scope(definition);
 
@@ -626,7 +625,7 @@ impl Visitor for Pass {
     }
 
     fn enter_constant_definition(&mut self, node: &input_ir::ConstantDefinition) -> bool {
-        let definition = Definition::new_constant(node.node_id, &node.name);
+        let definition = Definition::new_constant(node.id(), &node.name);
         self.insert_definition_in_current_scope(definition);
 
         false
@@ -636,7 +635,7 @@ impl Visitor for Pass {
         &mut self,
         node: &input_ir::UserDefinedValueTypeDefinition,
     ) -> bool {
-        let definition = Definition::new_user_defined_value_type(node.node_id, &node.name);
+        let definition = Definition::new_user_defined_value_type(node.id(), &node.name);
         self.insert_definition_in_current_scope(definition);
 
         false
@@ -650,11 +649,11 @@ impl Visitor for Pass {
             // In Solidity >= 0.5.0 this definition should only be available for
             // statements after this one. So we open a new scope that replaces
             // but is linked to the current one
-            let scope = Scope::new_block(node.node_id, self.current_scope_id());
+            let scope = Scope::new_block(node.id(), self.current_scope_id());
             self.replace_scope(scope);
         }
 
-        let definition = Definition::new_variable(node.node_id, &node.name);
+        let definition = Definition::new_variable(node.id(), &node.name);
         self.insert_definition_in_current_scope(definition);
     }
 
@@ -666,7 +665,7 @@ impl Visitor for Pass {
             // In Solidity >= 0.5.0 the definitions should only be available for
             // statements after this one. So we open a new scope that replaces
             // but is linked to the current one
-            let scope = Scope::new_block(node.node_id, self.current_scope_id());
+            let scope = Scope::new_block(node.id(), self.current_scope_id());
             self.replace_scope(scope);
         }
 
@@ -677,16 +676,13 @@ impl Visitor for Pass {
             };
             let definition = match tuple_member {
                 input_ir::TupleMember::TypedTupleMember(typed_tuple_member) => {
-                    Definition::new_variable(typed_tuple_member.node_id, &typed_tuple_member.name)
+                    Definition::new_variable(typed_tuple_member.id(), &typed_tuple_member.name)
                 }
                 input_ir::TupleMember::UntypedTupleMember(untyped_tuple_member) => {
                     if !is_untyped_declaration {
                         continue;
                     }
-                    Definition::new_variable(
-                        untyped_tuple_member.node_id,
-                        &untyped_tuple_member.name,
-                    )
+                    Definition::new_variable(untyped_tuple_member.id(), &untyped_tuple_member.name)
                 }
             };
             self.insert_definition_in_current_scope(definition);
@@ -695,7 +691,7 @@ impl Visitor for Pass {
 
     fn enter_block(&mut self, node: &input_ir::Block) -> bool {
         if self.language_version >= VERSION_0_5_0 {
-            let scope = Scope::new_block(node.node_id, self.current_scope_id());
+            let scope = Scope::new_block(node.id(), self.current_scope_id());
             self.enter_scope(scope);
         }
         true
@@ -703,7 +699,7 @@ impl Visitor for Pass {
 
     fn leave_block(&mut self, node: &input_ir::Block) {
         if self.language_version >= VERSION_0_5_0 {
-            self.leave_scope_for_node_id(node.node_id);
+            self.leave_scope_for_node_id(node.id());
         }
     }
 
@@ -711,7 +707,7 @@ impl Visitor for Pass {
         if self.language_version >= VERSION_0_5_0 {
             // For Solidity >= 0.5.0 open a new block here to hold declarations
             // in the initialization clause.
-            let scope = Scope::new_block(node.node_id, self.current_scope_id());
+            let scope = Scope::new_block(node.id(), self.current_scope_id());
             self.enter_scope(scope);
         }
         true
@@ -719,7 +715,7 @@ impl Visitor for Pass {
 
     fn leave_for_statement(&mut self, node: &input_ir::ForStatement) {
         if self.language_version >= VERSION_0_5_0 {
-            self.leave_scope_for_node_id(node.node_id);
+            self.leave_scope_for_node_id(node.id());
         }
     }
 
@@ -731,7 +727,7 @@ impl Visitor for Pass {
             // For Solidity >= 0.5.0, collect the parameters in the returns
             // declaration of the try statement and make them available in the
             // body block.
-            let body_scope_id = self.binder.scope_id_for_node_id(node.body.node_id).unwrap();
+            let body_scope_id = self.binder.scope_id_for_node_id(node.body.id()).unwrap();
             self.collect_named_parameters_into_scope(&returns.variables.parameters, body_scope_id);
         }
     }
@@ -740,18 +736,18 @@ impl Visitor for Pass {
         if let Some(error) = &node.error {
             // For Solidity >= 0.5.0, collect the parameters in the catch
             // declaration and make them available in the body block.
-            let body_scope_id = self.binder.scope_id_for_node_id(node.body.node_id).unwrap();
+            let body_scope_id = self.binder.scope_id_for_node_id(node.body.id()).unwrap();
             self.collect_named_parameters_into_scope(&error.parameters.parameters, body_scope_id);
         }
     }
 
     fn enter_mapping_type(&mut self, node: &input_ir::MappingType) -> bool {
         if let Some(name) = &node.key_type.name {
-            let definition = Definition::new_type_parameter(node.key_type.node_id, name);
+            let definition = Definition::new_type_parameter(node.key_type.id(), name);
             self.binder.insert_definition_no_scope(definition);
         }
         if let Some(name) = &node.value_type.name {
-            let definition = Definition::new_type_parameter(node.value_type.node_id, name);
+            let definition = Definition::new_type_parameter(node.value_type.id(), name);
             self.binder.insert_definition_no_scope(definition);
         }
 
@@ -761,14 +757,14 @@ impl Visitor for Pass {
     fn enter_function_type(&mut self, node: &input_ir::FunctionType) -> bool {
         for parameter in &node.parameters.parameters {
             if let Some(name) = &parameter.name {
-                let definition = Definition::new_type_parameter(parameter.node_id, name);
+                let definition = Definition::new_type_parameter(parameter.id(), name);
                 self.binder.insert_definition_no_scope(definition);
             }
         }
         if let Some(returns) = &node.returns {
             for parameter in &returns.variables.parameters {
                 if let Some(name) = &parameter.name {
-                    let definition = Definition::new_type_parameter(parameter.node_id, name);
+                    let definition = Definition::new_type_parameter(parameter.id(), name);
                     self.binder.insert_definition_no_scope(definition);
                 }
             }
@@ -778,21 +774,21 @@ impl Visitor for Pass {
     }
 
     fn enter_yul_block(&mut self, node: &input_ir::YulBlock) -> bool {
-        let scope = Scope::new_yul_block(node.node_id, self.current_scope_id());
+        let scope = Scope::new_yul_block(node.id(), self.current_scope_id());
         self.enter_scope(scope);
 
         true
     }
 
     fn leave_yul_block(&mut self, node: &input_ir::YulBlock) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_yul_function_definition(&mut self, node: &input_ir::YulFunctionDefinition) -> bool {
-        let definition = Definition::new_yul_function(node.node_id, &node.name);
+        let definition = Definition::new_yul_function(node.id(), &node.name);
         self.insert_definition_in_current_scope(definition);
 
-        let scope = Scope::new_yul_function(node.node_id, self.current_scope_id());
+        let scope = Scope::new_yul_function(node.id(), self.current_scope_id());
         let scope_id = self.enter_scope(scope);
 
         for parameter in &node.parameters.parameters {
@@ -810,11 +806,11 @@ impl Visitor for Pass {
     }
 
     fn leave_yul_function_definition(&mut self, node: &input_ir::YulFunctionDefinition) {
-        self.leave_scope_for_node_id(node.node_id);
+        self.leave_scope_for_node_id(node.id());
     }
 
     fn enter_yul_label(&mut self, node: &input_ir::YulLabel) -> bool {
-        let definition = Definition::new_yul_label(node.node_id, &node.label);
+        let definition = Definition::new_yul_label(node.id(), &node.label);
         self.insert_definition_in_current_scope(definition);
 
         false
@@ -843,11 +839,11 @@ impl Visitor for Pass {
 
         // Visit the rest of the children, but in the scope of the
         // initialization block such that iterator and body blocks link to it
-        self.enter_scope_for_node_id(node.initialization.node_id);
+        self.enter_scope_for_node_id(node.initialization.id());
         input_ir::visitor::accept_yul_expression(&node.condition, self);
         input_ir::visitor::accept_yul_block(&node.iterator, self);
         input_ir::visitor::accept_yul_block(&node.body, self);
-        self.leave_scope_for_node_id(node.initialization.node_id);
+        self.leave_scope_for_node_id(node.initialization.id());
 
         // We already visited our children
         false

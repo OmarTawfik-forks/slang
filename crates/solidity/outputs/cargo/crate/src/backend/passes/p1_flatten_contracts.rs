@@ -38,7 +38,7 @@ impl Transformer for Pass {
         &mut self,
         source: &input::ContractDefinition,
     ) -> ContractDefinition {
-        let node_id = source.node_id;
+        let node = Rc::clone(&source.node);
         let abstract_keyword = source.abstract_keyword.as_ref().map(Rc::clone);
         let name = Rc::clone(&source.name);
         let members = self.transform_contract_members(&source.members);
@@ -62,7 +62,7 @@ impl Transformer for Pass {
         });
 
         Rc::new(ContractDefinitionStruct {
-            node_id,
+            node,
             abstract_keyword,
             name,
             members,
