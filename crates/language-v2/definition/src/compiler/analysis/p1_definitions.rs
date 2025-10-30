@@ -12,6 +12,7 @@ use crate::model::{
 pub(crate) fn run(analysis: &mut Analysis) {
     collect_top_level_items(analysis);
 
+    check_switch_lexical_context_on_reduce(analysis);
     check_enum_items(analysis);
     check_precedence_items(analysis);
 }
@@ -19,27 +20,57 @@ pub(crate) fn run(analysis: &mut Analysis) {
 fn collect_top_level_items(analysis: &mut Analysis) {
     let language = Rc::clone(&analysis.language);
 
-    for item in language.items() {
-        let name = get_item_name(item);
-        let defined_in = calculate_defined_in(analysis, item);
+    for topic in language.topics() {
+        for item in &topic.items {
+            let name = get_item_name(item);
+            let defined_in = calculate_defined_in(analysis, item);
 
-        if analysis.metadata.contains_key(&**name) {
-            analysis.errors.add(name, &Errors::ExistingItem(name));
+            if analysis.metadata.contains_key(&**name) {
+                analysis.errors.add(name, &Errors::ExistingItem(name));
+            }
+
+            analysis.metadata.insert(
+                (**name).clone(),
+                ItemMetadata {
+                    name: name.clone(),
+                    item: item.clone(),
+                    lexical_context: (*topic.lexical_context).clone(),
+
+                    defined_in,
+                    used_in: VersionSet::new(),
+
+                    referenced_from: Vec::new(),
+                    referenced_items: Vec::new(),
+                },
+            );
         }
+    }
+}
 
-        analysis.metadata.insert(
-            (**name).clone(),
-            ItemMetadata {
-                name: name.clone(),
-                item: item.clone(),
+fn check_switch_lexical_context_on_reduce(analysis: &mut Analysis) {
+    let language = Rc::clone(&analysis.language);
 
-                defined_in,
-                used_in: VersionSet::new(),
+    let existing_contexts = language
+        .topics()
+        .map(|topic| &*topic.lexical_context)
+        .collect::<HashSet<_>>();
 
-                referenced_from: Vec::new(),
-                referenced_items: Vec::new(),
-            },
-        );
+    for topic in language.topics() {
+        for item in &topic.items {
+            let context = match item {
+                SpannedItem::Struct { item } => &item.switch_lexical_context_on_reduce,
+                SpannedItem::Keyword { item } => &item.switch_lexical_context_on_reduce,
+                _ => &None,
+            };
+
+            if let Some(context) = context {
+                if !existing_contexts.contains(&**context) {
+                    analysis
+                        .errors
+                        .add(context, &Errors::LexicalContextNotFound(context));
+                }
+            }
+        }
     }
 }
 
@@ -244,6 +275,8 @@ fn calculate_defined_in(analysis: &mut Analysis, item: &SpannedItem) -> VersionS
 #[allow(clippy::enum_variant_names)]
 #[derive(thiserror::Error, Debug)]
 enum Errors<'err> {
+    #[error("A lexical context with the name '{0}' was not found in any topic.")]
+    LexicalContextNotFound(&'err Identifier),
     #[error("An item with the name '{0}' already exists.")]
     ExistingItem(&'err Identifier),
     #[error("A variant referencing '{0}' already exists.")]

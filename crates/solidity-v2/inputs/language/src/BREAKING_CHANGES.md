@@ -9,6 +9,7 @@
 ## Topics
 
 - Make `Topic::lexical_context` required, instead of creating a "default" context behind the scenes.
+- Added `switch_lexical_context_on_reduce` field to `StructItem` and `KeywordItem` to support context switching in the new lexer/parser system. These are the only two grammar items that can trigger context switches for now, but we can add it to more items later if needed.
 
 ## Scanners
 

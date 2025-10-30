@@ -17,4 +17,7 @@ pub struct StructItem {
 
     #[serde(with = "indexmap::map::serde_seq")]
     pub fields: IndexMap<Identifier, Field>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub switch_lexical_context_on_reduce: Option<Identifier>,
 }

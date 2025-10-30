@@ -86,7 +86,8 @@ fn definition() {
                                         }
                                     )
                                 ]
-                                .into()
+                                .into(),
+                                switch_lexical_context_on_reduce: None,
                             }
                             .into()
                         },

@@ -11,7 +11,7 @@ use proc_macro2::Span;
 
 use crate::compiler::utils::version_set::VersionSet;
 use crate::internals::{ErrorsCollection, ParseOutput, Spanned};
-use crate::model::{Identifier, SpannedItem, SpannedLanguage};
+use crate::model::{Identifier, SpannedItem, SpannedLanguage, SpannedTopic};
 
 pub(crate) struct Analysis {
     pub errors: ErrorsCollection,
@@ -22,6 +22,7 @@ pub(crate) struct Analysis {
 pub(crate) struct ItemMetadata {
     pub name: Spanned<Identifier>,
     pub item: SpannedItem,
+    pub lexical_context: Identifier,
 
     pub defined_in: VersionSet,
     pub used_in: VersionSet,
@@ -60,10 +61,11 @@ impl Analysis {
 }
 
 impl SpannedLanguage {
+    fn topics(&self) -> impl Iterator<Item = &SpannedTopic> {
+        self.sections.iter().flat_map(|section| &section.topics)
+    }
+
     fn items(&self) -> impl Iterator<Item = &SpannedItem> {
-        self.sections
-            .iter()
-            .flat_map(|section| &section.topics)
-            .flat_map(|topic| &topic.items)
+        self.topics().flat_map(|topic| &topic.items)
     }
 }

@@ -11,6 +11,9 @@ pub struct KeywordItem {
     pub identifier: Identifier,
 
     pub definitions: Vec<KeywordDefinition>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub switch_lexical_context_on_reduce: Option<Identifier>,
 }
 
 impl KeywordItem {

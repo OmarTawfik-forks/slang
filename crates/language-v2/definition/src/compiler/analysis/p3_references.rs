@@ -85,6 +85,7 @@ fn check_struct(analysis: &mut Analysis, item: &SpannedStructItem, enablement: &
         enabled,
         error_recovery: _,
         fields,
+        switch_lexical_context_on_reduce: _,
     } = item;
 
     let enablement = update_enablement(analysis, enablement, enabled.as_ref());
@@ -300,6 +301,7 @@ fn check_keyword(analysis: &mut Analysis, item: &SpannedKeywordItem, enablement:
         name,
         identifier,
         definitions,
+        switch_lexical_context_on_reduce: _,
     } = item;
 
     check_reference(analysis, Some(name), identifier, enablement, &[Token]);
