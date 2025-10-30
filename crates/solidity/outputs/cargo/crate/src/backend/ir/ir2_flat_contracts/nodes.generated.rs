@@ -5,7 +5,7 @@ use std::vec::Vec;
 
 use metaslang_cst::nodes::NodeId;
 
-use crate::cst::{SyntaxNode, TerminalNode};
+use crate::cst::SyntaxNode;
 
 //
 // Sequences:
@@ -175,7 +175,7 @@ pub type ImportDeconstructionSymbol = Rc<ImportDeconstructionSymbolStruct>;
 #[derive(Debug)]
 pub struct ImportDeconstructionSymbolStruct {
     pub node: Rc<SyntaxNode>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub alias: Option<ImportAlias>,
 }
 
@@ -190,7 +190,7 @@ pub type ImportAlias = Rc<ImportAliasStruct>;
 #[derive(Debug)]
 pub struct ImportAliasStruct {
     pub node: Rc<SyntaxNode>,
-    pub identifier: Rc<TerminalNode>,
+    pub identifier: Rc<SyntaxNode>,
 }
 
 impl ImportAliasStruct {
@@ -206,7 +206,7 @@ pub struct UsingDirectiveStruct {
     pub node: Rc<SyntaxNode>,
     pub clause: UsingClause,
     pub target: UsingTarget,
-    pub global_keyword: Option<Rc<TerminalNode>>,
+    pub global_keyword: Option<Rc<SyntaxNode>>,
 }
 
 impl UsingDirectiveStruct {
@@ -263,8 +263,8 @@ pub type ContractDefinition = Rc<ContractDefinitionStruct>;
 #[derive(Debug)]
 pub struct ContractDefinitionStruct {
     pub node: Rc<SyntaxNode>,
-    pub abstract_keyword: Option<Rc<TerminalNode>>,
-    pub name: Rc<TerminalNode>,
+    pub abstract_keyword: Option<Rc<SyntaxNode>>,
+    pub name: Rc<SyntaxNode>,
     pub members: ContractMembers,
     pub inheritance_types: InheritanceTypes,
     pub storage_layout: Option<StorageLayoutSpecifier>,
@@ -324,7 +324,7 @@ pub type InterfaceDefinition = Rc<InterfaceDefinitionStruct>;
 #[derive(Debug)]
 pub struct InterfaceDefinitionStruct {
     pub node: Rc<SyntaxNode>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub inheritance: Option<InheritanceSpecifier>,
     pub members: InterfaceMembers,
 }
@@ -340,7 +340,7 @@ pub type LibraryDefinition = Rc<LibraryDefinitionStruct>;
 #[derive(Debug)]
 pub struct LibraryDefinitionStruct {
     pub node: Rc<SyntaxNode>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub members: LibraryMembers,
 }
 
@@ -355,7 +355,7 @@ pub type StructDefinition = Rc<StructDefinitionStruct>;
 #[derive(Debug)]
 pub struct StructDefinitionStruct {
     pub node: Rc<SyntaxNode>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub members: StructMembers,
 }
 
@@ -371,7 +371,7 @@ pub type StructMember = Rc<StructMemberStruct>;
 pub struct StructMemberStruct {
     pub node: Rc<SyntaxNode>,
     pub type_name: TypeName,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
 }
 
 impl StructMemberStruct {
@@ -385,7 +385,7 @@ pub type EnumDefinition = Rc<EnumDefinitionStruct>;
 #[derive(Debug)]
 pub struct EnumDefinitionStruct {
     pub node: Rc<SyntaxNode>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub members: EnumMembers,
 }
 
@@ -401,7 +401,7 @@ pub type ConstantDefinition = Rc<ConstantDefinitionStruct>;
 pub struct ConstantDefinitionStruct {
     pub node: Rc<SyntaxNode>,
     pub type_name: TypeName,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub value: Expression,
 }
 
@@ -418,7 +418,7 @@ pub struct StateVariableDefinitionStruct {
     pub node: Rc<SyntaxNode>,
     pub type_name: TypeName,
     pub attributes: StateVariableAttributes,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub value: Option<StateVariableDefinitionValue>,
 }
 
@@ -481,7 +481,7 @@ pub struct ParameterStruct {
     pub node: Rc<SyntaxNode>,
     pub type_name: TypeName,
     pub storage_location: Option<StorageLocation>,
-    pub name: Option<Rc<TerminalNode>>,
+    pub name: Option<Rc<SyntaxNode>>,
 }
 
 impl ParameterStruct {
@@ -602,7 +602,7 @@ pub type ModifierDefinition = Rc<ModifierDefinitionStruct>;
 #[derive(Debug)]
 pub struct ModifierDefinitionStruct {
     pub node: Rc<SyntaxNode>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub parameters: Option<ParametersDeclaration>,
     pub attributes: ModifierAttributes,
     pub body: FunctionBody,
@@ -634,9 +634,9 @@ pub type EventDefinition = Rc<EventDefinitionStruct>;
 #[derive(Debug)]
 pub struct EventDefinitionStruct {
     pub node: Rc<SyntaxNode>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub parameters: EventParametersDeclaration,
-    pub anonymous_keyword: Option<Rc<TerminalNode>>,
+    pub anonymous_keyword: Option<Rc<SyntaxNode>>,
 }
 
 impl EventDefinitionStruct {
@@ -665,8 +665,8 @@ pub type EventParameter = Rc<EventParameterStruct>;
 pub struct EventParameterStruct {
     pub node: Rc<SyntaxNode>,
     pub type_name: TypeName,
-    pub indexed_keyword: Option<Rc<TerminalNode>>,
-    pub name: Option<Rc<TerminalNode>>,
+    pub indexed_keyword: Option<Rc<SyntaxNode>>,
+    pub name: Option<Rc<SyntaxNode>>,
 }
 
 impl EventParameterStruct {
@@ -680,7 +680,7 @@ pub type UserDefinedValueTypeDefinition = Rc<UserDefinedValueTypeDefinitionStruc
 #[derive(Debug)]
 pub struct UserDefinedValueTypeDefinitionStruct {
     pub node: Rc<SyntaxNode>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub value_type: ElementaryType,
 }
 
@@ -695,7 +695,7 @@ pub type ErrorDefinition = Rc<ErrorDefinitionStruct>;
 #[derive(Debug)]
 pub struct ErrorDefinitionStruct {
     pub node: Rc<SyntaxNode>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub members: ErrorParametersDeclaration,
 }
 
@@ -725,7 +725,7 @@ pub type ErrorParameter = Rc<ErrorParameterStruct>;
 pub struct ErrorParameterStruct {
     pub node: Rc<SyntaxNode>,
     pub type_name: TypeName,
-    pub name: Option<Rc<TerminalNode>>,
+    pub name: Option<Rc<SyntaxNode>>,
 }
 
 impl ErrorParameterStruct {
@@ -786,7 +786,7 @@ pub type MappingKey = Rc<MappingKeyStruct>;
 pub struct MappingKeyStruct {
     pub node: Rc<SyntaxNode>,
     pub key_type: MappingKeyType,
-    pub name: Option<Rc<TerminalNode>>,
+    pub name: Option<Rc<SyntaxNode>>,
 }
 
 impl MappingKeyStruct {
@@ -801,7 +801,7 @@ pub type MappingValue = Rc<MappingValueStruct>;
 pub struct MappingValueStruct {
     pub node: Rc<SyntaxNode>,
     pub type_name: TypeName,
-    pub name: Option<Rc<TerminalNode>>,
+    pub name: Option<Rc<SyntaxNode>>,
 }
 
 impl MappingValueStruct {
@@ -815,7 +815,7 @@ pub type AddressType = Rc<AddressTypeStruct>;
 #[derive(Debug)]
 pub struct AddressTypeStruct {
     pub node: Rc<SyntaxNode>,
-    pub payable_keyword: Option<Rc<TerminalNode>>,
+    pub payable_keyword: Option<Rc<SyntaxNode>>,
 }
 
 impl AddressTypeStruct {
@@ -901,7 +901,7 @@ pub type TupleDeconstructionStatement = Rc<TupleDeconstructionStatementStruct>;
 #[derive(Debug)]
 pub struct TupleDeconstructionStatementStruct {
     pub node: Rc<SyntaxNode>,
-    pub var_keyword: Option<Rc<TerminalNode>>,
+    pub var_keyword: Option<Rc<SyntaxNode>>,
     pub elements: TupleDeconstructionElements,
     pub expression: Expression,
 }
@@ -933,7 +933,7 @@ pub struct TypedTupleMemberStruct {
     pub node: Rc<SyntaxNode>,
     pub type_name: TypeName,
     pub storage_location: Option<StorageLocation>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
 }
 
 impl TypedTupleMemberStruct {
@@ -948,7 +948,7 @@ pub type UntypedTupleMember = Rc<UntypedTupleMemberStruct>;
 pub struct UntypedTupleMemberStruct {
     pub node: Rc<SyntaxNode>,
     pub storage_location: Option<StorageLocation>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
 }
 
 impl UntypedTupleMemberStruct {
@@ -964,7 +964,7 @@ pub struct VariableDeclarationStatementStruct {
     pub node: Rc<SyntaxNode>,
     pub variable_type: VariableDeclarationType,
     pub storage_location: Option<StorageLocation>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub value: Option<VariableDeclarationValue>,
 }
 
@@ -1157,7 +1157,7 @@ pub type CatchClauseError = Rc<CatchClauseErrorStruct>;
 #[derive(Debug)]
 pub struct CatchClauseErrorStruct {
     pub node: Rc<SyntaxNode>,
-    pub name: Option<Rc<TerminalNode>>,
+    pub name: Option<Rc<SyntaxNode>>,
     pub parameters: ParametersDeclaration,
 }
 
@@ -1201,7 +1201,7 @@ pub type AssignmentExpression = Rc<AssignmentExpressionStruct>;
 pub struct AssignmentExpressionStruct {
     pub node: Rc<SyntaxNode>,
     pub left_operand: Expression,
-    pub operator: Rc<TerminalNode>,
+    pub operator: Rc<SyntaxNode>,
     pub right_operand: Expression,
 }
 
@@ -1263,7 +1263,7 @@ pub type EqualityExpression = Rc<EqualityExpressionStruct>;
 pub struct EqualityExpressionStruct {
     pub node: Rc<SyntaxNode>,
     pub left_operand: Expression,
-    pub operator: Rc<TerminalNode>,
+    pub operator: Rc<SyntaxNode>,
     pub right_operand: Expression,
 }
 
@@ -1279,7 +1279,7 @@ pub type InequalityExpression = Rc<InequalityExpressionStruct>;
 pub struct InequalityExpressionStruct {
     pub node: Rc<SyntaxNode>,
     pub left_operand: Expression,
-    pub operator: Rc<TerminalNode>,
+    pub operator: Rc<SyntaxNode>,
     pub right_operand: Expression,
 }
 
@@ -1340,7 +1340,7 @@ pub type ShiftExpression = Rc<ShiftExpressionStruct>;
 pub struct ShiftExpressionStruct {
     pub node: Rc<SyntaxNode>,
     pub left_operand: Expression,
-    pub operator: Rc<TerminalNode>,
+    pub operator: Rc<SyntaxNode>,
     pub right_operand: Expression,
 }
 
@@ -1356,7 +1356,7 @@ pub type AdditiveExpression = Rc<AdditiveExpressionStruct>;
 pub struct AdditiveExpressionStruct {
     pub node: Rc<SyntaxNode>,
     pub left_operand: Expression,
-    pub operator: Rc<TerminalNode>,
+    pub operator: Rc<SyntaxNode>,
     pub right_operand: Expression,
 }
 
@@ -1372,7 +1372,7 @@ pub type MultiplicativeExpression = Rc<MultiplicativeExpressionStruct>;
 pub struct MultiplicativeExpressionStruct {
     pub node: Rc<SyntaxNode>,
     pub left_operand: Expression,
-    pub operator: Rc<TerminalNode>,
+    pub operator: Rc<SyntaxNode>,
     pub right_operand: Expression,
 }
 
@@ -1388,7 +1388,7 @@ pub type ExponentiationExpression = Rc<ExponentiationExpressionStruct>;
 pub struct ExponentiationExpressionStruct {
     pub node: Rc<SyntaxNode>,
     pub left_operand: Expression,
-    pub operator: Rc<TerminalNode>,
+    pub operator: Rc<SyntaxNode>,
     pub right_operand: Expression,
 }
 
@@ -1404,7 +1404,7 @@ pub type PostfixExpression = Rc<PostfixExpressionStruct>;
 pub struct PostfixExpressionStruct {
     pub node: Rc<SyntaxNode>,
     pub operand: Expression,
-    pub operator: Rc<TerminalNode>,
+    pub operator: Rc<SyntaxNode>,
 }
 
 impl PostfixExpressionStruct {
@@ -1418,7 +1418,7 @@ pub type PrefixExpression = Rc<PrefixExpressionStruct>;
 #[derive(Debug)]
 pub struct PrefixExpressionStruct {
     pub node: Rc<SyntaxNode>,
-    pub operator: Rc<TerminalNode>,
+    pub operator: Rc<SyntaxNode>,
     pub operand: Expression,
 }
 
@@ -1464,7 +1464,7 @@ pub type MemberAccessExpression = Rc<MemberAccessExpressionStruct>;
 pub struct MemberAccessExpressionStruct {
     pub node: Rc<SyntaxNode>,
     pub operand: Expression,
-    pub member: Rc<TerminalNode>,
+    pub member: Rc<SyntaxNode>,
 }
 
 impl MemberAccessExpressionStruct {
@@ -1550,7 +1550,7 @@ pub type NamedArgument = Rc<NamedArgumentStruct>;
 #[derive(Debug)]
 pub struct NamedArgumentStruct {
     pub node: Rc<SyntaxNode>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub value: Expression,
 }
 
@@ -1635,7 +1635,7 @@ pub type HexNumberExpression = Rc<HexNumberExpressionStruct>;
 #[derive(Debug)]
 pub struct HexNumberExpressionStruct {
     pub node: Rc<SyntaxNode>,
-    pub literal: Rc<TerminalNode>,
+    pub literal: Rc<SyntaxNode>,
     pub unit: Option<NumberUnit>,
 }
 
@@ -1650,7 +1650,7 @@ pub type DecimalNumberExpression = Rc<DecimalNumberExpressionStruct>;
 #[derive(Debug)]
 pub struct DecimalNumberExpressionStruct {
     pub node: Rc<SyntaxNode>,
-    pub literal: Rc<TerminalNode>,
+    pub literal: Rc<SyntaxNode>,
     pub unit: Option<NumberUnit>,
 }
 
@@ -1679,7 +1679,7 @@ pub type YulFunctionDefinition = Rc<YulFunctionDefinitionStruct>;
 #[derive(Debug)]
 pub struct YulFunctionDefinitionStruct {
     pub node: Rc<SyntaxNode>,
-    pub name: Rc<TerminalNode>,
+    pub name: Rc<SyntaxNode>,
     pub parameters: YulParametersDeclaration,
     pub returns: Option<YulReturnsDeclaration>,
     pub body: YulBlock,
@@ -1784,7 +1784,7 @@ pub type YulStackAssignmentStatement = Rc<YulStackAssignmentStatementStruct>;
 pub struct YulStackAssignmentStatementStruct {
     pub node: Rc<SyntaxNode>,
     pub assignment: YulStackAssignmentOperator,
-    pub variable: Rc<TerminalNode>,
+    pub variable: Rc<SyntaxNode>,
 }
 
 impl YulStackAssignmentStatementStruct {
@@ -1926,7 +1926,7 @@ pub type YulLabel = Rc<YulLabelStruct>;
 #[derive(Debug)]
 pub struct YulLabelStruct {
     pub node: Rc<SyntaxNode>,
-    pub label: Rc<TerminalNode>,
+    pub label: Rc<SyntaxNode>,
 }
 
 impl YulLabelStruct {
@@ -2011,8 +2011,8 @@ pub enum VersionOperator {
 #[derive(Debug)]
 pub enum VersionLiteral {
     SimpleVersionLiteral(SimpleVersionLiteral),
-    SingleQuotedVersionLiteral(Rc<TerminalNode>),
-    DoubleQuotedVersionLiteral(Rc<TerminalNode>),
+    SingleQuotedVersionLiteral(Rc<SyntaxNode>),
+    DoubleQuotedVersionLiteral(Rc<SyntaxNode>),
 }
 
 #[derive(Debug)]
@@ -2089,7 +2089,7 @@ pub enum StateVariableAttribute {
 
 #[derive(Debug)]
 pub enum FunctionName {
-    Identifier(Rc<TerminalNode>),
+    Identifier(Rc<SyntaxNode>),
     FallbackKeyword,
     ReceiveKeyword,
 }
@@ -2194,11 +2194,11 @@ pub enum MappingKeyType {
 #[derive(Debug)]
 pub enum ElementaryType {
     AddressType(AddressType),
-    BytesKeyword(Rc<TerminalNode>),
-    IntKeyword(Rc<TerminalNode>),
-    UintKeyword(Rc<TerminalNode>),
-    FixedKeyword(Rc<TerminalNode>),
-    UfixedKeyword(Rc<TerminalNode>),
+    BytesKeyword(Rc<SyntaxNode>),
+    IntKeyword(Rc<SyntaxNode>),
+    UintKeyword(Rc<SyntaxNode>),
+    FixedKeyword(Rc<SyntaxNode>),
+    UfixedKeyword(Rc<SyntaxNode>),
     BoolKeyword,
     ByteKeyword,
     StringKeyword,
@@ -2287,7 +2287,7 @@ pub enum Expression {
     DecimalNumberExpression(DecimalNumberExpression),
     StringExpression(StringExpression),
     ElementaryType(ElementaryType),
-    Identifier(Rc<TerminalNode>),
+    Identifier(Rc<SyntaxNode>),
     PayableKeyword,
     ThisKeyword,
     SuperKeyword,
@@ -2327,20 +2327,20 @@ pub enum StringExpression {
 
 #[derive(Debug)]
 pub enum StringLiteral {
-    SingleQuotedStringLiteral(Rc<TerminalNode>),
-    DoubleQuotedStringLiteral(Rc<TerminalNode>),
+    SingleQuotedStringLiteral(Rc<SyntaxNode>),
+    DoubleQuotedStringLiteral(Rc<SyntaxNode>),
 }
 
 #[derive(Debug)]
 pub enum HexStringLiteral {
-    SingleQuotedHexStringLiteral(Rc<TerminalNode>),
-    DoubleQuotedHexStringLiteral(Rc<TerminalNode>),
+    SingleQuotedHexStringLiteral(Rc<SyntaxNode>),
+    DoubleQuotedHexStringLiteral(Rc<SyntaxNode>),
 }
 
 #[derive(Debug)]
 pub enum UnicodeStringLiteral {
-    SingleQuotedUnicodeStringLiteral(Rc<TerminalNode>),
-    DoubleQuotedUnicodeStringLiteral(Rc<TerminalNode>),
+    SingleQuotedUnicodeStringLiteral(Rc<SyntaxNode>),
+    DoubleQuotedUnicodeStringLiteral(Rc<SyntaxNode>),
 }
 
 #[derive(Debug)]
@@ -2389,8 +2389,8 @@ pub enum YulExpression {
 pub enum YulLiteral {
     HexStringLiteral(HexStringLiteral),
     StringLiteral(StringLiteral),
-    YulDecimalLiteral(Rc<TerminalNode>),
-    YulHexLiteral(Rc<TerminalNode>),
+    YulDecimalLiteral(Rc<SyntaxNode>),
+    YulHexLiteral(Rc<SyntaxNode>),
     YulTrueKeyword,
     YulFalseKeyword,
 }
@@ -2405,7 +2405,7 @@ pub type VersionExpressionSets = Vec<VersionExpressionSet>;
 
 pub type VersionExpressionSet = Vec<VersionExpression>;
 
-pub type SimpleVersionLiteral = Vec<Rc<TerminalNode>>;
+pub type SimpleVersionLiteral = Vec<Rc<SyntaxNode>>;
 
 pub type ImportDeconstructionSymbols = Vec<ImportDeconstructionSymbol>;
 
@@ -2421,7 +2421,7 @@ pub type LibraryMembers = Vec<ContractMember>;
 
 pub type StructMembers = Vec<StructMember>;
 
-pub type EnumMembers = Vec<Rc<TerminalNode>>;
+pub type EnumMembers = Vec<Rc<SyntaxNode>>;
 
 pub type StateVariableAttributes = Vec<StateVariableAttribute>;
 
@@ -2471,13 +2471,13 @@ pub type HexStringLiterals = Vec<HexStringLiteral>;
 
 pub type UnicodeStringLiterals = Vec<UnicodeStringLiteral>;
 
-pub type IdentifierPath = Vec<Rc<TerminalNode>>;
+pub type IdentifierPath = Vec<Rc<SyntaxNode>>;
 
 pub type YulStatements = Vec<YulStatement>;
 
-pub type YulParameters = Vec<Rc<TerminalNode>>;
+pub type YulParameters = Vec<Rc<SyntaxNode>>;
 
-pub type YulVariableNames = Vec<Rc<TerminalNode>>;
+pub type YulVariableNames = Vec<Rc<SyntaxNode>>;
 
 pub type YulSwitchCases = Vec<YulSwitchCase>;
 
@@ -2485,4 +2485,4 @@ pub type YulArguments = Vec<YulExpression>;
 
 pub type YulPaths = Vec<YulPath>;
 
-pub type YulPath = Vec<Rc<TerminalNode>>;
+pub type YulPath = Vec<Rc<SyntaxNode>>;

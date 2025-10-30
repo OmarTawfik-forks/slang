@@ -3,7 +3,6 @@
   use std::rc::Rc;
   use std::vec::Vec;
   use crate::cst::SyntaxNode;
-  use crate::cst::TerminalNode;
   use metaslang_cst::nodes::NodeId;
 
   //
@@ -20,9 +19,9 @@
         pub {{ field.label | snake_case }}:
         {%- if field.is_terminal -%}
           {%- if field.is_optional -%}
-            Option<Rc<TerminalNode>>,
+            Option<Rc<SyntaxNode>>,
           {%- else -%}
-            Rc<TerminalNode>,
+            Rc<SyntaxNode>,
           {%- endif -%}
         {%- else -%}
           {%- if field.is_optional -%}
@@ -53,7 +52,7 @@
         {{ nonterminal }}({{ nonterminal }}),
       {%- endfor -%}
       {% for terminal in choice.non_unique_terminal_types -%}
-        {{ terminal }}(Rc<TerminalNode>),
+        {{ terminal }}(Rc<SyntaxNode>),
       {%- endfor -%}
       {% for terminal in choice.unique_terminal_types -%}
         {{ terminal }},
@@ -68,7 +67,7 @@
   {% for parent_type, collection in target.collections %}
     pub type {{ parent_type }} = Vec<
       {%- if collection.is_terminal -%}
-        Rc<TerminalNode>
+        Rc<SyntaxNode>
       {%- else -%}
         {{ collection.item_type }}
       {%- endif -%}

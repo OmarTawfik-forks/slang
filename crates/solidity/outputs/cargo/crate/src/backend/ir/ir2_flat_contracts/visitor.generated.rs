@@ -4,7 +4,7 @@ use std::rc::Rc;
 
 #[allow(clippy::wildcard_imports)]
 use super::nodes::*;
-use crate::cst::TerminalNode;
+use crate::cst::SyntaxNode;
 
 pub trait Visitor {
     fn enter_source_unit(&mut self, _node: &SourceUnit) -> bool {
@@ -3302,7 +3302,7 @@ fn accept_version_expression_set(items: &Vec<VersionExpression>, visitor: &mut i
 }
 
 #[inline]
-fn accept_simple_version_literal(items: &Vec<Rc<TerminalNode>>, visitor: &mut impl Visitor) {
+fn accept_simple_version_literal(items: &Vec<Rc<SyntaxNode>>, visitor: &mut impl Visitor) {
     if visitor.enter_simple_version_literal(items) {
         visitor.leave_simple_version_literal(items);
     }
@@ -3392,7 +3392,7 @@ fn accept_struct_members(items: &Vec<StructMember>, visitor: &mut impl Visitor) 
 }
 
 #[inline]
-fn accept_enum_members(items: &Vec<Rc<TerminalNode>>, visitor: &mut impl Visitor) {
+fn accept_enum_members(items: &Vec<Rc<SyntaxNode>>, visitor: &mut impl Visitor) {
     if visitor.enter_enum_members(items) {
         visitor.leave_enum_members(items);
     }
@@ -3678,7 +3678,7 @@ fn accept_unicode_string_literals(items: &Vec<UnicodeStringLiteral>, visitor: &m
 }
 
 #[inline]
-fn accept_identifier_path(items: &Vec<Rc<TerminalNode>>, visitor: &mut impl Visitor) {
+fn accept_identifier_path(items: &Vec<Rc<SyntaxNode>>, visitor: &mut impl Visitor) {
     if visitor.enter_identifier_path(items) {
         visitor.leave_identifier_path(items);
     }
@@ -3696,14 +3696,14 @@ fn accept_yul_statements(items: &Vec<YulStatement>, visitor: &mut impl Visitor) 
 }
 
 #[inline]
-fn accept_yul_parameters(items: &Vec<Rc<TerminalNode>>, visitor: &mut impl Visitor) {
+fn accept_yul_parameters(items: &Vec<Rc<SyntaxNode>>, visitor: &mut impl Visitor) {
     if visitor.enter_yul_parameters(items) {
         visitor.leave_yul_parameters(items);
     }
 }
 
 #[inline]
-fn accept_yul_variable_names(items: &Vec<Rc<TerminalNode>>, visitor: &mut impl Visitor) {
+fn accept_yul_variable_names(items: &Vec<Rc<SyntaxNode>>, visitor: &mut impl Visitor) {
     if visitor.enter_yul_variable_names(items) {
         visitor.leave_yul_variable_names(items);
     }
@@ -3743,7 +3743,7 @@ fn accept_yul_paths(items: &Vec<YulPath>, visitor: &mut impl Visitor) {
 }
 
 #[inline]
-fn accept_yul_path(items: &Vec<Rc<TerminalNode>>, visitor: &mut impl Visitor) {
+fn accept_yul_path(items: &Vec<Rc<SyntaxNode>>, visitor: &mut impl Visitor) {
     if visitor.enter_yul_path(items) {
         visitor.leave_yul_path(items);
     }
