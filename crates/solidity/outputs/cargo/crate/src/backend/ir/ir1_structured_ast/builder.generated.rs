@@ -109,7 +109,7 @@ pub fn build_version_term(node: &Rc<SyntaxNode>) -> Option<VersionTerm> {
     let mut helper = ChildrenHelper::new(node.children());
     let operator = helper
         .accept_label(EdgeLabel::Operator)
-        .and_then(|node| build_version_operator(node));
+        .and_then(build_version_operator);
     let literal = build_version_literal(helper.accept_label(EdgeLabel::Literal)?)?;
     if !helper.finalize() {
         return None;
@@ -144,7 +144,7 @@ pub fn build_path_import(node: &Rc<SyntaxNode>) -> Option<PathImport> {
     let path = build_string_literal(helper.accept_label(EdgeLabel::Path)?)?;
     let alias = helper
         .accept_label(EdgeLabel::Alias)
-        .and_then(|node| build_import_alias(node));
+        .and_then(build_import_alias);
     if !helper.finalize() {
         return None;
     }
@@ -201,7 +201,7 @@ pub fn build_import_deconstruction_symbol(
     let name = terminal_node_cloned(helper.accept_label(EdgeLabel::Name)?);
     let alias = helper
         .accept_label(EdgeLabel::Alias)
-        .and_then(|node| build_import_alias(node));
+        .and_then(build_import_alias);
     if !helper.finalize() {
         return None;
     }
@@ -275,7 +275,7 @@ pub fn build_using_deconstruction_symbol(
     let name = build_identifier_path(helper.accept_label(EdgeLabel::Name)?)?;
     let alias = helper
         .accept_label(EdgeLabel::Alias)
-        .and_then(|node| build_using_alias(node));
+        .and_then(build_using_alias);
     if !helper.finalize() {
         return None;
     }
@@ -348,7 +348,7 @@ pub fn build_inheritance_type(node: &Rc<SyntaxNode>) -> Option<InheritanceType> 
     let type_name = build_identifier_path(helper.accept_label(EdgeLabel::TypeName)?)?;
     let arguments = helper
         .accept_label(EdgeLabel::Arguments)
-        .and_then(|node| build_arguments_declaration(node));
+        .and_then(build_arguments_declaration);
     if !helper.finalize() {
         return None;
     }
@@ -383,7 +383,7 @@ pub fn build_interface_definition(node: &Rc<SyntaxNode>) -> Option<InterfaceDefi
     let name = terminal_node_cloned(helper.accept_label(EdgeLabel::Name)?);
     let inheritance = helper
         .accept_label(EdgeLabel::Inheritance)
-        .and_then(|node| build_inheritance_specifier(node));
+        .and_then(build_inheritance_specifier);
     _ = helper.accept_label(EdgeLabel::OpenBrace)?;
     let members = build_interface_members(helper.accept_label(EdgeLabel::Members)?)?;
     _ = helper.accept_label(EdgeLabel::CloseBrace)?;
@@ -502,7 +502,7 @@ pub fn build_state_variable_definition(node: &Rc<SyntaxNode>) -> Option<StateVar
     let name = terminal_node_cloned(helper.accept_label(EdgeLabel::Name)?);
     let value = helper
         .accept_label(EdgeLabel::Value)
-        .and_then(|node| build_state_variable_definition_value(node));
+        .and_then(build_state_variable_definition_value);
     _ = helper.accept_label(EdgeLabel::Semicolon)?;
     if !helper.finalize() {
         return None;
@@ -543,7 +543,7 @@ pub fn build_function_definition(node: &Rc<SyntaxNode>) -> Option<FunctionDefini
     let attributes = build_function_attributes(helper.accept_label(EdgeLabel::Attributes)?)?;
     let returns = helper
         .accept_label(EdgeLabel::Returns)
-        .and_then(|node| build_returns_declaration(node));
+        .and_then(build_returns_declaration);
     let body = build_function_body(helper.accept_label(EdgeLabel::Body)?)?;
     if !helper.finalize() {
         return None;
@@ -581,7 +581,7 @@ pub fn build_parameter(node: &Rc<SyntaxNode>) -> Option<Parameter> {
     let type_name = build_type_name(helper.accept_label(EdgeLabel::TypeName)?)?;
     let storage_location = helper
         .accept_label(EdgeLabel::StorageLocation)
-        .and_then(|node| build_storage_location(node));
+        .and_then(build_storage_location);
     let name = helper
         .accept_label(EdgeLabel::Name)
         .map(terminal_node_cloned);
@@ -603,7 +603,7 @@ pub fn build_override_specifier(node: &Rc<SyntaxNode>) -> Option<OverrideSpecifi
     _ = helper.accept_label(EdgeLabel::OverrideKeyword)?;
     let overridden = helper
         .accept_label(EdgeLabel::Overridden)
-        .and_then(|node| build_override_paths_declaration(node));
+        .and_then(build_override_paths_declaration);
     if !helper.finalize() {
         return None;
     }
@@ -697,7 +697,7 @@ pub fn build_fallback_function_definition(
         build_fallback_function_attributes(helper.accept_label(EdgeLabel::Attributes)?)?;
     let returns = helper
         .accept_label(EdgeLabel::Returns)
-        .and_then(|node| build_returns_declaration(node));
+        .and_then(build_returns_declaration);
     let body = build_function_body(helper.accept_label(EdgeLabel::Body)?)?;
     if !helper.finalize() {
         return None;
@@ -741,7 +741,7 @@ pub fn build_modifier_definition(node: &Rc<SyntaxNode>) -> Option<ModifierDefini
     let name = terminal_node_cloned(helper.accept_label(EdgeLabel::Name)?);
     let parameters = helper
         .accept_label(EdgeLabel::Parameters)
-        .and_then(|node| build_parameters_declaration(node));
+        .and_then(build_parameters_declaration);
     let attributes = build_modifier_attributes(helper.accept_label(EdgeLabel::Attributes)?)?;
     let body = build_function_body(helper.accept_label(EdgeLabel::Body)?)?;
     if !helper.finalize() {
@@ -763,7 +763,7 @@ pub fn build_modifier_invocation(node: &Rc<SyntaxNode>) -> Option<ModifierInvoca
     let name = build_identifier_path(helper.accept_label(EdgeLabel::Name)?)?;
     let arguments = helper
         .accept_label(EdgeLabel::Arguments)
-        .and_then(|node| build_arguments_declaration(node));
+        .and_then(build_arguments_declaration);
     if !helper.finalize() {
         return None;
     }
@@ -920,7 +920,7 @@ pub fn build_array_type_name(node: &Rc<SyntaxNode>) -> Option<ArrayTypeName> {
     _ = helper.accept_label(EdgeLabel::OpenBracket)?;
     let index = helper
         .accept_label(EdgeLabel::Index)
-        .and_then(|node| build_expression(node));
+        .and_then(build_expression);
     _ = helper.accept_label(EdgeLabel::CloseBracket)?;
     if !helper.finalize() {
         return None;
@@ -941,7 +941,7 @@ pub fn build_function_type(node: &Rc<SyntaxNode>) -> Option<FunctionType> {
     let attributes = build_function_type_attributes(helper.accept_label(EdgeLabel::Attributes)?)?;
     let returns = helper
         .accept_label(EdgeLabel::Returns)
-        .and_then(|node| build_returns_declaration(node));
+        .and_then(build_returns_declaration);
     if !helper.finalize() {
         return None;
     }
@@ -1079,10 +1079,10 @@ pub fn build_assembly_statement(node: &Rc<SyntaxNode>) -> Option<AssemblyStateme
     _ = helper.accept_label(EdgeLabel::AssemblyKeyword)?;
     let label = helper
         .accept_label(EdgeLabel::Label)
-        .and_then(|node| build_string_literal(node));
+        .and_then(build_string_literal);
     let flags = helper
         .accept_label(EdgeLabel::Flags)
-        .and_then(|node| build_assembly_flags_declaration(node));
+        .and_then(build_assembly_flags_declaration);
     let body = build_yul_block(helper.accept_label(EdgeLabel::Body)?)?;
     if !helper.finalize() {
         return None;
@@ -1145,7 +1145,7 @@ pub fn build_tuple_deconstruction_element(
     let mut helper = ChildrenHelper::new(node.children());
     let member = helper
         .accept_label(EdgeLabel::Member)
-        .and_then(|node| build_tuple_member(node));
+        .and_then(build_tuple_member);
     if !helper.finalize() {
         return None;
     }
@@ -1162,7 +1162,7 @@ pub fn build_typed_tuple_member(node: &Rc<SyntaxNode>) -> Option<TypedTupleMembe
     let type_name = build_type_name(helper.accept_label(EdgeLabel::TypeName)?)?;
     let storage_location = helper
         .accept_label(EdgeLabel::StorageLocation)
-        .and_then(|node| build_storage_location(node));
+        .and_then(build_storage_location);
     let name = terminal_node_cloned(helper.accept_label(EdgeLabel::Name)?);
     if !helper.finalize() {
         return None;
@@ -1181,7 +1181,7 @@ pub fn build_untyped_tuple_member(node: &Rc<SyntaxNode>) -> Option<UntypedTupleM
     let mut helper = ChildrenHelper::new(node.children());
     let storage_location = helper
         .accept_label(EdgeLabel::StorageLocation)
-        .and_then(|node| build_storage_location(node));
+        .and_then(build_storage_location);
     let name = terminal_node_cloned(helper.accept_label(EdgeLabel::Name)?);
     if !helper.finalize() {
         return None;
@@ -1203,11 +1203,11 @@ pub fn build_variable_declaration_statement(
         build_variable_declaration_type(helper.accept_label(EdgeLabel::VariableType)?)?;
     let storage_location = helper
         .accept_label(EdgeLabel::StorageLocation)
-        .and_then(|node| build_storage_location(node));
+        .and_then(build_storage_location);
     let name = terminal_node_cloned(helper.accept_label(EdgeLabel::Name)?);
     let value = helper
         .accept_label(EdgeLabel::Value)
-        .and_then(|node| build_variable_declaration_value(node));
+        .and_then(build_variable_declaration_value);
     _ = helper.accept_label(EdgeLabel::Semicolon)?;
     if !helper.finalize() {
         return None;
@@ -1247,7 +1247,7 @@ pub fn build_if_statement(node: &Rc<SyntaxNode>) -> Option<IfStatement> {
     let body = build_statement(helper.accept_label(EdgeLabel::Body)?)?;
     let else_branch = helper
         .accept_label(EdgeLabel::ElseBranch)
-        .and_then(|node| build_else_branch(node));
+        .and_then(build_else_branch);
     if !helper.finalize() {
         return None;
     }
@@ -1285,7 +1285,7 @@ pub fn build_for_statement(node: &Rc<SyntaxNode>) -> Option<ForStatement> {
     let condition = build_for_statement_condition(helper.accept_label(EdgeLabel::Condition)?)?;
     let iterator = helper
         .accept_label(EdgeLabel::Iterator)
-        .and_then(|node| build_expression(node));
+        .and_then(build_expression);
     _ = helper.accept_label(EdgeLabel::CloseParen)?;
     let body = build_statement(helper.accept_label(EdgeLabel::Body)?)?;
     if !helper.finalize() {
@@ -1375,7 +1375,7 @@ pub fn build_return_statement(node: &Rc<SyntaxNode>) -> Option<ReturnStatement> 
     _ = helper.accept_label(EdgeLabel::ReturnKeyword)?;
     let expression = helper
         .accept_label(EdgeLabel::Expression)
-        .and_then(|node| build_expression(node));
+        .and_then(build_expression);
     _ = helper.accept_label(EdgeLabel::Semicolon)?;
     if !helper.finalize() {
         return None;
@@ -1412,7 +1412,7 @@ pub fn build_try_statement(node: &Rc<SyntaxNode>) -> Option<TryStatement> {
     let expression = build_expression(helper.accept_label(EdgeLabel::Expression)?)?;
     let returns = helper
         .accept_label(EdgeLabel::Returns)
-        .and_then(|node| build_returns_declaration(node));
+        .and_then(build_returns_declaration);
     let body = build_block(helper.accept_label(EdgeLabel::Body)?)?;
     let catch_clauses = build_catch_clauses(helper.accept_label(EdgeLabel::CatchClauses)?)?;
     if !helper.finalize() {
@@ -1434,7 +1434,7 @@ pub fn build_catch_clause(node: &Rc<SyntaxNode>) -> Option<CatchClause> {
     _ = helper.accept_label(EdgeLabel::CatchKeyword)?;
     let error = helper
         .accept_label(EdgeLabel::Error)
-        .and_then(|node| build_catch_clause_error(node));
+        .and_then(build_catch_clause_error);
     let body = build_block(helper.accept_label(EdgeLabel::Body)?)?;
     if !helper.finalize() {
         return None;
@@ -1471,7 +1471,7 @@ pub fn build_revert_statement(node: &Rc<SyntaxNode>) -> Option<RevertStatement> 
     _ = helper.accept_label(EdgeLabel::RevertKeyword)?;
     let error = helper
         .accept_label(EdgeLabel::Error)
-        .and_then(|node| build_identifier_path(node));
+        .and_then(build_identifier_path);
     let arguments = build_arguments_declaration(helper.accept_label(EdgeLabel::Arguments)?)?;
     _ = helper.accept_label(EdgeLabel::Semicolon)?;
     if !helper.finalize() {
@@ -1820,10 +1820,10 @@ pub fn build_index_access_expression(node: &Rc<SyntaxNode>) -> Option<IndexAcces
     _ = helper.accept_label(EdgeLabel::OpenBracket)?;
     let start = helper
         .accept_label(EdgeLabel::Start)
-        .and_then(|node| build_expression(node));
+        .and_then(build_expression);
     let end = helper
         .accept_label(EdgeLabel::End)
-        .and_then(|node| build_index_access_end(node));
+        .and_then(build_index_access_end);
     _ = helper.accept_label(EdgeLabel::CloseBracket)?;
     if !helper.finalize() {
         return None;
@@ -1843,7 +1843,7 @@ pub fn build_index_access_end(node: &Rc<SyntaxNode>) -> Option<IndexAccessEnd> {
     _ = helper.accept_label(EdgeLabel::Colon)?;
     let end = helper
         .accept_label(EdgeLabel::End)
-        .and_then(|node| build_expression(node));
+        .and_then(build_expression);
     if !helper.finalize() {
         return None;
     }
@@ -1880,7 +1880,7 @@ pub fn build_named_arguments_declaration(
     _ = helper.accept_label(EdgeLabel::OpenParen)?;
     let arguments = helper
         .accept_label(EdgeLabel::Arguments)
-        .and_then(|node| build_named_argument_group(node));
+        .and_then(build_named_argument_group);
     _ = helper.accept_label(EdgeLabel::CloseParen)?;
     if !helper.finalize() {
         return None;
@@ -1978,7 +1978,7 @@ pub fn build_tuple_value(node: &Rc<SyntaxNode>) -> Option<TupleValue> {
     let mut helper = ChildrenHelper::new(node.children());
     let expression = helper
         .accept_label(EdgeLabel::Expression)
-        .and_then(|node| build_expression(node));
+        .and_then(build_expression);
     if !helper.finalize() {
         return None;
     }
@@ -2011,7 +2011,7 @@ pub fn build_hex_number_expression(node: &Rc<SyntaxNode>) -> Option<HexNumberExp
     let literal = terminal_node_cloned(helper.accept_label(EdgeLabel::Literal)?);
     let unit = helper
         .accept_label(EdgeLabel::Unit)
-        .and_then(|node| build_number_unit(node));
+        .and_then(build_number_unit);
     if !helper.finalize() {
         return None;
     }
@@ -2029,7 +2029,7 @@ pub fn build_decimal_number_expression(node: &Rc<SyntaxNode>) -> Option<DecimalN
     let literal = terminal_node_cloned(helper.accept_label(EdgeLabel::Literal)?);
     let unit = helper
         .accept_label(EdgeLabel::Unit)
-        .and_then(|node| build_number_unit(node));
+        .and_then(build_number_unit);
     if !helper.finalize() {
         return None;
     }
@@ -2065,7 +2065,7 @@ pub fn build_yul_function_definition(node: &Rc<SyntaxNode>) -> Option<YulFunctio
     let parameters = build_yul_parameters_declaration(helper.accept_label(EdgeLabel::Parameters)?)?;
     let returns = helper
         .accept_label(EdgeLabel::Returns)
-        .and_then(|node| build_yul_returns_declaration(node));
+        .and_then(build_yul_returns_declaration);
     let body = build_yul_block(helper.accept_label(EdgeLabel::Body)?)?;
     if !helper.finalize() {
         return None;
@@ -2120,7 +2120,7 @@ pub fn build_yul_variable_declaration_statement(
     let variables = build_yul_variable_names(helper.accept_label(EdgeLabel::Variables)?)?;
     let value = helper
         .accept_label(EdgeLabel::Value)
-        .and_then(|node| build_yul_variable_declaration_value(node));
+        .and_then(build_yul_variable_declaration_value);
     if !helper.finalize() {
         return None;
     }

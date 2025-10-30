@@ -359,11 +359,13 @@ impl Visitor for Pass {
 
     fn leave_prefix_expression(&mut self, node: &input_ir::PrefixExpression) {
         let type_id = match node.operator.kind() {
-            NodeKind::Terminal(TerminalKind::PlusPlus)
-            | NodeKind::Terminal(TerminalKind::Plus)
-            | NodeKind::Terminal(TerminalKind::MinusMinus)
-            | NodeKind::Terminal(TerminalKind::Minus)
-            | NodeKind::Terminal(TerminalKind::Tilde) => {
+            NodeKind::Terminal(
+                TerminalKind::PlusPlus
+                | TerminalKind::Plus
+                | TerminalKind::MinusMinus
+                | TerminalKind::Minus
+                | TerminalKind::Tilde,
+            ) => {
                 // TODO(validation): check that the operand is integer
                 self.typing_of_expression(&node.operand).as_type_id()
             }

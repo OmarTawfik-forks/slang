@@ -28,8 +28,8 @@
               {%- if field.is_terminal -%}
                 helper.accept_label(EdgeLabel::{{ field.label | pascal_case }}).map(terminal_node_cloned)
               {%- else -%}
-                helper.accept_label(EdgeLabel::{{ field.label | pascal_case }}).and_then(|node|
-                  build_{{ field.type | snake_case }}(node)
+                helper.accept_label(EdgeLabel::{{ field.label | pascal_case }}).and_then(
+                  build_{{ field.type | snake_case }}
                 )
               {%- endif -%}
             ;
