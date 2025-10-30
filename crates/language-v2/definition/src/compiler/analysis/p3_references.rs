@@ -2,10 +2,9 @@ use std::fmt::Debug;
 use std::rc::Rc;
 
 use indexmap::IndexMap;
-use semver::Version;
 
 use crate::compiler::analysis::Analysis;
-use crate::compiler::version_set::VersionSet;
+use crate::compiler::utils::version_set::VersionSet;
 use crate::internals::Spanned;
 use crate::model::SpannedItemDiscriminants::{
     self, Enum, Fragment, Keyword, Precedence, Repeated, Separated, Struct, Token, Trivia,
@@ -20,11 +19,11 @@ use crate::model::{
     SpannedVersionSpecifier,
 };
 
-pub(crate) fn analyze_references(analysis: &mut Analysis) {
+pub(crate) fn run(analysis: &mut Analysis) {
     let language = Rc::clone(&analysis.language);
 
     let mut enablement = VersionSet::new();
-    analysis.add_all_versions(&mut enablement);
+    enablement.add_all_versions(&analysis.language);
 
     check_reference(
         analysis,
@@ -90,7 +89,7 @@ fn check_struct(analysis: &mut Analysis, item: &SpannedStructItem, enablement: &
 
     let enablement = update_enablement(analysis, enablement, enabled.as_ref());
 
-    check_fields(analysis, Some(name), fields, &enablement);
+    check_fields(analysis, name, fields, &enablement);
 }
 
 fn check_enum(analysis: &mut Analysis, item: &SpannedEnumItem, enablement: &VersionSet) {
@@ -191,7 +190,7 @@ fn check_precedence(
 
             let enablement = update_enablement(analysis, &enablement, enabled.as_ref());
 
-            check_fields(analysis, Some(name), fields, &enablement);
+            check_fields(analysis, name, fields, &enablement);
         }
     }
 
@@ -214,7 +213,7 @@ fn check_precedence(
 
 fn check_fields(
     analysis: &mut Analysis,
-    source: Option<&Identifier>,
+    source: &Identifier,
     fields: &IndexMap<Spanned<Identifier>, SpannedField>,
     enablement: &VersionSet,
 ) {
@@ -223,7 +222,7 @@ fn check_fields(
             SpannedField::Required { reference } => {
                 check_reference(
                     analysis,
-                    source,
+                    Some(source),
                     reference,
                     enablement,
                     &[
@@ -236,7 +235,7 @@ fn check_fields(
 
                 check_reference(
                     analysis,
-                    source,
+                    Some(source),
                     reference,
                     &enablement,
                     &[
@@ -308,15 +307,11 @@ fn check_keyword(analysis: &mut Analysis, item: &SpannedKeywordItem, enablement:
     for definition in definitions {
         let SpannedKeywordDefinition {
             enabled,
-            reserved,
+            reserved: _,
             value: _,
         } = definition;
 
         let _ = update_enablement(analysis, enablement, enabled.as_ref());
-
-        if let Some(reserved) = reserved {
-            check_version_specifier(analysis, reserved);
-        }
     }
 }
 
@@ -496,12 +491,8 @@ fn update_enablement(
         return existing_enablement.to_owned();
     };
 
-    if !check_version_specifier(analysis, new_specifier) {
-        return existing_enablement.to_owned();
-    }
-
     let mut new_enablement = VersionSet::new();
-    analysis.add_specifier(&mut new_enablement, new_specifier);
+    new_enablement.add_specifier(new_specifier, &analysis.language);
 
     let not_defined_in = new_enablement.difference(existing_enablement);
     if !not_defined_in.is_empty() {
@@ -513,42 +504,8 @@ fn update_enablement(
     new_enablement
 }
 
-fn check_version_specifier(analysis: &mut Analysis, specifier: &SpannedVersionSpecifier) -> bool {
-    match specifier {
-        SpannedVersionSpecifier::Never => true,
-        SpannedVersionSpecifier::From { from } => check_version(analysis, from),
-        SpannedVersionSpecifier::Till { till } => check_version(analysis, till),
-        SpannedVersionSpecifier::Range { from, till } => {
-            if from >= till {
-                analysis
-                    .errors
-                    .add(from, &Errors::UnorderedVersionPair(from, till));
-                return false;
-            }
-
-            check_version(analysis, from) || check_version(analysis, till)
-        }
-    }
-}
-
-fn check_version(analysis: &mut Analysis, version: &Spanned<Version>) -> bool {
-    if !analysis.language.versions.contains(version) {
-        analysis
-            .errors
-            .add(version, &Errors::VersionNotFound(version));
-
-        return false;
-    }
-
-    true
-}
-
 #[derive(thiserror::Error, Debug)]
 enum Errors<'err> {
-    #[error("Version '{0}' does not exist in the language definition.")]
-    VersionNotFound(&'err Version),
-    #[error("Version '{0}' must be less than corresponding version '{1}'.")]
-    UnorderedVersionPair(&'err Version, &'err Version),
     #[error("Parent scope is only enabled in '{0}'.")]
     EnabledTooWide(&'err VersionSet),
     #[error("Reference to unknown item '{0}'.")]

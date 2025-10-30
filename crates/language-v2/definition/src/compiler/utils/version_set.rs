@@ -4,6 +4,8 @@ use std::ops::Range;
 
 use semver::Version;
 
+use crate::model::{SpannedLanguage, SpannedVersionSpecifier};
+
 const MAX_VERSION: Version = Version::new(u64::MAX, u64::MAX, u64::MAX);
 
 #[derive(Clone, Debug, Default)]
@@ -20,8 +22,29 @@ impl VersionSet {
         self.ranges.is_empty()
     }
 
-    pub fn add_versions_starting_from(&mut self, from: &Version) {
-        self.add_version_range(from, &MAX_VERSION);
+    pub fn add_specifier(
+        &mut self,
+        specifier: &SpannedVersionSpecifier,
+        language: &SpannedLanguage,
+    ) {
+        match specifier {
+            SpannedVersionSpecifier::Never => {
+                // Do nothing.
+            }
+            SpannedVersionSpecifier::From { from } => {
+                self.add_version_range(from, &MAX_VERSION);
+            }
+            SpannedVersionSpecifier::Till { till } => {
+                self.add_version_range(&language.versions[0], till);
+            }
+            SpannedVersionSpecifier::Range { from, till } => {
+                self.add_version_range(from, till);
+            }
+        }
+    }
+
+    pub fn add_all_versions(&mut self, language: &SpannedLanguage) {
+        self.add_version_range(&language.versions[0], &MAX_VERSION);
     }
 
     pub fn add_version_range(&mut self, from: &Version, till: &Version) {

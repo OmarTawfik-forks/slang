@@ -2,14 +2,14 @@ use std::collections::HashSet;
 use std::rc::Rc;
 
 use crate::compiler::analysis::{Analysis, ItemMetadata};
-use crate::compiler::version_set::VersionSet;
+use crate::compiler::utils::version_set::VersionSet;
 use crate::internals::Spanned;
 use crate::model::{
     Identifier, SpannedField, SpannedItem, SpannedOperatorModel, SpannedPrecedenceOperator,
     SpannedVersionSpecifier,
 };
 
-pub(crate) fn analyze_definitions(analysis: &mut Analysis) {
+pub(crate) fn run(analysis: &mut Analysis) {
     collect_top_level_items(analysis);
 
     check_enum_items(analysis);
@@ -198,9 +198,9 @@ fn calculate_defined_in(analysis: &mut Analysis, item: &SpannedItem) -> VersionS
 
     let mut try_add_specifier = |specifier: &Option<Spanned<SpannedVersionSpecifier>>| {
         if let Some(specifier) = specifier {
-            analysis.add_specifier(&mut defined_in, specifier);
+            defined_in.add_specifier(specifier, &analysis.language);
         } else {
-            analysis.add_all_versions(&mut defined_in);
+            defined_in.add_all_versions(&analysis.language);
         }
     };
 
