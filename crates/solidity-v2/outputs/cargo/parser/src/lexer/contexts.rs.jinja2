@@ -86,6 +86,9 @@ impl<'source> ContextWrapper<'source> {
 {% for context in model.parser.lexer.contexts %}
     #[derive(Clone, Debug, Logos)]
     #[logos(extras = ContextExtras)]
+    {%- for subpattern in context.subpatterns %}
+        #[logos(subpattern {{ subpattern.name }} = r#"{{ subpattern.regex }}"#)]
+    {%- endfor -%}
     pub enum {{ context.name }}Context {
         {% for lexeme in context.lexemes -%}
             {%- if lexeme.type == "Trivia" -%}

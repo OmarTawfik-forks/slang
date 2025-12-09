@@ -23,6 +23,7 @@ impl LexerModel {
 pub struct LexicalContext {
     pub name: String,
     pub lexemes: Vec<Lexeme>,
+    pub subpatterns: Vec<Subpattern>,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -41,4 +42,10 @@ pub enum Lexeme {
         regex: String,
         reserved: Option<VersionSpecifier>,
     },
+}
+
+#[derive(Clone, Debug, Serialize)]
+pub struct Subpattern {
+    pub name: String,
+    pub regex: String,
 }
