@@ -9,6 +9,13 @@
   "editor.unicodeHighlight.allowedCharacters": {
     "꞉": true // used in CST snapshot tests
   },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    // __JINJA_TEMPLATES_EXTENSIONS__ (keep in sync)
+    "*.generated.mts": "${capture}.mts.jinja2",
+    "*.generated.rs": "${capture}.rs.jinja2",
+    "*.generated.wit": "${capture}.wit.jinja2"
+  },
   "files.eol": "\n",
   "files.insertFinalNewline": true,
   "files.readonlyInclude": {
