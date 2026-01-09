@@ -1,5 +1,5 @@
 error: Expected a variant: 'Struct' or 'Enum' or 'Repeated' or 'Separated' or 'Precedence' or 'Trivia' or 'Keyword' or 'Token' or 'Fragment'
-  --> src/fail/p0_parsing/unrecognized_variant/test.rs:24:26
+  --> src/fail/p0_parsing/unrecognized_variant/test.rs:22:53
    |
-24 |                 items = [Unrecognized(true)]
-   |                          ^^^^^^^^^^^^
+22 |                 Topic(title = "Topic Two", items = [Unrecognized(true)])
+   |                                                     ^^^^^^^^^^^^
