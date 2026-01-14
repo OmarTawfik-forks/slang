@@ -34,8 +34,8 @@ pub fn setup_cargo() {
     // Needed for the TypeScript packages:
     rustup_add_targets(env!("RUST_STABLE_VERSION"), [WASM_TARGET]);
 
-    // Make sure we have the latest dependencies:
-    run_cargo_fetch();
+    // Make sure lock file is up-to-date:
+    update_cargo_lock_file();
 }
 
 fn rustup_add_targets(toolchain: &str, targets: impl IntoIterator<Item = impl Into<String>>) {
@@ -63,12 +63,10 @@ fn rustup_add_components(toolchain: &str, components: impl IntoIterator<Item = i
         .run();
 }
 
-fn run_cargo_fetch() {
-    let mut command = Command::new("cargo").arg("fetch");
+fn update_cargo_lock_file() {
+    let mut command = Command::new("cargo").arg("update").flag("--workspace");
 
     if GitHub::is_running_in_ci() {
-        // In CI, run with '--locked' to make sure `Cargo.lock` is up to date.
-        // Don't use '--frozen', because the cache is rarely up to date.
         command = command.flag("--locked");
     }
 
