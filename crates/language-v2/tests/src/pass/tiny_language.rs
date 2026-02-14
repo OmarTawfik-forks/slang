@@ -56,6 +56,7 @@ fn definition() {
                         Item::Struct {
                             item: StructItem {
                                 name: "Foo".into(),
+                                lexical_context: None,
                                 enabled: None,
                                 error_recovery: None,
                                 fields: [

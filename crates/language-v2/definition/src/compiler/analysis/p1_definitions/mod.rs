@@ -19,27 +19,34 @@ pub(crate) fn run(analysis: &mut Analysis) {
 fn collect_top_level_items(analysis: &mut Analysis) {
     let language = Rc::clone(&analysis.language);
 
-    for item in language.items() {
-        let name = get_item_name(item);
-        let defined_in = calculate_defined_in(analysis, item);
+    for section in &language.sections {
+        for topic in &section.topics {
+            let lexical_context = (*topic.lexical_context).clone();
 
-        if analysis.metadata.contains_key(&**name) {
-            analysis.errors.add(name, &Errors::ExistingItem(name));
+            for item in &topic.items {
+                let name = get_item_name(item);
+                let defined_in = calculate_defined_in(analysis, item);
+
+                if analysis.metadata.contains_key(&**name) {
+                    analysis.errors.add(name, &Errors::ExistingItem(name));
+                }
+
+                analysis.metadata.insert(
+                    (**name).clone(),
+                    ItemMetadata {
+                        name: name.clone(),
+                        item: item.clone(),
+                        lexical_context: lexical_context.clone(),
+
+                        defined_in,
+                        used_in: VersionSet::new(),
+
+                        referenced_from: Vec::new(),
+                        referenced_items: Vec::new(),
+                    },
+                );
+            }
         }
-
-        analysis.metadata.insert(
-            (**name).clone(),
-            ItemMetadata {
-                name: name.clone(),
-                item: item.clone(),
-
-                defined_in,
-                used_in: VersionSet::new(),
-
-                referenced_from: Vec::new(),
-                referenced_items: Vec::new(),
-            },
-        );
     }
 }
 

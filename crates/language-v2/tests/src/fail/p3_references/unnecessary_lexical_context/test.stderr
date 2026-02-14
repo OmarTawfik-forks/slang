@@ -1,0 +1,5 @@
+error: Unnecessary 'lexical_context = ContextA': it is the same as the topic's context 'ContextA'.
+  --> src/fail/p3_references/unnecessary_lexical_context/test.rs:17:39
+   |
+17 |                     lexical_context = ContextA,
+   |                                       ^^^^^^^^

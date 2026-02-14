@@ -76,17 +76,24 @@ language_v2_macros::compile!(Language(
                 ),
                 Topic(
                     title = "Pragma Directives",
-                    lexical_context = Pragma,
+                    lexical_context = Solidity,
                     items = [
                         Struct(
                             name = PragmaDirective,
+                            lexical_context = Pragma,
                             error_recovery = FieldsErrorRecovery(terminator = semicolon),
                             fields = (
                                 pragma_keyword = Required(PragmaKeyword),
                                 pragma = Required(Pragma),
-                                semicolon = Required(Semicolon)
+                                semicolon = Required(PragmaSemicolon)
                             )
-                        ),
+                        )
+                    ]
+                ),
+                Topic(
+                    title = "Pragma Directives",
+                    lexical_context = Pragma,
+                    items = [
                         Enum(
                             name = Pragma,
                             variants = [
@@ -102,7 +109,7 @@ language_v2_macros::compile!(Language(
                             name = AbicoderPragma,
                             enabled = From("0.7.5"),
                             fields = (
-                                abicoder_keyword = Required(AbicoderKeyword),
+                                abicoder_keyword = Required(PragmaAbicoderKeyword),
                                 version = Required(AbicoderVersion)
                             )
                         ),
@@ -110,7 +117,7 @@ language_v2_macros::compile!(Language(
                             name = ExperimentalPragma,
                             enabled = From("0.4.16"),
                             fields = (
-                                experimental_keyword = Required(ExperimentalKeyword),
+                                experimental_keyword = Required(PragmaExperimentalKeyword),
                                 feature = Required(ExperimentalFeature)
                             )
                         ),
@@ -118,30 +125,30 @@ language_v2_macros::compile!(Language(
                             name = AbicoderVersion,
                             enabled = From("0.7.5"),
                             variants = [
-                                EnumVariant(reference = AbicoderV1Keyword),
-                                EnumVariant(reference = AbicoderV2Keyword)
+                                EnumVariant(reference = PragmaAbicoderV1Keyword),
+                                EnumVariant(reference = PragmaAbicoderV2Keyword)
                             ]
                         ),
                         Enum(
                             name = ExperimentalFeature,
                             enabled = From("0.4.16"),
                             variants = [
-                                EnumVariant(reference = ABIEncoderV2Keyword),
-                                EnumVariant(reference = SMTCheckerKeyword),
-                                EnumVariant(reference = StringLiteral)
+                                EnumVariant(reference = PragmaABIEncoderV2Keyword),
+                                EnumVariant(reference = PragmaSMTCheckerKeyword),
+                                EnumVariant(reference = PragmaStringLiteral)
                             ]
                         ),
                         Struct(
                             name = VersionPragma,
                             fields = (
-                                solidity_keyword = Required(SolidityKeyword),
+                                solidity_keyword = Required(PragmaSolidityKeyword),
                                 sets = Required(VersionExpressionSets)
                             )
                         ),
                         Separated(
                             name = VersionExpressionSets,
                             reference = VersionExpressionSet,
-                            separator = BarBar
+                            separator = PragmaBarBar
                         ),
                         Repeated(name = VersionExpressionSet, reference = VersionExpression),
                         Enum(
@@ -155,7 +162,7 @@ language_v2_macros::compile!(Language(
                             name = VersionRange,
                             fields = (
                                 start = Required(VersionLiteral),
-                                minus = Required(Minus),
+                                minus = Required(PragmaMinus),
                                 end = Required(VersionLiteral)
                             )
                         ),
@@ -169,13 +176,13 @@ language_v2_macros::compile!(Language(
                         Enum(
                             name = VersionOperator,
                             variants = [
-                                EnumVariant(reference = Caret),
-                                EnumVariant(reference = Tilde),
-                                EnumVariant(reference = Equal),
-                                EnumVariant(reference = LessThan),
-                                EnumVariant(reference = GreaterThan),
-                                EnumVariant(reference = LessThanEqual),
-                                EnumVariant(reference = GreaterThanEqual)
+                                EnumVariant(reference = PragmaCaret),
+                                EnumVariant(reference = PragmaTilde),
+                                EnumVariant(reference = PragmaEqual),
+                                EnumVariant(reference = PragmaLessThan),
+                                EnumVariant(reference = PragmaGreaterThan),
+                                EnumVariant(reference = PragmaLessThanEqual),
+                                EnumVariant(reference = PragmaGreaterThanEqual)
                             ]
                         ),
                         Enum(
@@ -190,7 +197,7 @@ language_v2_macros::compile!(Language(
                             // __SLANG_VERSION_SPECIFIER_SYNTAX__ (keep in sync)
                             name = SimpleVersionLiteral,
                             reference = VersionSpecifier,
-                            separator = Period
+                            separator = PragmaPeriod
                         ),
                         Token(
                             // __SLANG_VERSION_SPECIFIER_SYNTAX__ (keep in sync)
@@ -231,6 +238,208 @@ language_v2_macros::compile!(Language(
                                 Atom("X"),
                                 Atom("*")
                             ]))
+                        )
+                    ]
+                ),
+                Topic(
+                    title = "Pragma Punctuation",
+                    lexical_context = Pragma,
+                    items = [
+                        Token(name = PragmaSemicolon, definitions = [TokenDefinition(Atom(";"))]),
+                        Token(name = PragmaBarBar, definitions = [TokenDefinition(Atom("||"))]),
+                        Token(name = PragmaMinus, definitions = [TokenDefinition(Atom("-"))]),
+                        Token(name = PragmaCaret, definitions = [TokenDefinition(Atom("^"))]),
+                        Token(name = PragmaTilde, definitions = [TokenDefinition(Atom("~"))]),
+                        Token(name = PragmaEqual, definitions = [TokenDefinition(Atom("="))]),
+                        Token(name = PragmaLessThan, definitions = [TokenDefinition(Atom("<"))]),
+                        Token(
+                            name = PragmaGreaterThan,
+                            definitions = [TokenDefinition(Atom(">"))]
+                        ),
+                        Token(
+                            name = PragmaLessThanEqual,
+                            definitions = [TokenDefinition(Atom("<="))]
+                        ),
+                        Token(
+                            name = PragmaGreaterThanEqual,
+                            definitions = [TokenDefinition(Atom(">="))]
+                        ),
+                        Token(name = PragmaPeriod, definitions = [TokenDefinition(Atom("."))])
+                    ]
+                ),
+                Topic(
+                    title = "Pragma Keywords",
+                    lexical_context = Pragma,
+                    items = [
+                        Keyword(
+                            name = PragmaAbicoderKeyword,
+                            identifier = PragmaIdentifier,
+                            enabled = From("0.7.5"),
+                            definitions = [KeywordDefinition(
+                                reserved = Never,
+                                value = Atom("abicoder")
+                            )]
+                        ),
+                        Keyword(
+                            name = PragmaAbicoderV1Keyword,
+                            identifier = PragmaIdentifier,
+                            enabled = From("0.7.5"),
+                            definitions = [KeywordDefinition(
+                                reserved = Never,
+                                value = Atom("v1")
+                            )]
+                        ),
+                        Keyword(
+                            name = PragmaAbicoderV2Keyword,
+                            identifier = PragmaIdentifier,
+                            enabled = From("0.7.5"),
+                            definitions = [KeywordDefinition(
+                                reserved = Never,
+                                value = Atom("v2")
+                            )]
+                        ),
+                        Keyword(
+                            name = PragmaABIEncoderV2Keyword,
+                            identifier = PragmaIdentifier,
+                            enabled = From("0.4.16"),
+                            definitions = [KeywordDefinition(
+                                reserved = Never,
+                                value = Atom("ABIEncoderV2")
+                            )]
+                        ),
+                        Keyword(
+                            name = PragmaExperimentalKeyword,
+                            identifier = PragmaIdentifier,
+                            enabled = From("0.4.16"),
+                            definitions = [KeywordDefinition(
+                                reserved = Never,
+                                value = Atom("experimental")
+                            )]
+                        ),
+                        Keyword(
+                            name = PragmaSMTCheckerKeyword,
+                            identifier = PragmaIdentifier,
+                            enabled = From("0.4.16"),
+                            definitions = [KeywordDefinition(
+                                reserved = Never,
+                                value = Atom("SMTChecker")
+                            )]
+                        ),
+                        Keyword(
+                            name = PragmaSolidityKeyword,
+                            identifier = PragmaIdentifier,
+                            definitions = [KeywordDefinition(
+                                reserved = Never,
+                                value = Atom("solidity")
+                            )]
+                        )
+                    ]
+                ),
+                Topic(
+                    title = "Pragma Identifiers",
+                    lexical_context = Pragma,
+                    items = [
+                        Token(
+                            name = PragmaIdentifier,
+                            definitions = [TokenDefinition(Sequence([
+                                Fragment(PragmaIdentifierStart),
+                                ZeroOrMore(Fragment(PragmaIdentifierPart))
+                            ]))]
+                        ),
+                        Fragment(
+                            name = PragmaIdentifierStart,
+                            scanner = Choice([
+                                Atom("_"),
+                                Atom("$"),
+                                Range(inclusive_start = 'a', inclusive_end = 'z'),
+                                Range(inclusive_start = 'A', inclusive_end = 'Z')
+                            ])
+                        ),
+                        Fragment(
+                            name = PragmaIdentifierPart,
+                            scanner = Choice([
+                                Fragment(PragmaIdentifierStart),
+                                Range(inclusive_start = '0', inclusive_end = '9')
+                            ])
+                        )
+                    ]
+                ),
+                Topic(
+                    title = "Pragma Strings",
+                    lexical_context = Pragma,
+                    items = [
+                        Enum(
+                            name = PragmaStringLiteral,
+                            enabled = From("0.4.16"),
+                            variants = [
+                                EnumVariant(reference = PragmaSingleQuotedStringLiteral),
+                                EnumVariant(reference = PragmaDoubleQuotedStringLiteral)
+                            ]
+                        ),
+                        Token(
+                            name = PragmaSingleQuotedStringLiteral,
+                            enabled = From("0.4.16"),
+                            definitions = [TokenDefinition(Sequence([
+                                Atom("'"),
+                                ZeroOrMore(Choice([
+                                    Fragment(PragmaEscapeSequence),
+                                    Not(['\'', '\\', '\r', '\n'])
+                                ])),
+                                Atom("'")
+                            ]))]
+                        ),
+                        Token(
+                            name = PragmaDoubleQuotedStringLiteral,
+                            enabled = From("0.4.16"),
+                            definitions = [TokenDefinition(Sequence([
+                                Atom("\""),
+                                ZeroOrMore(Choice([
+                                    Fragment(PragmaEscapeSequence),
+                                    Not(['"', '\\', '\r', '\n'])
+                                ])),
+                                Atom("\"")
+                            ]))]
+                        ),
+                        Fragment(
+                            name = PragmaEscapeSequence,
+                            enabled = From("0.4.16"),
+                            scanner = Sequence([
+                                Atom("\\"),
+                                Choice([
+                                    Not(['x', 'u']),
+                                    Fragment(PragmaHexByteEscape),
+                                    Fragment(PragmaUnicodeEscape)
+                                ])
+                            ])
+                        ),
+                        Fragment(
+                            name = PragmaHexCharacter,
+                            enabled = From("0.4.16"),
+                            scanner = Choice([
+                                Range(inclusive_start = '0', inclusive_end = '9'),
+                                Range(inclusive_start = 'a', inclusive_end = 'f'),
+                                Range(inclusive_start = 'A', inclusive_end = 'F')
+                            ])
+                        ),
+                        Fragment(
+                            name = PragmaHexByteEscape,
+                            enabled = From("0.4.16"),
+                            scanner = Sequence([
+                                Atom("x"),
+                                Fragment(PragmaHexCharacter),
+                                Fragment(PragmaHexCharacter)
+                            ])
+                        ),
+                        Fragment(
+                            name = PragmaUnicodeEscape,
+                            enabled = From("0.4.16"),
+                            scanner = Sequence([
+                                Atom("u"),
+                                Fragment(PragmaHexCharacter),
+                                Fragment(PragmaHexCharacter),
+                                Fragment(PragmaHexCharacter),
+                                Fragment(PragmaHexCharacter)
+                            ])
                         )
                     ]
                 ),
@@ -455,36 +664,6 @@ language_v2_macros::compile!(Language(
                     title = "Keywords",
                     lexical_context = Solidity,
                     items = [
-                        Keyword(
-                            name = AbicoderKeyword,
-                            identifier = Identifier,
-                            enabled = From("0.7.5"),
-                            definitions = [KeywordDefinition(
-                                reserved = Never,
-                                value = Atom("abicoder")
-                            )]
-                        ),
-                        Keyword(
-                            name = AbicoderV1Keyword,
-                            identifier = Identifier,
-                            enabled = From("0.7.5"),
-                            definitions = [KeywordDefinition(reserved = Never, value = Atom("v1"))]
-                        ),
-                        Keyword(
-                            name = AbicoderV2Keyword,
-                            identifier = Identifier,
-                            enabled = From("0.7.5"),
-                            definitions = [KeywordDefinition(reserved = Never, value = Atom("v2"))]
-                        ),
-                        Keyword(
-                            name = ABIEncoderV2Keyword,
-                            identifier = Identifier,
-                            enabled = From("0.4.16"),
-                            definitions = [KeywordDefinition(
-                                reserved = Never,
-                                value = Atom("ABIEncoderV2")
-                            )]
-                        ),
                         Keyword(
                             name = AbstractKeyword,
                             identifier = Identifier,
@@ -729,15 +908,6 @@ language_v2_macros::compile!(Language(
                             name = EventKeyword,
                             identifier = Identifier,
                             definitions = [KeywordDefinition(value = Atom("event"))]
-                        ),
-                        Keyword(
-                            name = ExperimentalKeyword,
-                            identifier = Identifier,
-                            enabled = From("0.4.16"),
-                            definitions = [KeywordDefinition(
-                                reserved = Never,
-                                value = Atom("experimental")
-                            )]
                         ),
                         Keyword(
                             name = ExternalKeyword,
@@ -1392,23 +1562,6 @@ language_v2_macros::compile!(Language(
                             )]
                         ),
                         Keyword(
-                            name = SMTCheckerKeyword,
-                            identifier = Identifier,
-                            enabled = From("0.4.16"),
-                            definitions = [KeywordDefinition(
-                                reserved = Never,
-                                value = Atom("SMTChecker")
-                            )]
-                        ),
-                        Keyword(
-                            name = SolidityKeyword,
-                            identifier = Identifier,
-                            definitions = [KeywordDefinition(
-                                reserved = Never,
-                                value = Atom("solidity")
-                            )]
-                        ),
-                        Keyword(
                             name = StaticKeyword,
                             identifier = Identifier,
                             enabled = Never,
@@ -1925,16 +2078,7 @@ language_v2_macros::compile!(Language(
                         ),
                         Token(name = Semicolon, definitions = [TokenDefinition(Atom(";"))]),
                         Token(name = Colon, definitions = [TokenDefinition(Atom(":"))]),
-                        Token(
-                            name = ColonEqual,
-                            definitions = [TokenDefinition(Atom(":="))]
-                        ),
                         Token(name = Equal, definitions = [TokenDefinition(Atom("="))]),
-                        Token(
-                            name = EqualColon,
-                            enabled = Till("0.5.0"),
-                            definitions = [TokenDefinition(Atom("=:"))]
-                        ),
                         Token(
                             name = EqualEqual,
                             definitions = [TokenDefinition(Atom("=="))]
@@ -2015,10 +2159,6 @@ language_v2_macros::compile!(Language(
                         Token(
                             name = MinusMinus,
                             definitions = [TokenDefinition(Atom("--"))]
-                        ),
-                        Token(
-                            name = MinusGreaterThan,
-                            definitions = [TokenDefinition(Atom("->"))]
                         ),
                         Token(name = Slash, definitions = [TokenDefinition(Atom("/"))]),
                         Token(
@@ -2888,34 +3028,16 @@ language_v2_macros::compile!(Language(
                         ),
                         Struct(
                             name = AssemblyStatement,
+                            lexical_context = Yul,
                             fields = (
                                 assembly_keyword = Required(AssemblyKeyword),
-                                label = Optional(reference = StringLiteral),
+                                label = Optional(reference = YulStringLiteral),
                                 flags = Optional(
-                                    reference = AssemblyFlagsDeclaration,
+                                    reference = YulAssemblyFlagsDeclaration,
                                     enabled = From("0.8.13")
                                 ),
                                 body = Required(YulBlock)
                             )
-                        ),
-                        Struct(
-                            name = AssemblyFlagsDeclaration,
-                            enabled = From("0.8.13"),
-                            error_recovery = FieldsErrorRecovery(
-                                delimiters =
-                                    FieldDelimiters(open = open_paren, close = close_paren)
-                            ),
-                            fields = (
-                                open_paren = Required(OpenParen),
-                                flags = Required(AssemblyFlags),
-                                close_paren = Required(CloseParen)
-                            )
-                        ),
-                        Separated(
-                            name = AssemblyFlags,
-                            reference = StringLiteral,
-                            separator = Comma,
-                            enabled = From("0.8.13")
                         )
                     ]
                 ),
@@ -4031,9 +4153,9 @@ language_v2_macros::compile!(Language(
                                     FieldDelimiters(open = open_brace, close = close_brace)
                             ),
                             fields = (
-                                open_brace = Required(OpenBrace),
+                                open_brace = Required(YulOpenBrace),
                                 statements = Required(YulStatements),
-                                close_brace = Required(CloseBrace)
+                                close_brace = Required(YulCloseBrace)
                             )
                         ),
                         Repeated(
@@ -4079,28 +4201,28 @@ language_v2_macros::compile!(Language(
                                     FieldDelimiters(open = open_paren, close = close_paren)
                             ),
                             fields = (
-                                open_paren = Required(OpenParen),
+                                open_paren = Required(YulOpenParen),
                                 parameters = Required(YulParameters),
-                                close_paren = Required(CloseParen)
+                                close_paren = Required(YulCloseParen)
                             )
                         ),
                         Separated(
                             name = YulParameters,
                             reference = YulIdentifier,
-                            separator = Comma,
+                            separator = YulComma,
                             allow_empty = true
                         ),
                         Struct(
                             name = YulReturnsDeclaration,
                             fields = (
-                                minus_greater_than = Required(MinusGreaterThan),
+                                minus_greater_than = Required(YulMinusGreaterThan),
                                 variables = Required(YulVariableNames)
                             )
                         ),
                         Separated(
                             name = YulVariableNames,
                             reference = YulIdentifier,
-                            separator = Comma
+                            separator = YulComma
                         ),
                         Struct(
                             name = YulVariableDeclarationStatement,
@@ -4128,14 +4250,14 @@ language_v2_macros::compile!(Language(
                         Enum(
                             name = YulAssignmentOperator,
                             variants = [
-                                EnumVariant(reference = ColonEqual),
+                                EnumVariant(reference = YulColonEqual),
                                 EnumVariant(reference = YulColonAndEqual, enabled = Till("0.5.5"))
                             ]
                         ),
                         Struct(
                             name = YulColonAndEqual,
                             enabled = Till("0.5.5"),
-                            fields = (colon = Required(Colon), equal = Required(Equal))
+                            fields = (colon = Required(YulColon), equal = Required(YulEqual))
                         ),
                         Struct(
                             name = YulStackAssignmentStatement,
@@ -4149,14 +4271,14 @@ language_v2_macros::compile!(Language(
                             name = YulStackAssignmentOperator,
                             enabled = Till("0.5.0"),
                             variants = [
-                                EnumVariant(reference = EqualColon),
+                                EnumVariant(reference = YulEqualColon),
                                 EnumVariant(reference = YulEqualAndColon)
                             ]
                         ),
                         Struct(
                             name = YulEqualAndColon,
                             enabled = Till("0.5.0"),
-                            fields = (equal = Required(Equal), colon = Required(Colon))
+                            fields = (equal = Required(YulEqual), colon = Required(YulColon))
                         ),
                         Struct(
                             name = YulIfStatement,
@@ -4223,7 +4345,7 @@ language_v2_macros::compile!(Language(
                         Struct(
                             name = YulLabel,
                             enabled = Till("0.5.0"),
-                            fields = (label = Required(YulIdentifier), colon = Required(Colon))
+                            fields = (label = Required(YulIdentifier), colon = Required(YulColon))
                         )
                     ]
                 ),
@@ -4242,9 +4364,9 @@ language_v2_macros::compile!(Language(
                                             FieldDelimiters(open = open_paren, close = close_paren)
                                     ),
                                     fields = (
-                                        open_paren = Required(OpenParen),
+                                        open_paren = Required(YulOpenParen),
                                         arguments = Required(YulArguments),
-                                        close_paren = Required(CloseParen)
+                                        close_paren = Required(YulCloseParen)
                                     )
                                 )]
                             )],
@@ -4256,20 +4378,20 @@ language_v2_macros::compile!(Language(
                         Separated(
                             name = YulArguments,
                             reference = YulExpression,
-                            separator = Comma,
+                            separator = YulComma,
                             allow_empty = true
                         ),
-                        Separated(name = YulPaths, reference = YulPath, separator = Comma),
+                        Separated(name = YulPaths, reference = YulPath, separator = YulComma),
                         Separated(
                             name = YulPath,
                             reference = YulIdentifier,
-                            separator = Period
+                            separator = YulPeriod
                         ),
                         Token(
                             name = YulIdentifier,
                             definitions = [TokenDefinition(Sequence([
-                                Fragment(IdentifierStart),
-                                ZeroOrMore(Choice([Fragment(IdentifierPart), Atom(".")]))
+                                Fragment(YulIdentifierStart),
+                                ZeroOrMore(Choice([Fragment(YulIdentifierPart), Atom(".")]))
                             ]))]
                         ),
                         Enum(
@@ -4279,8 +4401,8 @@ language_v2_macros::compile!(Language(
                                 EnumVariant(reference = YulFalseKeyword, enabled = From("0.6.2")),
                                 EnumVariant(reference = YulDecimalLiteral),
                                 EnumVariant(reference = YulHexLiteral),
-                                EnumVariant(reference = HexStringLiteral),
-                                EnumVariant(reference = StringLiteral)
+                                EnumVariant(reference = YulHexStringLiteral),
+                                EnumVariant(reference = YulStringLiteral)
                             ]
                         ),
                         Token(
@@ -4297,8 +4419,197 @@ language_v2_macros::compile!(Language(
                             name = YulHexLiteral,
                             definitions = [TokenDefinition(Sequence([
                                 Atom("0x"),
-                                OneOrMore(Fragment(HexCharacter))
+                                OneOrMore(Fragment(YulHexCharacter))
                             ]))]
+                        )
+                    ]
+                ),
+                Topic(
+                    title = "Yul Assembly",
+                    lexical_context = Yul,
+                    items = [
+                        Struct(
+                            name = YulAssemblyFlagsDeclaration,
+                            enabled = From("0.8.13"),
+                            error_recovery = FieldsErrorRecovery(
+                                delimiters =
+                                    FieldDelimiters(open = open_paren, close = close_paren)
+                            ),
+                            fields = (
+                                open_paren = Required(YulOpenParen),
+                                flags = Required(YulAssemblyFlags),
+                                close_paren = Required(YulCloseParen)
+                            )
+                        ),
+                        Separated(
+                            name = YulAssemblyFlags,
+                            reference = YulStringLiteral,
+                            separator = YulComma,
+                            enabled = From("0.8.13")
+                        )
+                    ]
+                ),
+                Topic(
+                    title = "Yul Punctuation",
+                    lexical_context = Yul,
+                    items = [
+                        Token(name = YulOpenParen, definitions = [TokenDefinition(Atom("("))]),
+                        Token(name = YulCloseParen, definitions = [TokenDefinition(Atom(")"))]),
+                        Token(name = YulOpenBrace, definitions = [TokenDefinition(Atom("{"))]),
+                        Token(name = YulCloseBrace, definitions = [TokenDefinition(Atom("}"))]),
+                        Token(name = YulComma, definitions = [TokenDefinition(Atom(","))]),
+                        Token(name = YulPeriod, definitions = [TokenDefinition(Atom("."))]),
+                        Token(
+                            name = YulColon,
+                            enabled = Till("0.5.5"),
+                            definitions = [TokenDefinition(Atom(":"))]
+                        ),
+                        Token(
+                            name = YulColonEqual,
+                            definitions = [TokenDefinition(Atom(":="))]
+                        ),
+                        Token(
+                            name = YulEqual,
+                            enabled = Till("0.5.5"),
+                            definitions = [TokenDefinition(Atom("="))]
+                        ),
+                        Token(
+                            name = YulEqualColon,
+                            enabled = Till("0.5.0"),
+                            definitions = [TokenDefinition(Atom("=:"))]
+                        ),
+                        Token(
+                            name = YulMinusGreaterThan,
+                            definitions = [TokenDefinition(Atom("->"))]
+                        )
+                    ]
+                ),
+                Topic(
+                    title = "Yul Strings",
+                    lexical_context = Yul,
+                    items = [
+                        Enum(
+                            name = YulStringLiteral,
+                            variants = [
+                                EnumVariant(reference = YulSingleQuotedStringLiteral),
+                                EnumVariant(reference = YulDoubleQuotedStringLiteral)
+                            ]
+                        ),
+                        Token(
+                            name = YulSingleQuotedStringLiteral,
+                            definitions = [TokenDefinition(Sequence([
+                                Atom("'"),
+                                ZeroOrMore(Choice([
+                                    Fragment(YulEscapeSequence),
+                                    Not(['\'', '\\', '\r', '\n'])
+                                ])),
+                                Atom("'")
+                            ]))]
+                        ),
+                        Token(
+                            name = YulDoubleQuotedStringLiteral,
+                            definitions = [TokenDefinition(Sequence([
+                                Atom("\""),
+                                ZeroOrMore(Choice([
+                                    Fragment(YulEscapeSequence),
+                                    Not(['"', '\\', '\r', '\n'])
+                                ])),
+                                Atom("\"")
+                            ]))]
+                        ),
+                        Fragment(
+                            name = YulEscapeSequence,
+                            scanner = Sequence([
+                                Atom("\\"),
+                                Choice([
+                                    Not(['x', 'u']),
+                                    Fragment(YulHexByteEscape),
+                                    Fragment(YulUnicodeEscape)
+                                ])
+                            ])
+                        ),
+                        Enum(
+                            name = YulHexStringLiteral,
+                            variants = [
+                                EnumVariant(reference = YulSingleQuotedHexStringLiteral),
+                                EnumVariant(reference = YulDoubleQuotedHexStringLiteral)
+                            ]
+                        ),
+                        Token(
+                            name = YulSingleQuotedHexStringLiteral,
+                            definitions = [TokenDefinition(Sequence([
+                                Atom("hex'"),
+                                Optional(Fragment(YulHexStringContents)),
+                                Atom("'")
+                            ]))]
+                        ),
+                        Token(
+                            name = YulDoubleQuotedHexStringLiteral,
+                            definitions = [TokenDefinition(Sequence([
+                                Atom("hex\""),
+                                Optional(Fragment(YulHexStringContents)),
+                                Atom("\"")
+                            ]))]
+                        ),
+                        Fragment(
+                            name = YulHexStringContents,
+                            scanner = Sequence([
+                                Fragment(YulHexCharacter),
+                                Fragment(YulHexCharacter),
+                                ZeroOrMore(Sequence([
+                                    Optional(Atom("_")),
+                                    Fragment(YulHexCharacter),
+                                    Fragment(YulHexCharacter)
+                                ]))
+                            ])
+                        ),
+                        Fragment(
+                            name = YulHexCharacter,
+                            scanner = Choice([
+                                Range(inclusive_start = '0', inclusive_end = '9'),
+                                Range(inclusive_start = 'a', inclusive_end = 'f'),
+                                Range(inclusive_start = 'A', inclusive_end = 'F')
+                            ])
+                        ),
+                        Fragment(
+                            name = YulHexByteEscape,
+                            scanner = Sequence([
+                                Atom("x"),
+                                Fragment(YulHexCharacter),
+                                Fragment(YulHexCharacter)
+                            ])
+                        ),
+                        Fragment(
+                            name = YulUnicodeEscape,
+                            scanner = Sequence([
+                                Atom("u"),
+                                Fragment(YulHexCharacter),
+                                Fragment(YulHexCharacter),
+                                Fragment(YulHexCharacter),
+                                Fragment(YulHexCharacter)
+                            ])
+                        )
+                    ]
+                ),
+                Topic(
+                    title = "Yul Identifiers",
+                    lexical_context = Yul,
+                    items = [
+                        Fragment(
+                            name = YulIdentifierStart,
+                            scanner = Choice([
+                                Atom("_"),
+                                Atom("$"),
+                                Range(inclusive_start = 'a', inclusive_end = 'z'),
+                                Range(inclusive_start = 'A', inclusive_end = 'Z')
+                            ])
+                        ),
+                        Fragment(
+                            name = YulIdentifierPart,
+                            scanner = Choice([
+                                Fragment(YulIdentifierStart),
+                                Range(inclusive_start = '0', inclusive_end = '9')
+                            ])
                         )
                     ]
                 ),

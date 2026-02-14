@@ -11,6 +11,12 @@ use crate::model::{Field, FieldsErrorRecovery, Identifier, VersionSpecifier};
 pub struct StructItem {
     pub name: Identifier,
 
+    /// If set, this struct is a gateway to the specified lexical context.
+    /// The first field must be in the struct's own (topic) context,
+    /// while remaining fields must reference items from the declared context.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub lexical_context: Option<Identifier>,
+
     /// Whether the struct is enabled
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enabled: Option<VersionSpecifier>,

@@ -64,6 +64,7 @@ fn check_item(analysis: &mut Analysis, item: &SpannedItem) {
 fn check_struct(analysis: &mut Analysis, item: &SpannedStructItem) {
     let SpannedStructItem {
         name: _,
+        lexical_context: _,
         enabled,
         error_recovery: _,
         fields,

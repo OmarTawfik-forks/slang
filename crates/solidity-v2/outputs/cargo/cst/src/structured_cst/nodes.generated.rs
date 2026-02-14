@@ -30,12 +30,12 @@ pub type AbicoderPragma = Rc<AbicoderPragmaStruct>;
 
 #[derive(Clone, Debug)]
 pub struct AbicoderPragmaStruct {
-    pub abicoder_keyword: AbicoderKeyword,
+    pub abicoder_keyword: PragmaAbicoderKeyword,
     pub version: AbicoderVersion,
 }
 
 pub fn new_abicoder_pragma(
-    abicoder_keyword: AbicoderKeyword,
+    abicoder_keyword: PragmaAbicoderKeyword,
     version: AbicoderVersion,
 ) -> AbicoderPragma {
     Rc::new(AbicoderPragmaStruct {
@@ -149,41 +149,20 @@ pub fn new_array_type_name(
     })
 }
 
-pub type AssemblyFlagsDeclaration = Rc<AssemblyFlagsDeclarationStruct>;
-
-#[derive(Clone, Debug)]
-pub struct AssemblyFlagsDeclarationStruct {
-    pub open_paren: OpenParen,
-    pub flags: AssemblyFlags,
-    pub close_paren: CloseParen,
-}
-
-pub fn new_assembly_flags_declaration(
-    open_paren: OpenParen,
-    flags: AssemblyFlags,
-    close_paren: CloseParen,
-) -> AssemblyFlagsDeclaration {
-    Rc::new(AssemblyFlagsDeclarationStruct {
-        open_paren,
-        flags,
-        close_paren,
-    })
-}
-
 pub type AssemblyStatement = Rc<AssemblyStatementStruct>;
 
 #[derive(Clone, Debug)]
 pub struct AssemblyStatementStruct {
     pub assembly_keyword: AssemblyKeyword,
-    pub label: Option<StringLiteral>,
-    pub flags: Option<AssemblyFlagsDeclaration>,
+    pub label: Option<YulStringLiteral>,
+    pub flags: Option<YulAssemblyFlagsDeclaration>,
     pub body: YulBlock,
 }
 
 pub fn new_assembly_statement(
     assembly_keyword: AssemblyKeyword,
-    label: Option<StringLiteral>,
-    flags: Option<AssemblyFlagsDeclaration>,
+    label: Option<YulStringLiteral>,
+    flags: Option<YulAssemblyFlagsDeclaration>,
     body: YulBlock,
 ) -> AssemblyStatement {
     Rc::new(AssemblyStatementStruct {
@@ -764,12 +743,12 @@ pub type ExperimentalPragma = Rc<ExperimentalPragmaStruct>;
 
 #[derive(Clone, Debug)]
 pub struct ExperimentalPragmaStruct {
-    pub experimental_keyword: ExperimentalKeyword,
+    pub experimental_keyword: PragmaExperimentalKeyword,
     pub feature: ExperimentalFeature,
 }
 
 pub fn new_experimental_pragma(
-    experimental_keyword: ExperimentalKeyword,
+    experimental_keyword: PragmaExperimentalKeyword,
     feature: ExperimentalFeature,
 ) -> ExperimentalPragma {
     Rc::new(ExperimentalPragmaStruct {
@@ -1610,13 +1589,13 @@ pub type PragmaDirective = Rc<PragmaDirectiveStruct>;
 pub struct PragmaDirectiveStruct {
     pub pragma_keyword: PragmaKeyword,
     pub pragma: Pragma,
-    pub semicolon: Semicolon,
+    pub semicolon: PragmaSemicolon,
 }
 
 pub fn new_pragma_directive(
     pragma_keyword: PragmaKeyword,
     pragma: Pragma,
-    semicolon: Semicolon,
+    semicolon: PragmaSemicolon,
 ) -> PragmaDirective {
     Rc::new(PragmaDirectiveStruct {
         pragma_keyword,
@@ -2247,12 +2226,12 @@ pub type VersionPragma = Rc<VersionPragmaStruct>;
 
 #[derive(Clone, Debug)]
 pub struct VersionPragmaStruct {
-    pub solidity_keyword: SolidityKeyword,
+    pub solidity_keyword: PragmaSolidityKeyword,
     pub sets: VersionExpressionSets,
 }
 
 pub fn new_version_pragma(
-    solidity_keyword: SolidityKeyword,
+    solidity_keyword: PragmaSolidityKeyword,
     sets: VersionExpressionSets,
 ) -> VersionPragma {
     Rc::new(VersionPragmaStruct {
@@ -2266,11 +2245,15 @@ pub type VersionRange = Rc<VersionRangeStruct>;
 #[derive(Clone, Debug)]
 pub struct VersionRangeStruct {
     pub start: VersionLiteral,
-    pub minus: Minus,
+    pub minus: PragmaMinus,
     pub end: VersionLiteral,
 }
 
-pub fn new_version_range(start: VersionLiteral, minus: Minus, end: VersionLiteral) -> VersionRange {
+pub fn new_version_range(
+    start: VersionLiteral,
+    minus: PragmaMinus,
+    end: VersionLiteral,
+) -> VersionRange {
     Rc::new(VersionRangeStruct { start, minus, end })
 }
 
@@ -2313,19 +2296,40 @@ pub fn new_while_statement(
     })
 }
 
+pub type YulAssemblyFlagsDeclaration = Rc<YulAssemblyFlagsDeclarationStruct>;
+
+#[derive(Clone, Debug)]
+pub struct YulAssemblyFlagsDeclarationStruct {
+    pub open_paren: YulOpenParen,
+    pub flags: YulAssemblyFlags,
+    pub close_paren: YulCloseParen,
+}
+
+pub fn new_yul_assembly_flags_declaration(
+    open_paren: YulOpenParen,
+    flags: YulAssemblyFlags,
+    close_paren: YulCloseParen,
+) -> YulAssemblyFlagsDeclaration {
+    Rc::new(YulAssemblyFlagsDeclarationStruct {
+        open_paren,
+        flags,
+        close_paren,
+    })
+}
+
 pub type YulBlock = Rc<YulBlockStruct>;
 
 #[derive(Clone, Debug)]
 pub struct YulBlockStruct {
-    pub open_brace: OpenBrace,
+    pub open_brace: YulOpenBrace,
     pub statements: YulStatements,
-    pub close_brace: CloseBrace,
+    pub close_brace: YulCloseBrace,
 }
 
 pub fn new_yul_block(
-    open_brace: OpenBrace,
+    open_brace: YulOpenBrace,
     statements: YulStatements,
-    close_brace: CloseBrace,
+    close_brace: YulCloseBrace,
 ) -> YulBlock {
     Rc::new(YulBlockStruct {
         open_brace,
@@ -2349,11 +2353,11 @@ pub type YulColonAndEqual = Rc<YulColonAndEqualStruct>;
 
 #[derive(Clone, Debug)]
 pub struct YulColonAndEqualStruct {
-    pub colon: Colon,
-    pub equal: Equal,
+    pub colon: YulColon,
+    pub equal: YulEqual,
 }
 
-pub fn new_yul_colon_and_equal(colon: Colon, equal: Equal) -> YulColonAndEqual {
+pub fn new_yul_colon_and_equal(colon: YulColon, equal: YulEqual) -> YulColonAndEqual {
     Rc::new(YulColonAndEqualStruct { colon, equal })
 }
 
@@ -2387,11 +2391,11 @@ pub type YulEqualAndColon = Rc<YulEqualAndColonStruct>;
 
 #[derive(Clone, Debug)]
 pub struct YulEqualAndColonStruct {
-    pub equal: Equal,
-    pub colon: Colon,
+    pub equal: YulEqual,
+    pub colon: YulColon,
 }
 
-pub fn new_yul_equal_and_colon(equal: Equal, colon: Colon) -> YulEqualAndColon {
+pub fn new_yul_equal_and_colon(equal: YulEqual, colon: YulColon) -> YulEqualAndColon {
     Rc::new(YulEqualAndColonStruct { equal, colon })
 }
 
@@ -2427,16 +2431,16 @@ pub type YulFunctionCallExpression = Rc<YulFunctionCallExpressionStruct>;
 #[derive(Clone, Debug)]
 pub struct YulFunctionCallExpressionStruct {
     pub operand: YulExpression,
-    pub open_paren: OpenParen,
+    pub open_paren: YulOpenParen,
     pub arguments: YulArguments,
-    pub close_paren: CloseParen,
+    pub close_paren: YulCloseParen,
 }
 
 pub fn new_yul_function_call_expression(
     operand: YulExpression,
-    open_paren: OpenParen,
+    open_paren: YulOpenParen,
     arguments: YulArguments,
-    close_paren: CloseParen,
+    close_paren: YulCloseParen,
 ) -> YulFunctionCallExpression {
     Rc::new(YulFunctionCallExpressionStruct {
         operand,
@@ -2499,10 +2503,10 @@ pub type YulLabel = Rc<YulLabelStruct>;
 #[derive(Clone, Debug)]
 pub struct YulLabelStruct {
     pub label: YulIdentifier,
-    pub colon: Colon,
+    pub colon: YulColon,
 }
 
-pub fn new_yul_label(label: YulIdentifier, colon: Colon) -> YulLabel {
+pub fn new_yul_label(label: YulIdentifier, colon: YulColon) -> YulLabel {
     Rc::new(YulLabelStruct { label, colon })
 }
 
@@ -2521,15 +2525,15 @@ pub type YulParametersDeclaration = Rc<YulParametersDeclarationStruct>;
 
 #[derive(Clone, Debug)]
 pub struct YulParametersDeclarationStruct {
-    pub open_paren: OpenParen,
+    pub open_paren: YulOpenParen,
     pub parameters: YulParameters,
-    pub close_paren: CloseParen,
+    pub close_paren: YulCloseParen,
 }
 
 pub fn new_yul_parameters_declaration(
-    open_paren: OpenParen,
+    open_paren: YulOpenParen,
     parameters: YulParameters,
-    close_paren: CloseParen,
+    close_paren: YulCloseParen,
 ) -> YulParametersDeclaration {
     Rc::new(YulParametersDeclarationStruct {
         open_paren,
@@ -2542,12 +2546,12 @@ pub type YulReturnsDeclaration = Rc<YulReturnsDeclarationStruct>;
 
 #[derive(Clone, Debug)]
 pub struct YulReturnsDeclarationStruct {
-    pub minus_greater_than: MinusGreaterThan,
+    pub minus_greater_than: YulMinusGreaterThan,
     pub variables: YulVariableNames,
 }
 
 pub fn new_yul_returns_declaration(
-    minus_greater_than: MinusGreaterThan,
+    minus_greater_than: YulMinusGreaterThan,
     variables: YulVariableNames,
 ) -> YulReturnsDeclaration {
     Rc::new(YulReturnsDeclarationStruct {
@@ -2683,16 +2687,20 @@ pub fn new_yul_variable_declaration_value(
 
 #[derive(Clone, Debug)]
 pub enum AbicoderVersion {
-    AbicoderV1Keyword(AbicoderV1Keyword),
-    AbicoderV2Keyword(AbicoderV2Keyword),
+    PragmaAbicoderV1Keyword(PragmaAbicoderV1Keyword),
+    PragmaAbicoderV2Keyword(PragmaAbicoderV2Keyword),
 }
 
-pub fn new_abicoder_version_abicoder_v1_keyword(element: AbicoderV1Keyword) -> AbicoderVersion {
-    AbicoderVersion::AbicoderV1Keyword(element)
+pub fn new_abicoder_version_pragma_abicoder_v1_keyword(
+    element: PragmaAbicoderV1Keyword,
+) -> AbicoderVersion {
+    AbicoderVersion::PragmaAbicoderV1Keyword(element)
 }
 
-pub fn new_abicoder_version_abicoder_v2_keyword(element: AbicoderV2Keyword) -> AbicoderVersion {
-    AbicoderVersion::AbicoderV2Keyword(element)
+pub fn new_abicoder_version_pragma_abicoder_v2_keyword(
+    element: PragmaAbicoderV2Keyword,
+) -> AbicoderVersion {
+    AbicoderVersion::PragmaAbicoderV2Keyword(element)
 }
 
 #[derive(Clone, Debug)]
@@ -2903,25 +2911,27 @@ pub fn new_elementary_type_ufixed_keyword(element: UfixedKeyword) -> ElementaryT
 
 #[derive(Clone, Debug)]
 pub enum ExperimentalFeature {
-    ABIEncoderV2Keyword(ABIEncoderV2Keyword),
-    SMTCheckerKeyword(SMTCheckerKeyword),
-    StringLiteral(StringLiteral),
+    PragmaABIEncoderV2Keyword(PragmaABIEncoderV2Keyword),
+    PragmaSMTCheckerKeyword(PragmaSMTCheckerKeyword),
+    PragmaStringLiteral(PragmaStringLiteral),
 }
 
-pub fn new_experimental_feature_abi_encoder_v2_keyword(
-    element: ABIEncoderV2Keyword,
+pub fn new_experimental_feature_pragma_abi_encoder_v2_keyword(
+    element: PragmaABIEncoderV2Keyword,
 ) -> ExperimentalFeature {
-    ExperimentalFeature::ABIEncoderV2Keyword(element)
+    ExperimentalFeature::PragmaABIEncoderV2Keyword(element)
 }
 
-pub fn new_experimental_feature_smt_checker_keyword(
-    element: SMTCheckerKeyword,
+pub fn new_experimental_feature_pragma_smt_checker_keyword(
+    element: PragmaSMTCheckerKeyword,
 ) -> ExperimentalFeature {
-    ExperimentalFeature::SMTCheckerKeyword(element)
+    ExperimentalFeature::PragmaSMTCheckerKeyword(element)
 }
 
-pub fn new_experimental_feature_string_literal(element: StringLiteral) -> ExperimentalFeature {
-    ExperimentalFeature::StringLiteral(element)
+pub fn new_experimental_feature_pragma_string_literal(
+    element: PragmaStringLiteral,
+) -> ExperimentalFeature {
+    ExperimentalFeature::PragmaStringLiteral(element)
 }
 
 #[derive(Clone, Debug)]
@@ -3774,6 +3784,24 @@ pub fn new_pragma_experimental_pragma(element: ExperimentalPragma) -> Pragma {
 }
 
 #[derive(Clone, Debug)]
+pub enum PragmaStringLiteral {
+    PragmaSingleQuotedStringLiteral(PragmaSingleQuotedStringLiteral),
+    PragmaDoubleQuotedStringLiteral(PragmaDoubleQuotedStringLiteral),
+}
+
+pub fn new_pragma_string_literal_pragma_single_quoted_string_literal(
+    element: PragmaSingleQuotedStringLiteral,
+) -> PragmaStringLiteral {
+    PragmaStringLiteral::PragmaSingleQuotedStringLiteral(element)
+}
+
+pub fn new_pragma_string_literal_pragma_double_quoted_string_literal(
+    element: PragmaDoubleQuotedStringLiteral,
+) -> PragmaStringLiteral {
+    PragmaStringLiteral::PragmaDoubleQuotedStringLiteral(element)
+}
+
+#[derive(Clone, Debug)]
 pub enum ReceiveFunctionAttribute {
     ModifierInvocation(ModifierInvocation),
     OverrideSpecifier(OverrideSpecifier),
@@ -4387,51 +4415,57 @@ pub fn new_version_literal_double_quoted_version_literal(
 
 #[derive(Clone, Debug)]
 pub enum VersionOperator {
-    Caret(Caret),
-    Tilde(Tilde),
-    Equal(Equal),
-    LessThan(LessThan),
-    GreaterThan(GreaterThan),
-    LessThanEqual(LessThanEqual),
-    GreaterThanEqual(GreaterThanEqual),
+    PragmaCaret(PragmaCaret),
+    PragmaTilde(PragmaTilde),
+    PragmaEqual(PragmaEqual),
+    PragmaLessThan(PragmaLessThan),
+    PragmaGreaterThan(PragmaGreaterThan),
+    PragmaLessThanEqual(PragmaLessThanEqual),
+    PragmaGreaterThanEqual(PragmaGreaterThanEqual),
 }
 
-pub fn new_version_operator_caret(element: Caret) -> VersionOperator {
-    VersionOperator::Caret(element)
+pub fn new_version_operator_pragma_caret(element: PragmaCaret) -> VersionOperator {
+    VersionOperator::PragmaCaret(element)
 }
 
-pub fn new_version_operator_tilde(element: Tilde) -> VersionOperator {
-    VersionOperator::Tilde(element)
+pub fn new_version_operator_pragma_tilde(element: PragmaTilde) -> VersionOperator {
+    VersionOperator::PragmaTilde(element)
 }
 
-pub fn new_version_operator_equal(element: Equal) -> VersionOperator {
-    VersionOperator::Equal(element)
+pub fn new_version_operator_pragma_equal(element: PragmaEqual) -> VersionOperator {
+    VersionOperator::PragmaEqual(element)
 }
 
-pub fn new_version_operator_less_than(element: LessThan) -> VersionOperator {
-    VersionOperator::LessThan(element)
+pub fn new_version_operator_pragma_less_than(element: PragmaLessThan) -> VersionOperator {
+    VersionOperator::PragmaLessThan(element)
 }
 
-pub fn new_version_operator_greater_than(element: GreaterThan) -> VersionOperator {
-    VersionOperator::GreaterThan(element)
+pub fn new_version_operator_pragma_greater_than(element: PragmaGreaterThan) -> VersionOperator {
+    VersionOperator::PragmaGreaterThan(element)
 }
 
-pub fn new_version_operator_less_than_equal(element: LessThanEqual) -> VersionOperator {
-    VersionOperator::LessThanEqual(element)
+pub fn new_version_operator_pragma_less_than_equal(
+    element: PragmaLessThanEqual,
+) -> VersionOperator {
+    VersionOperator::PragmaLessThanEqual(element)
 }
 
-pub fn new_version_operator_greater_than_equal(element: GreaterThanEqual) -> VersionOperator {
-    VersionOperator::GreaterThanEqual(element)
+pub fn new_version_operator_pragma_greater_than_equal(
+    element: PragmaGreaterThanEqual,
+) -> VersionOperator {
+    VersionOperator::PragmaGreaterThanEqual(element)
 }
 
 #[derive(Clone, Debug)]
 pub enum YulAssignmentOperator {
-    ColonEqual(ColonEqual),
+    YulColonEqual(YulColonEqual),
     YulColonAndEqual(YulColonAndEqual),
 }
 
-pub fn new_yul_assignment_operator_colon_equal(element: ColonEqual) -> YulAssignmentOperator {
-    YulAssignmentOperator::ColonEqual(element)
+pub fn new_yul_assignment_operator_yul_colon_equal(
+    element: YulColonEqual,
+) -> YulAssignmentOperator {
+    YulAssignmentOperator::YulColonEqual(element)
 }
 
 pub fn new_yul_assignment_operator_yul_colon_and_equal(
@@ -4462,13 +4496,31 @@ pub fn new_yul_expression_yul_path(element: YulPath) -> YulExpression {
 }
 
 #[derive(Clone, Debug)]
+pub enum YulHexStringLiteral {
+    YulSingleQuotedHexStringLiteral(YulSingleQuotedHexStringLiteral),
+    YulDoubleQuotedHexStringLiteral(YulDoubleQuotedHexStringLiteral),
+}
+
+pub fn new_yul_hex_string_literal_yul_single_quoted_hex_string_literal(
+    element: YulSingleQuotedHexStringLiteral,
+) -> YulHexStringLiteral {
+    YulHexStringLiteral::YulSingleQuotedHexStringLiteral(element)
+}
+
+pub fn new_yul_hex_string_literal_yul_double_quoted_hex_string_literal(
+    element: YulDoubleQuotedHexStringLiteral,
+) -> YulHexStringLiteral {
+    YulHexStringLiteral::YulDoubleQuotedHexStringLiteral(element)
+}
+
+#[derive(Clone, Debug)]
 pub enum YulLiteral {
     YulTrueKeyword(YulTrueKeyword),
     YulFalseKeyword(YulFalseKeyword),
     YulDecimalLiteral(YulDecimalLiteral),
     YulHexLiteral(YulHexLiteral),
-    HexStringLiteral(HexStringLiteral),
-    StringLiteral(StringLiteral),
+    YulHexStringLiteral(YulHexStringLiteral),
+    YulStringLiteral(YulStringLiteral),
 }
 
 pub fn new_yul_literal_yul_true_keyword(element: YulTrueKeyword) -> YulLiteral {
@@ -4487,24 +4539,24 @@ pub fn new_yul_literal_yul_hex_literal(element: YulHexLiteral) -> YulLiteral {
     YulLiteral::YulHexLiteral(element)
 }
 
-pub fn new_yul_literal_hex_string_literal(element: HexStringLiteral) -> YulLiteral {
-    YulLiteral::HexStringLiteral(element)
+pub fn new_yul_literal_yul_hex_string_literal(element: YulHexStringLiteral) -> YulLiteral {
+    YulLiteral::YulHexStringLiteral(element)
 }
 
-pub fn new_yul_literal_string_literal(element: StringLiteral) -> YulLiteral {
-    YulLiteral::StringLiteral(element)
+pub fn new_yul_literal_yul_string_literal(element: YulStringLiteral) -> YulLiteral {
+    YulLiteral::YulStringLiteral(element)
 }
 
 #[derive(Clone, Debug)]
 pub enum YulStackAssignmentOperator {
-    EqualColon(EqualColon),
+    YulEqualColon(YulEqualColon),
     YulEqualAndColon(YulEqualAndColon),
 }
 
-pub fn new_yul_stack_assignment_operator_equal_colon(
-    element: EqualColon,
+pub fn new_yul_stack_assignment_operator_yul_equal_colon(
+    element: YulEqualColon,
 ) -> YulStackAssignmentOperator {
-    YulStackAssignmentOperator::EqualColon(element)
+    YulStackAssignmentOperator::YulEqualColon(element)
 }
 
 pub fn new_yul_stack_assignment_operator_yul_equal_and_colon(
@@ -4589,6 +4641,24 @@ pub fn new_yul_statement_yul_expression(element: YulExpression) -> YulStatement 
 }
 
 #[derive(Clone, Debug)]
+pub enum YulStringLiteral {
+    YulSingleQuotedStringLiteral(YulSingleQuotedStringLiteral),
+    YulDoubleQuotedStringLiteral(YulDoubleQuotedStringLiteral),
+}
+
+pub fn new_yul_string_literal_yul_single_quoted_string_literal(
+    element: YulSingleQuotedStringLiteral,
+) -> YulStringLiteral {
+    YulStringLiteral::YulSingleQuotedStringLiteral(element)
+}
+
+pub fn new_yul_string_literal_yul_double_quoted_string_literal(
+    element: YulDoubleQuotedStringLiteral,
+) -> YulStringLiteral {
+    YulStringLiteral::YulDoubleQuotedStringLiteral(element)
+}
+
+#[derive(Clone, Debug)]
 pub enum YulSwitchCase {
     YulDefaultCase(YulDefaultCase),
     YulValueCase(YulValueCase),
@@ -4614,15 +4684,6 @@ pub struct ArrayValues {
 
 pub fn new_array_values(elements: Vec<Expression>) -> ArrayValues {
     ArrayValues { elements }
-}
-
-#[derive(Clone, Debug)]
-pub struct AssemblyFlags {
-    pub elements: Vec<StringLiteral>,
-}
-
-pub fn new_assembly_flags(elements: Vec<StringLiteral>) -> AssemblyFlags {
-    AssemblyFlags { elements }
 }
 
 #[derive(Clone, Debug)]
@@ -4975,6 +5036,15 @@ pub fn new_yul_arguments(elements: Vec<YulExpression>) -> YulArguments {
 }
 
 #[derive(Clone, Debug)]
+pub struct YulAssemblyFlags {
+    pub elements: Vec<YulStringLiteral>,
+}
+
+pub fn new_yul_assembly_flags(elements: Vec<YulStringLiteral>) -> YulAssemblyFlags {
+    YulAssemblyFlags { elements }
+}
+
+#[derive(Clone, Debug)]
 pub struct YulParameters {
     pub elements: Vec<YulIdentifier>,
 }
@@ -5033,42 +5103,6 @@ pub fn new_yul_variable_names(elements: Vec<YulIdentifier>) -> YulVariableNames 
 //
 // Note: _source is unused on the constructor methods, but kept for uniformity with other constructors
 // and because it may be needed in the future
-
-#[derive(Clone, Debug)]
-pub struct ABIEncoderV2Keyword {
-    pub range: Range<usize>,
-}
-
-pub fn new_abi_encoder_v2_keyword(range: Range<usize>, _source: &str) -> ABIEncoderV2Keyword {
-    ABIEncoderV2Keyword { range }
-}
-
-#[derive(Clone, Debug)]
-pub struct AbicoderKeyword {
-    pub range: Range<usize>,
-}
-
-pub fn new_abicoder_keyword(range: Range<usize>, _source: &str) -> AbicoderKeyword {
-    AbicoderKeyword { range }
-}
-
-#[derive(Clone, Debug)]
-pub struct AbicoderV1Keyword {
-    pub range: Range<usize>,
-}
-
-pub fn new_abicoder_v1_keyword(range: Range<usize>, _source: &str) -> AbicoderV1Keyword {
-    AbicoderV1Keyword { range }
-}
-
-#[derive(Clone, Debug)]
-pub struct AbicoderV2Keyword {
-    pub range: Range<usize>,
-}
-
-pub fn new_abicoder_v2_keyword(range: Range<usize>, _source: &str) -> AbicoderV2Keyword {
-    AbicoderV2Keyword { range }
-}
 
 #[derive(Clone, Debug)]
 pub struct AbstractKeyword {
@@ -5377,15 +5411,6 @@ pub fn new_colon(range: Range<usize>, _source: &str) -> Colon {
 }
 
 #[derive(Clone, Debug)]
-pub struct ColonEqual {
-    pub range: Range<usize>,
-}
-
-pub fn new_colon_equal(range: Range<usize>, _source: &str) -> ColonEqual {
-    ColonEqual { range }
-}
-
-#[derive(Clone, Debug)]
 pub struct Comma {
     pub range: Range<usize>,
 }
@@ -5587,15 +5612,6 @@ pub fn new_equal(range: Range<usize>, _source: &str) -> Equal {
 }
 
 #[derive(Clone, Debug)]
-pub struct EqualColon {
-    pub range: Range<usize>,
-}
-
-pub fn new_equal_colon(range: Range<usize>, _source: &str) -> EqualColon {
-    EqualColon { range }
-}
-
-#[derive(Clone, Debug)]
 pub struct EqualEqual {
     pub range: Range<usize>,
 }
@@ -5638,15 +5654,6 @@ pub struct EventKeyword {
 
 pub fn new_event_keyword(range: Range<usize>, _source: &str) -> EventKeyword {
     EventKeyword { range }
-}
-
-#[derive(Clone, Debug)]
-pub struct ExperimentalKeyword {
-    pub range: Range<usize>,
-}
-
-pub fn new_experimental_keyword(range: Range<usize>, _source: &str) -> ExperimentalKeyword {
-    ExperimentalKeyword { range }
 }
 
 #[derive(Clone, Debug)]
@@ -6064,15 +6071,6 @@ pub fn new_minus_equal(range: Range<usize>, _source: &str) -> MinusEqual {
 }
 
 #[derive(Clone, Debug)]
-pub struct MinusGreaterThan {
-    pub range: Range<usize>,
-}
-
-pub fn new_minus_greater_than(range: Range<usize>, _source: &str) -> MinusGreaterThan {
-    MinusGreaterThan { range }
-}
-
-#[derive(Clone, Debug)]
 pub struct MinusMinus {
     pub range: Range<usize>,
 }
@@ -6265,12 +6263,222 @@ pub fn new_plus_plus(range: Range<usize>, _source: &str) -> PlusPlus {
 }
 
 #[derive(Clone, Debug)]
+pub struct PragmaABIEncoderV2Keyword {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_abi_encoder_v2_keyword(
+    range: Range<usize>,
+    _source: &str,
+) -> PragmaABIEncoderV2Keyword {
+    PragmaABIEncoderV2Keyword { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaAbicoderKeyword {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_abicoder_keyword(range: Range<usize>, _source: &str) -> PragmaAbicoderKeyword {
+    PragmaAbicoderKeyword { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaAbicoderV1Keyword {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_abicoder_v1_keyword(
+    range: Range<usize>,
+    _source: &str,
+) -> PragmaAbicoderV1Keyword {
+    PragmaAbicoderV1Keyword { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaAbicoderV2Keyword {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_abicoder_v2_keyword(
+    range: Range<usize>,
+    _source: &str,
+) -> PragmaAbicoderV2Keyword {
+    PragmaAbicoderV2Keyword { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaBarBar {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_bar_bar(range: Range<usize>, _source: &str) -> PragmaBarBar {
+    PragmaBarBar { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaCaret {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_caret(range: Range<usize>, _source: &str) -> PragmaCaret {
+    PragmaCaret { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaDoubleQuotedStringLiteral {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_double_quoted_string_literal(
+    range: Range<usize>,
+    _source: &str,
+) -> PragmaDoubleQuotedStringLiteral {
+    PragmaDoubleQuotedStringLiteral { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaEqual {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_equal(range: Range<usize>, _source: &str) -> PragmaEqual {
+    PragmaEqual { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaExperimentalKeyword {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_experimental_keyword(
+    range: Range<usize>,
+    _source: &str,
+) -> PragmaExperimentalKeyword {
+    PragmaExperimentalKeyword { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaGreaterThan {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_greater_than(range: Range<usize>, _source: &str) -> PragmaGreaterThan {
+    PragmaGreaterThan { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaGreaterThanEqual {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_greater_than_equal(range: Range<usize>, _source: &str) -> PragmaGreaterThanEqual {
+    PragmaGreaterThanEqual { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaIdentifier {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_identifier(range: Range<usize>, _source: &str) -> PragmaIdentifier {
+    PragmaIdentifier { range }
+}
+
+#[derive(Clone, Debug)]
 pub struct PragmaKeyword {
     pub range: Range<usize>,
 }
 
 pub fn new_pragma_keyword(range: Range<usize>, _source: &str) -> PragmaKeyword {
     PragmaKeyword { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaLessThan {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_less_than(range: Range<usize>, _source: &str) -> PragmaLessThan {
+    PragmaLessThan { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaLessThanEqual {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_less_than_equal(range: Range<usize>, _source: &str) -> PragmaLessThanEqual {
+    PragmaLessThanEqual { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaMinus {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_minus(range: Range<usize>, _source: &str) -> PragmaMinus {
+    PragmaMinus { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaPeriod {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_period(range: Range<usize>, _source: &str) -> PragmaPeriod {
+    PragmaPeriod { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaSMTCheckerKeyword {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_smt_checker_keyword(
+    range: Range<usize>,
+    _source: &str,
+) -> PragmaSMTCheckerKeyword {
+    PragmaSMTCheckerKeyword { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaSemicolon {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_semicolon(range: Range<usize>, _source: &str) -> PragmaSemicolon {
+    PragmaSemicolon { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaSingleQuotedStringLiteral {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_single_quoted_string_literal(
+    range: Range<usize>,
+    _source: &str,
+) -> PragmaSingleQuotedStringLiteral {
+    PragmaSingleQuotedStringLiteral { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaSolidityKeyword {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_solidity_keyword(range: Range<usize>, _source: &str) -> PragmaSolidityKeyword {
+    PragmaSolidityKeyword { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct PragmaTilde {
+    pub range: Range<usize>,
+}
+
+pub fn new_pragma_tilde(range: Range<usize>, _source: &str) -> PragmaTilde {
+    PragmaTilde { range }
 }
 
 #[derive(Clone, Debug)]
@@ -6370,15 +6578,6 @@ pub struct RevertKeyword {
 
 pub fn new_revert_keyword(range: Range<usize>, _source: &str) -> RevertKeyword {
     RevertKeyword { range }
-}
-
-#[derive(Clone, Debug)]
-pub struct SMTCheckerKeyword {
-    pub range: Range<usize>,
-}
-
-pub fn new_smt_checker_keyword(range: Range<usize>, _source: &str) -> SMTCheckerKeyword {
-    SMTCheckerKeyword { range }
 }
 
 #[derive(Clone, Debug)]
@@ -6502,15 +6701,6 @@ pub struct SlashEqual {
 
 pub fn new_slash_equal(range: Range<usize>, _source: &str) -> SlashEqual {
     SlashEqual { range }
-}
-
-#[derive(Clone, Debug)]
-pub struct SolidityKeyword {
-    pub range: Range<usize>,
-}
-
-pub fn new_solidity_keyword(range: Range<usize>, _source: &str) -> SolidityKeyword {
-    SolidityKeyword { range }
 }
 
 #[derive(Clone, Debug)]
@@ -6910,6 +7100,51 @@ pub fn new_yul_catch_keyword(range: Range<usize>, _source: &str) -> YulCatchKeyw
 }
 
 #[derive(Clone, Debug)]
+pub struct YulCloseBrace {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_close_brace(range: Range<usize>, _source: &str) -> YulCloseBrace {
+    YulCloseBrace { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct YulCloseParen {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_close_paren(range: Range<usize>, _source: &str) -> YulCloseParen {
+    YulCloseParen { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct YulColon {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_colon(range: Range<usize>, _source: &str) -> YulColon {
+    YulColon { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct YulColonEqual {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_colon_equal(range: Range<usize>, _source: &str) -> YulColonEqual {
+    YulColonEqual { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct YulComma {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_comma(range: Range<usize>, _source: &str) -> YulComma {
+    YulComma { range }
+}
+
+#[derive(Clone, Debug)]
 pub struct YulConstantKeyword {
     pub range: Range<usize>,
 }
@@ -7009,6 +7244,30 @@ pub fn new_yul_do_keyword(range: Range<usize>, _source: &str) -> YulDoKeyword {
 }
 
 #[derive(Clone, Debug)]
+pub struct YulDoubleQuotedHexStringLiteral {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_double_quoted_hex_string_literal(
+    range: Range<usize>,
+    _source: &str,
+) -> YulDoubleQuotedHexStringLiteral {
+    YulDoubleQuotedHexStringLiteral { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct YulDoubleQuotedStringLiteral {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_double_quoted_string_literal(
+    range: Range<usize>,
+    _source: &str,
+) -> YulDoubleQuotedStringLiteral {
+    YulDoubleQuotedStringLiteral { range }
+}
+
+#[derive(Clone, Debug)]
 pub struct YulElseKeyword {
     pub range: Range<usize>,
 }
@@ -7033,6 +7292,24 @@ pub struct YulEnumKeyword {
 
 pub fn new_yul_enum_keyword(range: Range<usize>, _source: &str) -> YulEnumKeyword {
     YulEnumKeyword { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct YulEqual {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_equal(range: Range<usize>, _source: &str) -> YulEqual {
+    YulEqual { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct YulEqualColon {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_equal_colon(range: Range<usize>, _source: &str) -> YulEqualColon {
+    YulEqualColon { range }
 }
 
 #[derive(Clone, Debug)]
@@ -7333,6 +7610,15 @@ pub fn new_yul_memory_keyword(range: Range<usize>, _source: &str) -> YulMemoryKe
 }
 
 #[derive(Clone, Debug)]
+pub struct YulMinusGreaterThan {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_minus_greater_than(range: Range<usize>, _source: &str) -> YulMinusGreaterThan {
+    YulMinusGreaterThan { range }
+}
+
+#[derive(Clone, Debug)]
 pub struct YulMinutesKeyword {
     pub range: Range<usize>,
 }
@@ -7387,6 +7673,24 @@ pub fn new_yul_of_keyword(range: Range<usize>, _source: &str) -> YulOfKeyword {
 }
 
 #[derive(Clone, Debug)]
+pub struct YulOpenBrace {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_open_brace(range: Range<usize>, _source: &str) -> YulOpenBrace {
+    YulOpenBrace { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct YulOpenParen {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_open_paren(range: Range<usize>, _source: &str) -> YulOpenParen {
+    YulOpenParen { range }
+}
+
+#[derive(Clone, Debug)]
 pub struct YulOverrideKeyword {
     pub range: Range<usize>,
 }
@@ -7411,6 +7715,15 @@ pub struct YulPayableKeyword {
 
 pub fn new_yul_payable_keyword(range: Range<usize>, _source: &str) -> YulPayableKeyword {
     YulPayableKeyword { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct YulPeriod {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_period(range: Range<usize>, _source: &str) -> YulPeriod {
+    YulPeriod { range }
 }
 
 #[derive(Clone, Debug)]
@@ -7510,6 +7823,30 @@ pub struct YulSecondsKeyword {
 
 pub fn new_yul_seconds_keyword(range: Range<usize>, _source: &str) -> YulSecondsKeyword {
     YulSecondsKeyword { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct YulSingleQuotedHexStringLiteral {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_single_quoted_hex_string_literal(
+    range: Range<usize>,
+    _source: &str,
+) -> YulSingleQuotedHexStringLiteral {
+    YulSingleQuotedHexStringLiteral { range }
+}
+
+#[derive(Clone, Debug)]
+pub struct YulSingleQuotedStringLiteral {
+    pub range: Range<usize>,
+}
+
+pub fn new_yul_single_quoted_string_literal(
+    range: Range<usize>,
+    _source: &str,
+) -> YulSingleQuotedStringLiteral {
+    YulSingleQuotedStringLiteral { range }
 }
 
 #[derive(Clone, Debug)]
