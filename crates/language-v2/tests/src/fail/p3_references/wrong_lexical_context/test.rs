@@ -15,7 +15,7 @@ language_v2_macros::compile!(Language(
                 items = [
                     Struct(
                         name = One,
-                        lexical_context = ContextB,
+                        switch_lexical_context = ContextB,
                         fields = (
                             entry = Required(Two),
                             field_1 = Required(Three)

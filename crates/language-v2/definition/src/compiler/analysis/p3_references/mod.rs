@@ -99,7 +99,7 @@ fn check_struct(
 ) {
     let SpannedStructItem {
         name,
-        lexical_context,
+        switch_lexical_context,
         enabled,
         error_recovery: _,
         fields,
@@ -108,7 +108,7 @@ fn check_struct(
     let enablement = update_enablement(analysis, enablement, enabled.as_ref());
 
     // If this struct is a gateway, validate the annotation and use it for field context:
-    if let Some(gateway_context) = lexical_context {
+    if let Some(gateway_context) = switch_lexical_context {
         if **gateway_context == *context {
             analysis.errors.add(
                 gateway_context,
@@ -676,6 +676,6 @@ enum Errors<'err> {
     ),
     #[error("Reference '{0}' is in context '{1}', but expected context '{2}'.")]
     InvalidReferenceContext(&'err Identifier, &'err Identifier, &'err Identifier),
-    #[error("Unnecessary 'lexical_context = {0}': it is the same as the topic's context '{1}'.")]
+    #[error("Unnecessary 'switch_lexical_context = {0}': it is the same as the topic's context '{1}'.")]
     UnnecessaryLexicalContext(&'err Identifier, &'err Identifier),
 }

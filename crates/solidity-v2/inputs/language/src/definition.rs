@@ -80,7 +80,7 @@ language_v2_macros::compile!(Language(
                     items = [
                         Struct(
                             name = PragmaDirective,
-                            lexical_context = Pragma,
+                            switch_lexical_context = Pragma,
                             error_recovery = FieldsErrorRecovery(terminator = semicolon),
                             fields = (
                                 pragma_keyword = Required(PragmaKeyword),
@@ -3028,7 +3028,7 @@ language_v2_macros::compile!(Language(
                         ),
                         Struct(
                             name = AssemblyStatement,
-                            lexical_context = Yul,
+                            switch_lexical_context = Yul,
                             fields = (
                                 assembly_keyword = Required(AssemblyKeyword),
                                 label = Optional(reference = YulStringLiteral),
