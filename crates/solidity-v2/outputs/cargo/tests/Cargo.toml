@@ -10,6 +10,7 @@ anyhow = { workspace = true }
 infra_utils = { workspace = true }
 solidity_v2_language = { workspace = true }
 slang_solidity_v2_common = { workspace = true }
+slang_solidity_v2_cst = { workspace = true }
 slang_solidity_v2_parser = { workspace = true }
 solidity_v2_testing_utils = { workspace = true }
 

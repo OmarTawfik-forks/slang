@@ -1,0 +1,389 @@
+{%- set target = model.structured_cst_model -%}
+#![allow(non_camel_case_types)]
+#![allow(dead_code)]
+#![allow(unused_variables)]
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::too_many_lines)]
+#![allow(clippy::match_single_binding)]
+
+use std::ops::Range;
+
+use slang_solidity_v2_common::versions::LanguageVersion;
+
+use super::nodes::*;
+
+/// Describes a version constraint that was violated.
+#[derive(Clone, Debug, PartialEq)]
+pub enum VersionConstraint {
+    From { from: LanguageVersion },
+    Till { till: LanguageVersion },
+    Range { from: LanguageVersion, till: LanguageVersion },
+}
+
+/// An error produced when a CST node is not valid for the given language version.
+#[derive(Clone, Debug, PartialEq)]
+pub struct VersionValidationError {
+    /// The text range of the invalid node.
+    pub range: Range<usize>,
+    /// The version constraint that was violated.
+    pub specifier: VersionConstraint,
+}
+
+/// Validate that all nodes in the given `SourceUnit` are valid for the given language version.
+pub fn validate_version(source_unit: &SourceUnit, version: LanguageVersion) -> Vec<VersionValidationError> {
+    let mut errors = Vec::new();
+    validate_source_unit(source_unit, version, &mut errors);
+    errors
+}
+
+//
+// Sequence validators
+//
+{% for parent_type, sequence in target.sequences %}
+  {%- if sequence.has_versioned_descendant %}
+fn validate_{{ parent_type | snake_case }}(node: &{{ parent_type }}, version: LanguageVersion, errors: &mut Vec<VersionValidationError>) {
+    let node = node.as_ref();
+    {# Check struct-level enabled #}
+    {%- if sequence.enabled.type == "From" %}
+    {%- set v = sequence.enabled.from | split(pat=".") | join(sep="_") %}
+    if version < LanguageVersion::V{{ v }} {
+        errors.push(VersionValidationError {
+            range: first_range_seq_{{ parent_type | snake_case }}(node),
+            specifier: VersionConstraint::From { from: LanguageVersion::V{{ v }} },
+        });
+        return;
+    }
+    {%- elif sequence.enabled.type == "Till" %}
+    {%- set v = sequence.enabled.till | split(pat=".") | join(sep="_") %}
+    if version >= LanguageVersion::V{{ v }} {
+        errors.push(VersionValidationError {
+            range: first_range_seq_{{ parent_type | snake_case }}(node),
+            specifier: VersionConstraint::Till { till: LanguageVersion::V{{ v }} },
+        });
+        return;
+    }
+    {%- elif sequence.enabled.type == "Range" %}
+    {%- set vf = sequence.enabled.from | split(pat=".") | join(sep="_") %}
+    {%- set vt = sequence.enabled.till | split(pat=".") | join(sep="_") %}
+    if version < LanguageVersion::V{{ vf }} || version >= LanguageVersion::V{{ vt }} {
+        errors.push(VersionValidationError {
+            range: first_range_seq_{{ parent_type | snake_case }}(node),
+            specifier: VersionConstraint::Range {
+                from: LanguageVersion::V{{ vf }},
+                till: LanguageVersion::V{{ vt }},
+            },
+        });
+        return;
+    }
+    {%- elif sequence.enabled.type == "Never" %}
+    {
+        errors.push(VersionValidationError {
+            range: first_range_seq_{{ parent_type | snake_case }}(node),
+            specifier: VersionConstraint::From { from: LanguageVersion::V{{ model.language.versions | last | split(pat=".") | join(sep="_") }} },
+        });
+        return;
+    }
+    {%- endif %}
+
+    {# Check and recurse into each field #}
+    {%- for field in sequence.fields %}
+      {%- if field.is_optional %}
+    if let Some(ref child) = node.{{ field.label | snake_case }} {
+        {%- if field.enabled.type == "From" %}
+        {%- set v = field.enabled.from | split(pat=".") | join(sep="_") %}
+        if version < LanguageVersion::V{{ v }} {
+            errors.push(VersionValidationError {
+                range: first_range_of_{{ field.type.name | snake_case }}(child),
+                specifier: VersionConstraint::From { from: LanguageVersion::V{{ v }} },
+            });
+        } else {
+          {%- if not field.type.is_terminal %}
+            {%- set child_key = field.type.name -%}
+            {%- if target.sequences is containing(child_key) and target.sequences[child_key].has_versioned_descendant %}
+            validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- elif target.choices is containing(child_key) and target.choices[child_key].has_versioned_descendant %}
+            validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- elif target.collections is containing(child_key) and target.collections[child_key].has_versioned_descendant %}
+            validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- endif -%}
+          {%- endif %}
+        }
+        {%- elif field.enabled.type == "Till" %}
+        {%- set v = field.enabled.till | split(pat=".") | join(sep="_") %}
+        if version >= LanguageVersion::V{{ v }} {
+            errors.push(VersionValidationError {
+                range: first_range_of_{{ field.type.name | snake_case }}(child),
+                specifier: VersionConstraint::Till { till: LanguageVersion::V{{ v }} },
+            });
+        } else {
+          {%- if not field.type.is_terminal %}
+            {%- set child_key = field.type.name -%}
+            {%- if target.sequences is containing(child_key) and target.sequences[child_key].has_versioned_descendant %}
+            validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- elif target.choices is containing(child_key) and target.choices[child_key].has_versioned_descendant %}
+            validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- elif target.collections is containing(child_key) and target.collections[child_key].has_versioned_descendant %}
+            validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- endif -%}
+          {%- endif %}
+        }
+        {%- elif field.enabled.type == "Range" %}
+        {%- set vf = field.enabled.from | split(pat=".") | join(sep="_") %}
+        {%- set vt = field.enabled.till | split(pat=".") | join(sep="_") %}
+        if version < LanguageVersion::V{{ vf }} || version >= LanguageVersion::V{{ vt }} {
+            errors.push(VersionValidationError {
+                range: first_range_of_{{ field.type.name | snake_case }}(child),
+                specifier: VersionConstraint::Range {
+                    from: LanguageVersion::V{{ vf }},
+                    till: LanguageVersion::V{{ vt }},
+                },
+            });
+        } else {
+          {%- if not field.type.is_terminal %}
+            {%- set child_key = field.type.name -%}
+            {%- if target.sequences is containing(child_key) and target.sequences[child_key].has_versioned_descendant %}
+            validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- elif target.choices is containing(child_key) and target.choices[child_key].has_versioned_descendant %}
+            validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- elif target.collections is containing(child_key) and target.collections[child_key].has_versioned_descendant %}
+            validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- endif -%}
+          {%- endif %}
+        }
+        {%- elif field.enabled.type == "Never" %}
+        {
+            errors.push(VersionValidationError {
+                range: first_range_of_{{ field.type.name | snake_case }}(child),
+                specifier: VersionConstraint::From { from: LanguageVersion::V{{ model.language.versions | last | split(pat=".") | join(sep="_") }} },
+            });
+        }
+        {%- else %}
+        {# enabled == Always, just recurse #}
+          {%- if not field.type.is_terminal %}
+            {%- set child_key = field.type.name -%}
+            {%- if target.sequences is containing(child_key) and target.sequences[child_key].has_versioned_descendant %}
+        validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- elif target.choices is containing(child_key) and target.choices[child_key].has_versioned_descendant %}
+        validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- elif target.collections is containing(child_key) and target.collections[child_key].has_versioned_descendant %}
+        validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- endif -%}
+          {%- endif %}
+        {%- endif %}
+    }
+      {%- else %}
+        {# Required field — always present, just recurse if child has versioned descendants #}
+        {%- if not field.type.is_terminal %}
+          {%- set child_key = field.type.name -%}
+          {%- if target.sequences is containing(child_key) and target.sequences[child_key].has_versioned_descendant %}
+    validate_{{ child_key | snake_case }}(&node.{{ field.label | snake_case }}, version, errors);
+          {%- elif target.choices is containing(child_key) and target.choices[child_key].has_versioned_descendant %}
+    validate_{{ child_key | snake_case }}(&node.{{ field.label | snake_case }}, version, errors);
+          {%- elif target.collections is containing(child_key) and target.collections[child_key].has_versioned_descendant %}
+    validate_{{ child_key | snake_case }}(&node.{{ field.label | snake_case }}, version, errors);
+          {%- endif -%}
+        {%- endif %}
+      {%- endif %}
+    {%- endfor %}
+}
+  {%- endif %}
+{% endfor %}
+
+//
+// Choice validators
+//
+{% for parent_type, choice in target.choices %}
+  {%- if choice.has_versioned_descendant %}
+fn validate_{{ parent_type | snake_case }}(node: &{{ parent_type }}, version: LanguageVersion, errors: &mut Vec<VersionValidationError>) {
+    {# Check choice-level enabled #}
+    {%- if choice.enabled.type == "From" %}
+    {%- set v = choice.enabled.from | split(pat=".") | join(sep="_") %}
+    if version < LanguageVersion::V{{ v }} {
+        errors.push(VersionValidationError {
+            range: first_range_of_{{ parent_type | snake_case }}(node),
+            specifier: VersionConstraint::From { from: LanguageVersion::V{{ v }} },
+        });
+        return;
+    }
+    {%- elif choice.enabled.type == "Till" %}
+    {%- set v = choice.enabled.till | split(pat=".") | join(sep="_") %}
+    if version >= LanguageVersion::V{{ v }} {
+        errors.push(VersionValidationError {
+            range: first_range_of_{{ parent_type | snake_case }}(node),
+            specifier: VersionConstraint::Till { till: LanguageVersion::V{{ v }} },
+        });
+        return;
+    }
+    {%- elif choice.enabled.type == "Range" %}
+    {%- set vf = choice.enabled.from | split(pat=".") | join(sep="_") %}
+    {%- set vt = choice.enabled.till | split(pat=".") | join(sep="_") %}
+    if version < LanguageVersion::V{{ vf }} || version >= LanguageVersion::V{{ vt }} {
+        errors.push(VersionValidationError {
+            range: first_range_of_{{ parent_type | snake_case }}(node),
+            specifier: VersionConstraint::Range {
+                from: LanguageVersion::V{{ vf }},
+                till: LanguageVersion::V{{ vt }},
+            },
+        });
+        return;
+    }
+    {%- endif %}
+
+    match node {
+    {%- for variant in choice.variants %}
+        {{ parent_type }}::{{ variant.node_type.name }}(child) => {
+          {%- if variant.enabled.type == "From" %}
+            {%- set v = variant.enabled.from | split(pat=".") | join(sep="_") %}
+            if version < LanguageVersion::V{{ v }} {
+                errors.push(VersionValidationError {
+                    range: first_range_of_{{ variant.node_type.name | snake_case }}(child),
+                    specifier: VersionConstraint::From { from: LanguageVersion::V{{ v }} },
+                });
+                return;
+            }
+          {%- elif variant.enabled.type == "Till" %}
+            {%- set v = variant.enabled.till | split(pat=".") | join(sep="_") %}
+            if version >= LanguageVersion::V{{ v }} {
+                errors.push(VersionValidationError {
+                    range: first_range_of_{{ variant.node_type.name | snake_case }}(child),
+                    specifier: VersionConstraint::Till { till: LanguageVersion::V{{ v }} },
+                });
+                return;
+            }
+          {%- elif variant.enabled.type == "Range" %}
+            {%- set vf = variant.enabled.from | split(pat=".") | join(sep="_") %}
+            {%- set vt = variant.enabled.till | split(pat=".") | join(sep="_") %}
+            if version < LanguageVersion::V{{ vf }} || version >= LanguageVersion::V{{ vt }} {
+                errors.push(VersionValidationError {
+                    range: first_range_of_{{ variant.node_type.name | snake_case }}(child),
+                    specifier: VersionConstraint::Range {
+                        from: LanguageVersion::V{{ vf }},
+                        till: LanguageVersion::V{{ vt }},
+                    },
+                });
+                return;
+            }
+          {%- endif %}
+          {%- if not variant.node_type.is_terminal %}
+            {%- set child_key = variant.node_type.name -%}
+            {%- if target.sequences is containing(child_key) and target.sequences[child_key].has_versioned_descendant %}
+            validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- elif target.choices is containing(child_key) and target.choices[child_key].has_versioned_descendant %}
+            validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- elif target.collections is containing(child_key) and target.collections[child_key].has_versioned_descendant %}
+            validate_{{ child_key | snake_case }}(child, version, errors);
+            {%- endif -%}
+          {%- endif %}
+        }
+    {%- endfor %}
+    }
+}
+  {%- endif %}
+{% endfor %}
+
+//
+// Collection validators
+//
+{% for parent_type, collection in target.collections %}
+  {%- if collection.has_versioned_descendant %}
+fn validate_{{ parent_type | snake_case }}(node: &{{ parent_type }}, version: LanguageVersion, errors: &mut Vec<VersionValidationError>) {
+    {# Check collection-level enabled #}
+    {%- if collection.enabled.type == "From" %}
+    {%- set v = collection.enabled.from | split(pat=".") | join(sep="_") %}
+    if version < LanguageVersion::V{{ v }} {
+        errors.push(VersionValidationError {
+            range: first_range_of_{{ parent_type | snake_case }}(node),
+            specifier: VersionConstraint::From { from: LanguageVersion::V{{ v }} },
+        });
+        return;
+    }
+    {%- elif collection.enabled.type == "Till" %}
+    {%- set v = collection.enabled.till | split(pat=".") | join(sep="_") %}
+    if version >= LanguageVersion::V{{ v }} {
+        errors.push(VersionValidationError {
+            range: first_range_of_{{ parent_type | snake_case }}(node),
+            specifier: VersionConstraint::Till { till: LanguageVersion::V{{ v }} },
+        });
+        return;
+    }
+    {%- elif collection.enabled.type == "Range" %}
+    {%- set vf = collection.enabled.from | split(pat=".") | join(sep="_") %}
+    {%- set vt = collection.enabled.till | split(pat=".") | join(sep="_") %}
+    if version < LanguageVersion::V{{ vf }} || version >= LanguageVersion::V{{ vt }} {
+        errors.push(VersionValidationError {
+            range: first_range_of_{{ parent_type | snake_case }}(node),
+            specifier: VersionConstraint::Range {
+                from: LanguageVersion::V{{ vf }},
+                till: LanguageVersion::V{{ vt }},
+            },
+        });
+        return;
+    }
+    {%- endif %}
+
+    {%- set child_key = collection.item_type.name -%}
+    {%- if target.sequences is containing(child_key) and target.sequences[child_key].has_versioned_descendant %}
+    for child in &node.elements {
+        validate_{{ child_key | snake_case }}(child, version, errors);
+    }
+    {%- elif target.choices is containing(child_key) and target.choices[child_key].has_versioned_descendant %}
+    for child in &node.elements {
+        validate_{{ child_key | snake_case }}(child, version, errors);
+    }
+    {%- elif target.collections is containing(child_key) and target.collections[child_key].has_versioned_descendant %}
+    for child in &node.elements {
+        validate_{{ child_key | snake_case }}(child, version, errors);
+    }
+    {%- endif %}
+}
+  {%- endif %}
+{% endfor %}
+
+//
+// Helper functions to get the first terminal range from a node
+//
+
+{% for parent_type, sequence in target.sequences %}
+fn first_range_seq_{{ parent_type | snake_case }}(node: &{{ parent_type }}Struct) -> Range<usize> {
+    {%- for field in sequence.fields %}
+      {%- if field.is_optional %}
+        {%- if loop.last %}
+    node.{{ field.label | snake_case }}.as_ref().map_or(0..0, |child| first_range_of_{{ field.type.name | snake_case }}(child))
+        {%- else %}
+    if let Some(ref child) = node.{{ field.label | snake_case }} {
+        return first_range_of_{{ field.type.name | snake_case }}(child);
+    }
+        {%- endif %}
+      {%- else %}
+    first_range_of_{{ field.type.name | snake_case }}(&node.{{ field.label | snake_case }})
+        {%- break %}
+      {%- endif %}
+    {%- endfor %}
+}
+
+fn first_range_of_{{ parent_type | snake_case }}(node: &{{ parent_type }}) -> Range<usize> {
+    first_range_seq_{{ parent_type | snake_case }}(node.as_ref())
+}
+{% endfor %}
+
+{% for parent_type, choice in target.choices %}
+fn first_range_of_{{ parent_type | snake_case }}(node: &{{ parent_type }}) -> Range<usize> {
+    match node {
+    {%- for variant in choice.variants %}
+        {{ parent_type }}::{{ variant.node_type.name }}(child) => first_range_of_{{ variant.node_type.name | snake_case }}(child),
+    {%- endfor %}
+    }
+}
+{% endfor %}
+
+{% for parent_type, collection in target.collections %}
+fn first_range_of_{{ parent_type | snake_case }}(node: &{{ parent_type }}) -> Range<usize> {
+    node.elements.first().map_or(0..0, |child| first_range_of_{{ collection.item_type.name | snake_case }}(child))
+}
+{% endfor %}
+
+{% for parent_type in target.terminals %}
+fn first_range_of_{{ parent_type | snake_case }}(node: &{{ parent_type }}) -> Range<usize> {
+    node.range.clone()
+}
+{% endfor %}

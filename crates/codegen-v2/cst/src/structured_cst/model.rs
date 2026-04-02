@@ -37,6 +37,8 @@ pub struct StructuredCstModel {
 #[derive(Clone, Serialize)]
 pub struct Sequence {
     pub fields: Vec<Field>,
+    pub enabled: model::VersionSpecifier,
+    pub has_versioned_descendant: bool,
 }
 
 #[derive(Clone, Eq, PartialEq, Ord, PartialOrd)]
@@ -50,17 +52,28 @@ pub struct Field {
     pub label: model::Identifier,
     pub r#type: NodeType,
     pub is_optional: bool,
+    pub enabled: model::VersionSpecifier,
 }
 
 #[allow(clippy::struct_field_names)]
 #[derive(Clone, Serialize)]
 pub struct Choice {
-    pub variants: Vec<NodeType>,
+    pub variants: Vec<ChoiceVariant>,
+    pub enabled: model::VersionSpecifier,
+    pub has_versioned_descendant: bool,
+}
+
+#[derive(Clone, Serialize)]
+pub struct ChoiceVariant {
+    pub node_type: NodeType,
+    pub enabled: model::VersionSpecifier,
 }
 
 #[derive(Clone, Serialize)]
 pub struct Collection {
     pub item_type: NodeType,
+    pub enabled: model::VersionSpecifier,
+    pub has_versioned_descendant: bool,
 }
 
 impl NodeType {
@@ -105,7 +118,8 @@ impl Serialize for NodeType {
 // Construction
 impl StructuredCstModel {
     pub fn from_language(language: &model::Language) -> Self {
-        let builder = StructuredCstModelBuilder::create(language);
+        let mut builder = StructuredCstModelBuilder::create(language);
+        builder.compute_has_versioned_descendant();
 
         Self {
             terminals: builder.terminals,
@@ -221,57 +235,101 @@ impl StructuredCstModelBuilder {
     fn add_struct_item(&mut self, item: &model::StructItem) {
         let parent_type = item.name.clone();
         let fields: Vec<_> = self.convert_fields(&item.fields).collect();
+        let enabled = item.enabled.clone().unwrap_or_default();
 
-        self.sequences.insert(parent_type, Sequence { fields });
+        self.sequences.insert(
+            parent_type,
+            Sequence {
+                fields,
+                enabled,
+                has_versioned_descendant: false, // computed later
+            },
+        );
     }
 
     fn add_enum_item(&mut self, item: &model::EnumItem) {
         let parent_type = item.name.clone();
+        let enabled = item.enabled.clone().unwrap_or_default();
 
         let variants = item
             .variants
             .iter()
-            .map(|variant| self.find_node_type(&variant.reference))
+            .map(|variant| ChoiceVariant {
+                node_type: self.find_node_type(&variant.reference),
+                enabled: variant.enabled.clone().unwrap_or_default(),
+            })
             .collect();
 
-        self.choices.insert(parent_type, Choice { variants });
+        self.choices.insert(
+            parent_type,
+            Choice {
+                variants,
+                enabled,
+                has_versioned_descendant: false, // computed later
+            },
+        );
     }
 
     fn add_repeated_item(&mut self, item: &model::RepeatedItem) {
         let parent_type = item.name.clone();
         let item_type = self.find_node_type(&item.reference);
+        let enabled = item.enabled.clone().unwrap_or_default();
 
-        self.collections
-            .insert(parent_type, Collection { item_type });
+        self.collections.insert(
+            parent_type,
+            Collection {
+                item_type,
+                enabled,
+                has_versioned_descendant: false, // computed later
+            },
+        );
     }
 
     fn add_separated_item(&mut self, item: &model::SeparatedItem) {
         let parent_type = item.name.clone();
         let item_type = self.find_node_type(&item.reference);
+        let enabled = item.enabled.clone().unwrap_or_default();
 
-        self.collections
-            .insert(parent_type, Collection { item_type });
+        self.collections.insert(
+            parent_type,
+            Collection {
+                item_type,
+                enabled,
+                has_versioned_descendant: false, // computed later
+            },
+        );
     }
 
     fn add_precedence_item(&mut self, item: &model::PrecedenceItem) {
         let parent_type = item.name.clone();
+        let enabled = item.enabled.clone().unwrap_or_default();
 
-        let precedence_expressions = item
-            .precedence_expressions
-            .iter()
-            .map(|expression| &expression.name);
+        let precedence_variants =
+            item.precedence_expressions
+                .iter()
+                .map(|expression| ChoiceVariant {
+                    node_type: self.find_node_type(&expression.name),
+                    enabled: model::VersionSpecifier::Always,
+                });
 
-        let primary_expressions = item
+        let primary_variants = item
             .primary_expressions
             .iter()
-            .map(|expression| &expression.reference);
+            .map(|expression| ChoiceVariant {
+                node_type: self.find_node_type(&expression.reference),
+                enabled: expression.enabled.clone().unwrap_or_default(),
+            });
 
-        let variants = precedence_expressions
-            .chain(primary_expressions)
-            .map(|item| self.find_node_type(item))
-            .collect();
+        let variants = precedence_variants.chain(primary_variants).collect();
 
-        self.choices.insert(parent_type, Choice { variants });
+        self.choices.insert(
+            parent_type,
+            Choice {
+                variants,
+                enabled,
+                has_versioned_descendant: false, // computed later
+            },
+        );
     }
 
     fn add_precedence_expression(
@@ -326,7 +384,15 @@ impl StructuredCstModelBuilder {
             self.choices.insert(
                 ident.clone(),
                 Choice {
-                    variants: variants.into_iter().collect(),
+                    variants: variants
+                        .into_iter()
+                        .map(|node_type| ChoiceVariant {
+                            node_type,
+                            enabled: model::VersionSpecifier::Always,
+                        })
+                        .collect(),
+                    enabled: model::VersionSpecifier::Always,
+                    has_versioned_descendant: false, // computed later
                 },
             );
 
@@ -335,6 +401,7 @@ impl StructuredCstModelBuilder {
                 label: ident.clone(),
                 r#type: NodeType::Nonterminal(ident),
                 is_optional: false,
+                enabled: model::VersionSpecifier::Always,
             }]
         };
 
@@ -342,6 +409,7 @@ impl StructuredCstModelBuilder {
             label: label.as_ref().into(),
             r#type: NodeType::Nonterminal(base_name.clone()),
             is_optional: false,
+            enabled: model::VersionSpecifier::Always,
         };
 
         let mut fields = vec![];
@@ -365,7 +433,102 @@ impl StructuredCstModelBuilder {
             }
         }
 
-        self.sequences.insert(parent_type, Sequence { fields });
+        self.sequences.insert(
+            parent_type,
+            Sequence {
+                fields,
+                enabled: model::VersionSpecifier::Always,
+                has_versioned_descendant: false, // computed later
+            },
+        );
+    }
+
+    /// Compute `has_versioned_descendant` for all nodes using a fixpoint iteration.
+    /// A node has a versioned descendant if:
+    /// - It has a non-Always `enabled` specifier, or
+    /// - Any of its fields/variants have a non-Always `enabled`, or
+    /// - Any of its children (transitively) have `has_versioned_descendant == true`.
+    fn compute_has_versioned_descendant(&mut self) {
+        let is_versioned =
+            |spec: &model::VersionSpecifier| !matches!(spec, model::VersionSpecifier::Always);
+
+        loop {
+            let mut changed = false;
+
+            let sequence_keys: Vec<_> = self.sequences.keys().cloned().collect();
+            for key in sequence_keys {
+                let seq = &self.sequences[&key];
+                if seq.has_versioned_descendant {
+                    continue;
+                }
+                let dominated = is_versioned(&seq.enabled)
+                    || seq.fields.iter().any(|f| {
+                        is_versioned(&f.enabled) || self.child_has_versioned_descendant(&f.r#type)
+                    });
+                if dominated {
+                    self.sequences
+                        .get_mut(&key)
+                        .unwrap()
+                        .has_versioned_descendant = true;
+                    changed = true;
+                }
+            }
+
+            let choice_keys: Vec<_> = self.choices.keys().cloned().collect();
+            for key in choice_keys {
+                let choice = &self.choices[&key];
+                if choice.has_versioned_descendant {
+                    continue;
+                }
+                let dominated = is_versioned(&choice.enabled)
+                    || choice.variants.iter().any(|v| {
+                        is_versioned(&v.enabled)
+                            || self.child_has_versioned_descendant(&v.node_type)
+                    });
+                if dominated {
+                    self.choices.get_mut(&key).unwrap().has_versioned_descendant = true;
+                    changed = true;
+                }
+            }
+
+            let collection_keys: Vec<_> = self.collections.keys().cloned().collect();
+            for key in collection_keys {
+                let coll = &self.collections[&key];
+                if coll.has_versioned_descendant {
+                    continue;
+                }
+                let dominated = is_versioned(&coll.enabled)
+                    || self.child_has_versioned_descendant(&coll.item_type);
+                if dominated {
+                    self.collections
+                        .get_mut(&key)
+                        .unwrap()
+                        .has_versioned_descendant = true;
+                    changed = true;
+                }
+            }
+
+            if !changed {
+                break;
+            }
+        }
+    }
+
+    fn child_has_versioned_descendant(&self, node_type: &NodeType) -> bool {
+        match node_type {
+            NodeType::Terminal(_) => false,
+            NodeType::Nonterminal(id) => {
+                if let Some(seq) = self.sequences.get(id) {
+                    seq.has_versioned_descendant
+                } else if let Some(choice) = self.choices.get(id) {
+                    choice.has_versioned_descendant
+                } else if let Some(coll) = self.collections.get(id) {
+                    coll.has_versioned_descendant
+                } else {
+                    false
+                }
+            }
+        }
     }
 
     fn convert_fields<'a>(
@@ -373,9 +536,13 @@ impl StructuredCstModelBuilder {
         fields: &'a IndexMap<model::Identifier, model::Field>,
     ) -> impl Iterator<Item = Field> + 'a {
         fields.iter().map(|(label, field)| {
-            let (reference, is_optional) = match field {
-                model::Field::Required { reference } => (reference, false),
-                model::Field::Optional { reference, .. } => (reference, true),
+            let (reference, is_optional, enabled) = match field {
+                model::Field::Required { reference } => {
+                    (reference, false, model::VersionSpecifier::Always)
+                }
+                model::Field::Optional { reference, enabled } => {
+                    (reference, true, enabled.clone().unwrap_or_default())
+                }
             };
             let r#type = self.find_node_type(reference);
 
@@ -383,6 +550,7 @@ impl StructuredCstModelBuilder {
                 label: label.clone(),
                 r#type,
                 is_optional,
+                enabled,
             }
         })
     }

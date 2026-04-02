@@ -61,13 +61,13 @@ use std::rc::Rc;
   #[derive(Clone, Debug, PartialEq)]
   pub enum {{ parent_type }} {
     {% for variant in choice.variants -%}
-      {{ variant.name }}({{ variant.name }}),
+      {{ variant.node_type.name }}({{ variant.node_type.name }}),
     {%- endfor -%}
   }
 
   {% for variant in choice.variants %}
-    pub fn new_{{ parent_type | snake_case }}_{{ variant.name | snake_case }}(element: {{ variant.name }}) -> {{ parent_type }} {
-      {{ parent_type }}::{{ variant.name }}(element)
+    pub fn new_{{ parent_type | snake_case }}_{{ variant.node_type.name | snake_case }}(element: {{ variant.node_type.name }}) -> {{ parent_type }} {
+      {{ parent_type }}::{{ variant.node_type.name }}(element)
     }
   {% endfor %}
 {% endfor %}
