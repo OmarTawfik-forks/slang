@@ -5,6 +5,8 @@ set -euo pipefail
 # Activate the Hermit environment:
 #
 
+[[ -n "${CI:-}" ]] && echo "::group::Initialize \`hermit\` Workspace"
+
 {
   _repo_root="$(realpath "$(dirname "${BASH_SOURCE[0]}")/..")"
 
@@ -24,6 +26,8 @@ set -euo pipefail
   commands="$("${_repo_root}/bin/hermit" env --activate)"
   eval "${commands}"
 }
+
+[[ -n "${CI:-}" ]] && echo "::endgroup::"
 
 #
 # This checks if the rust '$RUST_STABLE_VERSION' toolchain is already installed.
