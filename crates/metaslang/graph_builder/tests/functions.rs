@@ -11,7 +11,7 @@ use metaslang_graph_builder::functions::Functions;
 use metaslang_graph_builder::{
     ExecutionConfig, ExecutionError, Identifier, NoCancellation, Variables,
 };
-use {log as _, regex as _, serde_json as _, smallvec as _, string_interner as _, thiserror as _};
+use {log as _, regex as _, serde_json as _, smallvec as _, thiserror as _};
 
 #[derive(
     Clone,
