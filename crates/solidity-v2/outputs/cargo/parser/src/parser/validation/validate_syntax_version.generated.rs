@@ -31,13 +31,19 @@ struct SyntaxVersionValidator<'a> {
 }
 
 impl SyntaxVersionValidator<'_> {
-    fn report(&mut self, node: &impl TextRange, supported_in: LanguageVersionSpecifier) {
+    /// Returns `true` if `node` is not supported in `self.version` (in which case a diagnostic is
+    /// pushed). Returns `false` if the version is supported and the caller should continue.
+    fn check(&mut self, node: &impl TextRange, supported_in: LanguageVersionSpecifier) -> bool {
+        if supported_in.contains(self.version) {
+            return false;
+        }
         self.diagnostics.push(
             self.file_id.to_owned(),
             node.calculate_text_range()
                 .expect("Structured CST node should have a range"),
             UnsupportedSyntax { supported_in },
         );
+        true
     }
 
     //
@@ -80,14 +86,10 @@ impl SyntaxVersionValidator<'_> {
         let node = node.as_ref();
 
         if let Some(ref child) = node.flags {
-            if self.version < LanguageVersion::V0_8_13 {
-                self.report(
-                    child,
-                    LanguageVersionSpecifier::From {
-                        from: LanguageVersion::V0_8_13,
-                    },
-                );
-            } else {
+            if !self.check(
+                child,
+                LanguageVersionSpecifier::from(LanguageVersion::V0_8_13),
+            ) {
                 self.check_yul_flags_declaration(child);
             }
         }
@@ -222,13 +224,10 @@ impl SyntaxVersionValidator<'_> {
     fn check_error_definition(&mut self, node: &ErrorDefinition) {
         let node = node.as_ref();
 
-        if self.version < LanguageVersion::V0_8_4 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_4,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_4),
+        ) {
             return;
         }
 
@@ -238,13 +237,10 @@ impl SyntaxVersionValidator<'_> {
     fn check_error_parameter(&mut self, node: &ErrorParameter) {
         let node = node.as_ref();
 
-        if self.version < LanguageVersion::V0_8_4 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_4,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_4),
+        ) {
             return;
         }
 
@@ -254,13 +250,10 @@ impl SyntaxVersionValidator<'_> {
     fn check_error_parameters_declaration(&mut self, node: &ErrorParametersDeclaration) {
         let node = node.as_ref();
 
-        if self.version < LanguageVersion::V0_8_4 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_4,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_4),
+        ) {
             return;
         }
 
@@ -430,14 +423,10 @@ impl SyntaxVersionValidator<'_> {
         let node = node.as_ref();
 
         if let Some(ref child) = node.name {
-            if self.version < LanguageVersion::V0_8_18 {
-                self.report(
-                    child,
-                    LanguageVersionSpecifier::From {
-                        from: LanguageVersion::V0_8_18,
-                    },
-                );
-            }
+            self.check(
+                child,
+                LanguageVersionSpecifier::from(LanguageVersion::V0_8_18),
+            );
         }
     }
 
@@ -454,14 +443,10 @@ impl SyntaxVersionValidator<'_> {
 
         self.check_type_name(&node.type_name);
         if let Some(ref child) = node.name {
-            if self.version < LanguageVersion::V0_8_18 {
-                self.report(
-                    child,
-                    LanguageVersionSpecifier::From {
-                        from: LanguageVersion::V0_8_18,
-                    },
-                );
-            }
+            self.check(
+                child,
+                LanguageVersionSpecifier::from(LanguageVersion::V0_8_18),
+            );
         }
     }
 
@@ -602,13 +587,10 @@ impl SyntaxVersionValidator<'_> {
     fn check_revert_statement(&mut self, node: &RevertStatement) {
         let node = node.as_ref();
 
-        if self.version < LanguageVersion::V0_8_4 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_4,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_4),
+        ) {
             return;
         }
 
@@ -659,13 +641,10 @@ impl SyntaxVersionValidator<'_> {
     fn check_storage_layout_specifier(&mut self, node: &StorageLayoutSpecifier) {
         let node = node.as_ref();
 
-        if self.version < LanguageVersion::V0_8_29 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_29,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_29),
+        ) {
             return;
         }
 
@@ -726,13 +705,10 @@ impl SyntaxVersionValidator<'_> {
     fn check_user_defined_value_type_definition(&mut self, node: &UserDefinedValueTypeDefinition) {
         let node = node.as_ref();
 
-        if self.version < LanguageVersion::V0_8_8 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_8,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_8),
+        ) {
             return;
         }
     }
@@ -740,13 +716,10 @@ impl SyntaxVersionValidator<'_> {
     fn check_using_alias(&mut self, node: &UsingAlias) {
         let node = node.as_ref();
 
-        if self.version < LanguageVersion::V0_8_19 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_19,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_19),
+        ) {
             return;
         }
 
@@ -756,13 +729,10 @@ impl SyntaxVersionValidator<'_> {
     fn check_using_deconstruction(&mut self, node: &UsingDeconstruction) {
         let node = node.as_ref();
 
-        if self.version < LanguageVersion::V0_8_13 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_13,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_13),
+        ) {
             return;
         }
 
@@ -772,25 +742,18 @@ impl SyntaxVersionValidator<'_> {
     fn check_using_deconstruction_symbol(&mut self, node: &UsingDeconstructionSymbol) {
         let node = node.as_ref();
 
-        if self.version < LanguageVersion::V0_8_13 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_13,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_13),
+        ) {
             return;
         }
 
         if let Some(ref child) = node.alias {
-            if self.version < LanguageVersion::V0_8_19 {
-                self.report(
-                    child,
-                    LanguageVersionSpecifier::From {
-                        from: LanguageVersion::V0_8_19,
-                    },
-                );
-            } else {
+            if !self.check(
+                child,
+                LanguageVersionSpecifier::from(LanguageVersion::V0_8_19),
+            ) {
                 self.check_using_alias(child);
             }
         }
@@ -803,14 +766,10 @@ impl SyntaxVersionValidator<'_> {
 
         self.check_using_target(&node.target);
         if let Some(ref child) = node.global_keyword {
-            if self.version < LanguageVersion::V0_8_13 {
-                self.report(
-                    child,
-                    LanguageVersionSpecifier::From {
-                        from: LanguageVersion::V0_8_13,
-                    },
-                );
-            }
+            self.check(
+                child,
+                LanguageVersionSpecifier::from(LanguageVersion::V0_8_13),
+            );
         }
     }
 
@@ -843,13 +802,10 @@ impl SyntaxVersionValidator<'_> {
     fn check_yul_flags_declaration(&mut self, node: &YulFlagsDeclaration) {
         let node = node.as_ref();
 
-        if self.version < LanguageVersion::V0_8_13 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_13,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_13),
+        ) {
             return;
         }
 
@@ -910,25 +866,19 @@ impl SyntaxVersionValidator<'_> {
                 self.check_event_definition(child);
             }
             ContractMember::ErrorDefinition(child) => {
-                if self.version < LanguageVersion::V0_8_4 {
-                    self.report(
-                        child,
-                        LanguageVersionSpecifier::From {
-                            from: LanguageVersion::V0_8_4,
-                        },
-                    );
+                if self.check(
+                    child,
+                    LanguageVersionSpecifier::from(LanguageVersion::V0_8_4),
+                ) {
                     return;
                 }
                 self.check_error_definition(child);
             }
             ContractMember::UserDefinedValueTypeDefinition(child) => {
-                if self.version < LanguageVersion::V0_8_8 {
-                    self.report(
-                        child,
-                        LanguageVersionSpecifier::From {
-                            from: LanguageVersion::V0_8_8,
-                        },
-                    );
+                if self.check(
+                    child,
+                    LanguageVersionSpecifier::from(LanguageVersion::V0_8_8),
+                ) {
                     return;
                 }
                 self.check_user_defined_value_type_definition(child);
@@ -945,13 +895,10 @@ impl SyntaxVersionValidator<'_> {
                 self.check_inheritance_specifier(child);
             }
             ContractSpecifier::StorageLayoutSpecifier(child) => {
-                if self.version < LanguageVersion::V0_8_29 {
-                    self.report(
-                        child,
-                        LanguageVersionSpecifier::From {
-                            from: LanguageVersion::V0_8_29,
-                        },
-                    );
+                if self.check(
+                    child,
+                    LanguageVersionSpecifier::from(LanguageVersion::V0_8_29),
+                ) {
                     return;
                 }
                 self.check_storage_layout_specifier(child);
@@ -1137,49 +1084,37 @@ impl SyntaxVersionValidator<'_> {
                 self.check_function_definition(child);
             }
             SourceUnitMember::ErrorDefinition(child) => {
-                if self.version < LanguageVersion::V0_8_4 {
-                    self.report(
-                        child,
-                        LanguageVersionSpecifier::From {
-                            from: LanguageVersion::V0_8_4,
-                        },
-                    );
+                if self.check(
+                    child,
+                    LanguageVersionSpecifier::from(LanguageVersion::V0_8_4),
+                ) {
                     return;
                 }
                 self.check_error_definition(child);
             }
             SourceUnitMember::UserDefinedValueTypeDefinition(child) => {
-                if self.version < LanguageVersion::V0_8_8 {
-                    self.report(
-                        child,
-                        LanguageVersionSpecifier::From {
-                            from: LanguageVersion::V0_8_8,
-                        },
-                    );
+                if self.check(
+                    child,
+                    LanguageVersionSpecifier::from(LanguageVersion::V0_8_8),
+                ) {
                     return;
                 }
                 self.check_user_defined_value_type_definition(child);
             }
             SourceUnitMember::UsingDirective(child) => {
-                if self.version < LanguageVersion::V0_8_13 {
-                    self.report(
-                        child,
-                        LanguageVersionSpecifier::From {
-                            from: LanguageVersion::V0_8_13,
-                        },
-                    );
+                if self.check(
+                    child,
+                    LanguageVersionSpecifier::from(LanguageVersion::V0_8_13),
+                ) {
                     return;
                 }
                 self.check_using_directive(child);
             }
             SourceUnitMember::EventDefinition(child) => {
-                if self.version < LanguageVersion::V0_8_22 {
-                    self.report(
-                        child,
-                        LanguageVersionSpecifier::From {
-                            from: LanguageVersion::V0_8_22,
-                        },
-                    );
+                if self.check(
+                    child,
+                    LanguageVersionSpecifier::from(LanguageVersion::V0_8_22),
+                ) {
                     return;
                 }
                 self.check_event_definition(child);
@@ -1199,13 +1134,10 @@ impl SyntaxVersionValidator<'_> {
             StateVariableAttribute::PublicKeyword(_) => {}
             StateVariableAttribute::ImmutableKeyword(_) => {}
             StateVariableAttribute::TransientKeyword(child) => {
-                if self.version < LanguageVersion::V0_8_27 {
-                    self.report(
-                        child,
-                        LanguageVersionSpecifier::From {
-                            from: LanguageVersion::V0_8_27,
-                        },
-                    );
+                if self.check(
+                    child,
+                    LanguageVersionSpecifier::from(LanguageVersion::V0_8_27),
+                ) {
                     return;
                 }
             }
@@ -1238,13 +1170,10 @@ impl SyntaxVersionValidator<'_> {
                 self.check_try_statement(child);
             }
             Statement::RevertStatement(child) => {
-                if self.version < LanguageVersion::V0_8_4 {
-                    self.report(
-                        child,
-                        LanguageVersionSpecifier::From {
-                            from: LanguageVersion::V0_8_4,
-                        },
-                    );
+                if self.check(
+                    child,
+                    LanguageVersionSpecifier::from(LanguageVersion::V0_8_4),
+                ) {
                     return;
                 }
                 self.check_revert_statement(child);
@@ -1287,13 +1216,10 @@ impl SyntaxVersionValidator<'_> {
         match node {
             UsingClause::IdentifierPath(_) => {}
             UsingClause::UsingDeconstruction(child) => {
-                if self.version < LanguageVersion::V0_8_13 {
-                    self.report(
-                        child,
-                        LanguageVersionSpecifier::From {
-                            from: LanguageVersion::V0_8_13,
-                        },
-                    );
+                if self.check(
+                    child,
+                    LanguageVersionSpecifier::from(LanguageVersion::V0_8_13),
+                ) {
                     return;
                 }
                 self.check_using_deconstruction(child);
@@ -1302,13 +1228,10 @@ impl SyntaxVersionValidator<'_> {
     }
 
     fn check_using_operator(&mut self, node: &UsingOperator) {
-        if self.version < LanguageVersion::V0_8_19 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_19,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_19),
+        ) {
             return;
         }
 
@@ -1392,13 +1315,10 @@ impl SyntaxVersionValidator<'_> {
     }
 
     fn check_error_parameters(&mut self, node: &ErrorParameters) {
-        if self.version < LanguageVersion::V0_8_4 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_4,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_4),
+        ) {
             return;
         }
         for child in &node.elements {
@@ -1503,13 +1423,10 @@ impl SyntaxVersionValidator<'_> {
     }
 
     fn check_using_deconstruction_symbols(&mut self, node: &UsingDeconstructionSymbols) {
-        if self.version < LanguageVersion::V0_8_13 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_13,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_13),
+        ) {
             return;
         }
         for child in &node.elements {
@@ -1518,13 +1435,10 @@ impl SyntaxVersionValidator<'_> {
     }
 
     fn check_yul_flags(&mut self, node: &YulFlags) {
-        if self.version < LanguageVersion::V0_8_13 {
-            self.report(
-                node,
-                LanguageVersionSpecifier::From {
-                    from: LanguageVersion::V0_8_13,
-                },
-            );
+        if self.check(
+            node,
+            LanguageVersionSpecifier::from(LanguageVersion::V0_8_13),
+        ) {
             return;
         }
     }

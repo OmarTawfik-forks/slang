@@ -48,17 +48,14 @@ impl BuiltIn {
         pub(super) const {{ definition.name | snake_case | upper }}_VERSIONS: LanguageVersionSpecifier =
         {%- if definition.enabled.type == "From" %}
           {%- set v = definition.enabled.from | split(pat=".") | join(sep="_") -%}
-          LanguageVersionSpecifier::From { from: LanguageVersion::V{{ v }} };
+          LanguageVersionSpecifier::from(LanguageVersion::V{{ v }});
         {%- elif definition.enabled.type == "Till" %}
           {%- set v = definition.enabled.till | split(pat=".") | join(sep="_") -%}
-          LanguageVersionSpecifier::Till { till: LanguageVersion::V{{ v }} };
+          LanguageVersionSpecifier::till(LanguageVersion::V{{ v }});
         {%- elif definition.enabled.type == "Range" %}
           {%- set vf = definition.enabled.from | split(pat=".") | join(sep="_") -%}
           {%- set vt = definition.enabled.till | split(pat=".") | join(sep="_") -%}
-          LanguageVersionSpecifier::Range {
-              from: LanguageVersion::V{{ vf }},
-              till: LanguageVersion::V{{ vt }},
-          };
+          LanguageVersionSpecifier::range(LanguageVersion::V{{ vf }}, LanguageVersion::V{{ vt }});
         {% endif -%}
       {% endif -%}
     {%- endfor -%}

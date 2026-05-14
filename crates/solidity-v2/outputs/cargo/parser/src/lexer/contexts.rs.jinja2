@@ -1,5 +1,17 @@
+{%- set_global has_versioned_keyword = false -%}
+{%- for context in model.parser.lexer.contexts -%}
+    {%- for lexeme in context.lexemes -%}
+        {%- if lexeme.type == "Keyword" and lexeme.reserved.type != "Always" and lexeme.reserved.type != "Never" -%}
+            {%- set_global has_versioned_keyword = true -%}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endfor -%}
 use logos::{FilterResult, Lexer, Logos};
+{% if has_versioned_keyword -%}
+use slang_solidity_v2_common::versions::{LanguageVersion, LanguageVersionSpecifier};
+{%- else -%}
 use slang_solidity_v2_common::versions::LanguageVersion;
+{%- endif %}
 
 use crate::lexer::lexemes::{Lexeme, LexemeKind};
 
@@ -105,11 +117,11 @@ impl<'source> ContextWrapper<'source> {
                     {%- elif lexeme.reserved.type == "Never" -%}
                         |_| { LexemeKind::{{ lexeme.kind }}_Unreserved }
                     {%- elif lexeme.reserved.type == "From" -%}
-                        |lexer| { if LanguageVersion::V{{ lexeme.reserved.from | split(pat=".") | join(sep="_") }} <= lexer.extras.language_version { LexemeKind::{{ lexeme.kind }}_Reserved } else { LexemeKind::{{ lexeme.kind }}_Unreserved } }
+                        |lexer| { if LanguageVersionSpecifier::from(LanguageVersion::V{{ lexeme.reserved.from | split(pat=".") | join(sep="_") }}).contains(lexer.extras.language_version) { LexemeKind::{{ lexeme.kind }}_Reserved } else { LexemeKind::{{ lexeme.kind }}_Unreserved } }
                     {%- elif lexeme.reserved.type == "Till" -%}
-                        |lexer| { if lexer.extras.language_version < LanguageVersion::V{{ lexeme.reserved.till | split(pat=".") | join(sep="_") }} { LexemeKind::{{ lexeme.kind }}_Reserved } else { LexemeKind::{{ lexeme.kind }}_Unreserved } }
+                        |lexer| { if LanguageVersionSpecifier::till(LanguageVersion::V{{ lexeme.reserved.till | split(pat=".") | join(sep="_") }}).contains(lexer.extras.language_version) { LexemeKind::{{ lexeme.kind }}_Reserved } else { LexemeKind::{{ lexeme.kind }}_Unreserved } }
                     {%- elif lexeme.reserved.type == "Range" -%}
-                        |lexer| { if LanguageVersion::V{{ lexeme.reserved.from | split(pat=".") | join(sep="_") }} <= lexer.extras.language_version && lexer.extras.language_version < LanguageVersion::V{{ lexeme.reserved.till | split(pat=".") | join(sep="_") }} { LexemeKind::{{ lexeme.kind }}_Reserved } else { LexemeKind::{{ lexeme.kind }}_Unreserved } }
+                        |lexer| { if LanguageVersionSpecifier::range(LanguageVersion::V{{ lexeme.reserved.from | split(pat=".") | join(sep="_") }}, LanguageVersion::V{{ lexeme.reserved.till | split(pat=".") | join(sep="_") }}).contains(lexer.extras.language_version) { LexemeKind::{{ lexeme.kind }}_Reserved } else { LexemeKind::{{ lexeme.kind }}_Unreserved } }
                     {%- else -%}
                         {{ throw(message = "Unrecognized lexeme.reserved type: " ~ lexeme.reserved.type) }}
                     {%- endif -%}

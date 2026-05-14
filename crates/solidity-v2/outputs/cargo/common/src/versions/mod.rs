@@ -19,11 +19,24 @@ pub enum LanguageVersionSpecifier {
 }
 
 impl LanguageVersionSpecifier {
-    pub fn contains(&self, other: LanguageVersion) -> bool {
+    pub const fn from(from: LanguageVersion) -> Self {
+        Self::From { from }
+    }
+
+    pub const fn till(till: LanguageVersion) -> Self {
+        Self::Till { till }
+    }
+
+    pub const fn range(from: LanguageVersion, till: LanguageVersion) -> Self {
+        Self::Range { from, till }
+    }
+
+    pub const fn contains(&self, other: LanguageVersion) -> bool {
+        let other = other as u32;
         match self {
-            LanguageVersionSpecifier::From { from } => other >= *from,
-            LanguageVersionSpecifier::Till { till } => other < *till,
-            LanguageVersionSpecifier::Range { from, till } => other >= *from && other < *till,
+            Self::From { from } => other >= *from as u32,
+            Self::Till { till } => other < *till as u32,
+            Self::Range { from, till } => other >= *from as u32 && other < *till as u32,
         }
     }
 }
